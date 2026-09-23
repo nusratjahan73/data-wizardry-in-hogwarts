@@ -1,0 +1,16 @@
+{
+  "file": "interest_to_sales_model.csv",
+  "collected_at_utc": "2026-09-03T07:14:50+00:00",
+  "size_bytes": 1567,
+  "rows": 14,
+  "columns": [
+    "term",
+    "coefficient",
+    "std_error",
+    "p_value",
+    "ci_lower",
+    "ci_upper"
+  ],
+  "lag_months": 2,
+  "note": "full coefficient table for the best fitting lag, Newey-West standard errors"
+}

@@ -1,0 +1,9 @@
+from_table,from_column,to_table,to_column,cardinality,cross_filter
+dim_date,date_key,fact_film_performance,date_key,one-to-many,single
+dim_date,date_key,fact_attention_monthly,date_key,one-to-many,single
+dim_date,date_key,fact_retail_monthly,date_key,one-to-many,single
+dim_date,date_key,fact_product_release,date_key,one-to-many,single
+dim_date,date_key,fact_park_attendance,date_key,one-to-many,single
+dim_film,film_key,fact_film_performance,film_key,one-to-one,both
+dim_product_theme,theme_key,fact_product_release,theme_key,one-to-many,single
+dim_character,article,fact_attention_monthly,series,one-to-many,single

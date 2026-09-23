@@ -1,0 +1,20 @@
+{
+  "file": "fact_product_release.csv",
+  "collected_at_utc": "2026-09-03T07:13:24+00:00",
+  "size_bytes": 16890,
+  "table": "fact_product_release",
+  "grain": "set",
+  "rows": 265,
+  "columns": [
+    "set_key",
+    "set_name",
+    "theme_key",
+    "year",
+    "num_parts",
+    "minifig_count",
+    "is_promotional",
+    "retail_price_cad",
+    "price_per_piece_cad",
+    "date_key"
+  ]
+}

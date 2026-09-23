@@ -1,0 +1,18 @@
+{
+  "file": "product_line_by_year.csv",
+  "collected_at_utc": "2026-09-03T07:13:42+00:00",
+  "size_bytes": 889,
+  "rows": 17,
+  "columns": [
+    "year",
+    "sets_released",
+    "median_parts",
+    "total_parts",
+    "median_minifigs",
+    "total_minifigs",
+    "median_distinct_colours",
+    "catalogue_sets",
+    "share_of_catalogue"
+  ],
+  "note": "branded line size per year, with the catalogue-wide count as a control"
+}

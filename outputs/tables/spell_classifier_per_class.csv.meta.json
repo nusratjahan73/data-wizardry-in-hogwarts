@@ -1,0 +1,14 @@
+{
+  "file": "spell_classifier_per_class.csv",
+  "collected_at_utc": "2026-09-03T07:14:54+00:00",
+  "size_bytes": 290,
+  "rows": 8,
+  "columns": [
+    "class",
+    "precision",
+    "recall",
+    "f1-score",
+    "support"
+  ],
+  "note": "per class precision, recall and F1 from 5-fold cross validation"
+}

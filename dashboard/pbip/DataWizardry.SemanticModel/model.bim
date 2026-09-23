@@ -1,0 +1,931 @@
+{
+  "name": "DataWizardry",
+  "compatibilityLevel": 1567,
+  "model": {
+    "culture": "en-CA",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "en-CA",
+    "tables": [
+      {
+        "name": "dim_character",
+        "columns": [
+          {
+            "name": "character_key",
+            "dataType": "string",
+            "sourceColumn": "character_key",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "character_name",
+            "dataType": "string",
+            "sourceColumn": "character_name",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "house",
+            "dataType": "string",
+            "sourceColumn": "house",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "house_source",
+            "dataType": "string",
+            "sourceColumn": "house_source",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "species",
+            "dataType": "string",
+            "sourceColumn": "species",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "gender",
+            "dataType": "string",
+            "sourceColumn": "gender",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "article",
+            "dataType": "string",
+            "sourceColumn": "article",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "mean_correlation",
+            "dataType": "double",
+            "sourceColumn": "mean_correlation",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "eigenvector_centrality",
+            "dataType": "double",
+            "sourceColumn": "eigenvector_centrality",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "attention_rank",
+            "dataType": "int64",
+            "sourceColumn": "attention_rank",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "coupling_rank",
+            "dataType": "int64",
+            "sourceColumn": "coupling_rank",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_character-partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_character.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"character_key\", type text}, {\"character_name\", type text}, {\"house\", type text}, {\"house_source\", type text}, {\"species\", type text}, {\"gender\", type text}, {\"article\", type text}, {\"mean_correlation\", type number}, {\"eigenvector_centrality\", type number}, {\"attention_rank\", Int64.Type}, {\"coupling_rank\", Int64.Type}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "dim_country",
+        "columns": [
+          {
+            "name": "country_key",
+            "dataType": "int64",
+            "sourceColumn": "country_key",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "country_code",
+            "dataType": "string",
+            "sourceColumn": "country_code",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "country_name",
+            "dataType": "string",
+            "sourceColumn": "country_name",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_canada",
+            "dataType": "boolean",
+            "sourceColumn": "is_canada",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "search_interest",
+            "dataType": "int64",
+            "sourceColumn": "search_interest",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "interest_rank",
+            "dataType": "double",
+            "sourceColumn": "interest_rank",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_country-partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_country.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"country_key\", Int64.Type}, {\"country_code\", type text}, {\"country_name\", type text}, {\"is_canada\", type logical}, {\"search_interest\", Int64.Type}, {\"interest_rank\", type number}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "dim_date",
+        "columns": [
+          {
+            "name": "date_key",
+            "dataType": "int64",
+            "sourceColumn": "date_key",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "month_start",
+            "dataType": "dateTime",
+            "sourceColumn": "month_start",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "year",
+            "dataType": "int64",
+            "sourceColumn": "year",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "month_number",
+            "dataType": "int64",
+            "sourceColumn": "month_number",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "month_name",
+            "dataType": "string",
+            "sourceColumn": "month_name",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "quarter",
+            "dataType": "string",
+            "sourceColumn": "quarter",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "year_month",
+            "dataType": "string",
+            "sourceColumn": "year_month",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "era",
+            "dataType": "string",
+            "sourceColumn": "era",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_gift_season",
+            "dataType": "boolean",
+            "sourceColumn": "is_gift_season",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_after_premiere",
+            "dataType": "boolean",
+            "sourceColumn": "is_after_premiere",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "months_from_premiere",
+            "dataType": "int64",
+            "sourceColumn": "months_from_premiere",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_pandemic",
+            "dataType": "boolean",
+            "sourceColumn": "is_pandemic",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_date-partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_date.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"date_key\", Int64.Type}, {\"month_start\", type date}, {\"year\", Int64.Type}, {\"month_number\", Int64.Type}, {\"month_name\", type text}, {\"quarter\", type text}, {\"year_month\", type text}, {\"era\", type text}, {\"is_gift_season\", type logical}, {\"is_after_premiere\", type logical}, {\"months_from_premiere\", Int64.Type}, {\"is_pandemic\", type logical}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "dim_film",
+        "columns": [
+          {
+            "name": "film_key",
+            "dataType": "int64",
+            "sourceColumn": "film_key",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "title",
+            "dataType": "string",
+            "sourceColumn": "title",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "series",
+            "dataType": "string",
+            "sourceColumn": "series",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "release_date",
+            "dataType": "dateTime",
+            "sourceColumn": "release_date",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "release_date_na",
+            "dataType": "dateTime",
+            "sourceColumn": "release_date_na",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "rt_critic_score",
+            "dataType": "int64",
+            "sourceColumn": "rt_critic_score",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "rt_audience_score",
+            "dataType": "int64",
+            "sourceColumn": "rt_audience_score",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "metacritic_score",
+            "dataType": "int64",
+            "sourceColumn": "metacritic_score",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "cinemascore",
+            "dataType": "string",
+            "sourceColumn": "cinemascore",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "release_year",
+            "dataType": "int64",
+            "sourceColumn": "release_year",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "era",
+            "dataType": "string",
+            "sourceColumn": "era",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "date_key",
+            "dataType": "int64",
+            "sourceColumn": "date_key",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_film-partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_film.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"film_key\", Int64.Type}, {\"title\", type text}, {\"series\", type text}, {\"release_date\", type date}, {\"release_date_na\", type date}, {\"rt_critic_score\", Int64.Type}, {\"rt_audience_score\", Int64.Type}, {\"metacritic_score\", Int64.Type}, {\"cinemascore\", type text}, {\"release_year\", Int64.Type}, {\"era\", type text}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "dim_product_theme",
+        "columns": [
+          {
+            "name": "theme_key",
+            "dataType": "int64",
+            "sourceColumn": "theme_key",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "theme_name",
+            "dataType": "string",
+            "sourceColumn": "theme_name",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "sets",
+            "dataType": "int64",
+            "sourceColumn": "sets",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "first_year",
+            "dataType": "int64",
+            "sourceColumn": "first_year",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "last_year",
+            "dataType": "int64",
+            "sourceColumn": "last_year",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_product_theme-partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_product_theme.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"theme_key\", Int64.Type}, {\"theme_name\", type text}, {\"sets\", Int64.Type}, {\"first_year\", Int64.Type}, {\"last_year\", Int64.Type}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "fact_attention_monthly",
+        "columns": [
+          {
+            "name": "source",
+            "dataType": "string",
+            "sourceColumn": "source",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "group",
+            "dataType": "string",
+            "sourceColumn": "group",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "series",
+            "dataType": "string",
+            "sourceColumn": "series",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "mean_weekly_value",
+            "dataType": "double",
+            "sourceColumn": "mean_weekly_value",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "weeks",
+            "dataType": "int64",
+            "sourceColumn": "weeks",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "date_key",
+            "dataType": "int64",
+            "sourceColumn": "date_key",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "fact_attention_monthly-partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_attention_monthly.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"source\", type text}, {\"group\", type text}, {\"series\", type text}, {\"mean_weekly_value\", type number}, {\"weeks\", Int64.Type}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "fact_film_performance",
+        "columns": [
+          {
+            "name": "film_key",
+            "dataType": "int64",
+            "sourceColumn": "film_key",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "budget_usd",
+            "dataType": "int64",
+            "sourceColumn": "budget_usd",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "domestic_gross_usd",
+            "dataType": "int64",
+            "sourceColumn": "domestic_gross_usd",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "international_gross_usd",
+            "dataType": "int64",
+            "sourceColumn": "international_gross_usd",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "worldwide_gross_usd",
+            "dataType": "int64",
+            "sourceColumn": "worldwide_gross_usd",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "opening_weekend_domestic_usd",
+            "dataType": "int64",
+            "sourceColumn": "opening_weekend_domestic_usd",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "gross_profit_usd",
+            "dataType": "int64",
+            "sourceColumn": "gross_profit_usd",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "gross_profit_margin",
+            "dataType": "double",
+            "sourceColumn": "gross_profit_margin",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "return_on_budget",
+            "dataType": "double",
+            "sourceColumn": "return_on_budget",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "opening_share_of_domestic",
+            "dataType": "double",
+            "sourceColumn": "opening_share_of_domestic",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "critic_audience_gap",
+            "dataType": "int64",
+            "sourceColumn": "critic_audience_gap",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "budget_cad_real",
+            "dataType": "double",
+            "sourceColumn": "budget_cad_real",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "domestic_gross_cad_real",
+            "dataType": "double",
+            "sourceColumn": "domestic_gross_cad_real",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "international_gross_cad_real",
+            "dataType": "double",
+            "sourceColumn": "international_gross_cad_real",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "worldwide_gross_cad_real",
+            "dataType": "double",
+            "sourceColumn": "worldwide_gross_cad_real",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "opening_weekend_domestic_cad_real",
+            "dataType": "double",
+            "sourceColumn": "opening_weekend_domestic_cad_real",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "date_key",
+            "dataType": "int64",
+            "sourceColumn": "date_key",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "fact_film_performance-partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_film_performance.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"film_key\", Int64.Type}, {\"budget_usd\", Int64.Type}, {\"domestic_gross_usd\", Int64.Type}, {\"international_gross_usd\", Int64.Type}, {\"worldwide_gross_usd\", Int64.Type}, {\"opening_weekend_domestic_usd\", Int64.Type}, {\"gross_profit_usd\", Int64.Type}, {\"gross_profit_margin\", type number}, {\"return_on_budget\", type number}, {\"opening_share_of_domestic\", type number}, {\"critic_audience_gap\", Int64.Type}, {\"budget_cad_real\", type number}, {\"domestic_gross_cad_real\", type number}, {\"international_gross_cad_real\", type number}, {\"worldwide_gross_cad_real\", type number}, {\"opening_weekend_domestic_cad_real\", type number}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "fact_park_attendance",
+        "columns": [
+          {
+            "name": "park",
+            "dataType": "string",
+            "sourceColumn": "park",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "country",
+            "dataType": "string",
+            "sourceColumn": "country",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "year",
+            "dataType": "int64",
+            "sourceColumn": "year",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "attendance",
+            "dataType": "int64",
+            "sourceColumn": "attendance",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "wizarding_land_open_this_year",
+            "dataType": "int64",
+            "sourceColumn": "wizarding_land_open_this_year",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "years_since_opening",
+            "dataType": "int64",
+            "sourceColumn": "years_since_opening",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "attendance_index_vs_year_before_opening",
+            "dataType": "double",
+            "sourceColumn": "attendance_index_vs_year_before_opening",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_pandemic_year",
+            "dataType": "boolean",
+            "sourceColumn": "is_pandemic_year",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "date_key",
+            "dataType": "int64",
+            "sourceColumn": "date_key",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "fact_park_attendance-partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_park_attendance.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"park\", type text}, {\"country\", type text}, {\"year\", Int64.Type}, {\"attendance\", Int64.Type}, {\"wizarding_land_open_this_year\", Int64.Type}, {\"years_since_opening\", Int64.Type}, {\"attendance_index_vs_year_before_opening\", type number}, {\"is_pandemic_year\", type logical}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "fact_product_release",
+        "columns": [
+          {
+            "name": "set_key",
+            "dataType": "string",
+            "sourceColumn": "set_key",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "set_name",
+            "dataType": "string",
+            "sourceColumn": "set_name",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "theme_key",
+            "dataType": "int64",
+            "sourceColumn": "theme_key",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "year",
+            "dataType": "int64",
+            "sourceColumn": "year",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "num_parts",
+            "dataType": "int64",
+            "sourceColumn": "num_parts",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "minifig_count",
+            "dataType": "int64",
+            "sourceColumn": "minifig_count",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_promotional",
+            "dataType": "boolean",
+            "sourceColumn": "is_promotional",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "retail_price_cad",
+            "dataType": "double",
+            "sourceColumn": "retail_price_cad",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "price_per_piece_cad",
+            "dataType": "double",
+            "sourceColumn": "price_per_piece_cad",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "date_key",
+            "dataType": "int64",
+            "sourceColumn": "date_key",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "fact_product_release-partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_product_release.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"set_key\", type text}, {\"set_name\", type text}, {\"theme_key\", Int64.Type}, {\"year\", Int64.Type}, {\"num_parts\", Int64.Type}, {\"minifig_count\", Int64.Type}, {\"is_promotional\", type logical}, {\"retail_price_cad\", type number}, {\"price_per_piece_cad\", type number}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "fact_retail_monthly",
+        "columns": [
+          {
+            "name": "naics_code",
+            "dataType": "string",
+            "sourceColumn": "naics_code",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "naics_name",
+            "dataType": "string",
+            "sourceColumn": "naics_name",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "sales_thousands_cad",
+            "dataType": "double",
+            "sourceColumn": "sales_thousands_cad",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "sales_thousands_cad_real",
+            "dataType": "double",
+            "sourceColumn": "sales_thousands_cad_real",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_focus_category",
+            "dataType": "boolean",
+            "sourceColumn": "is_focus_category",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_total_retail",
+            "dataType": "boolean",
+            "sourceColumn": "is_total_retail",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "date_key",
+            "dataType": "int64",
+            "sourceColumn": "date_key",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "fact_retail_monthly-partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_retail_monthly.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"naics_code\", type text}, {\"naics_name\", type text}, {\"sales_thousands_cad\", type number}, {\"sales_thousands_cad_real\", type number}, {\"is_focus_category\", type logical}, {\"is_total_retail\", type logical}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Key Measures",
+        "columns": [
+          {
+            "name": "placeholder",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "placeholder",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Key Measures-partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let Source = #table({\"placeholder\"}, {{\"\"}}) in Source"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Total Budget",
+            "expression": "SUM ( fact_film_performance[budget_usd] )",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Total Worldwide Gross",
+            "expression": "SUM ( fact_film_performance[worldwide_gross_usd] )",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Profit",
+            "expression": "[Total Worldwide Gross] - [Total Budget]",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Profit Margin",
+            "expression": "DIVIDE ( [Profit], [Total Worldwide Gross] )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Return on Budget",
+            "expression": "DIVIDE ( [Total Worldwide Gross], [Total Budget] )",
+            "formatString": "0.00"
+          },
+          {
+            "name": "Cumulative Franchise Revenue",
+            "expression": "CALCULATE ( [Total Worldwide Gross], FILTER ( ALLSELECTED ( dim_date[date_key] ), dim_date[date_key] <= MAX ( dim_date[date_key] ) ) )",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Mean Weekly Attention",
+            "expression": "AVERAGE ( fact_attention_monthly[mean_weekly_value] )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Attention YoY Change",
+            "expression": "VAR CurrentValue = [Mean Weekly Attention] VAR PriorValue = CALCULATE ( [Mean Weekly Attention], DATEADD ( dim_date[month_start], -12, MONTH ) ) RETURN DIVIDE ( CurrentValue - PriorValue, PriorValue )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Franchise Attention",
+            "expression": "CALCULATE ( [Mean Weekly Attention], fact_attention_monthly[source] = \"wikipedia_pageviews\", fact_attention_monthly[group] = \"franchise\" )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Category Sales Real",
+            "expression": "CALCULATE ( SUM ( fact_retail_monthly[sales_thousands_cad_real] ), fact_retail_monthly[is_focus_category] = TRUE () )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Total Retail Sales Real",
+            "expression": "CALCULATE ( SUM ( fact_retail_monthly[sales_thousands_cad_real] ), fact_retail_monthly[is_total_retail] = TRUE () )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Seasonality Index",
+            "expression": "VAR MonthlyValue = [Category Sales Real] VAR AnnualAverage = CALCULATE ( AVERAGEX ( VALUES ( dim_date[date_key] ), [Category Sales Real] ), ALLEXCEPT ( dim_date, dim_date[year] ) ) RETURN DIVIDE ( MonthlyValue, AnnualAverage ) * 100",
+            "formatString": "0.0"
+          },
+          {
+            "name": "Category Share of Total Retail",
+            "expression": "DIVIDE ( [Category Sales Real], [Total Retail Sales Real] )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Total Pieces",
+            "expression": "SUM ( fact_product_release[num_parts] )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Average Price Per Piece",
+            "expression": "AVERAGE ( fact_product_release[price_per_piece_cad] )",
+            "formatString": "\\$#,0.00"
+          },
+          {
+            "name": "Total Attendance",
+            "expression": "SUM ( fact_park_attendance[attendance] )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Attendance Index vs Pre-Opening",
+            "expression": "AVERAGE ( fact_park_attendance[attendance_index_vs_year_before_opening] )",
+            "formatString": "0.0"
+          },
+          {
+            "name": "Set Count",
+            "expression": "COUNTROWS ( fact_product_release )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Film Count",
+            "expression": "COUNTROWS ( fact_film_performance )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Critic Audience Gap",
+            "expression": "AVERAGE ( fact_film_performance[critic_audience_gap] )",
+            "formatString": "0.0"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "2a3fdee3-c0dd-4989-bf37-d5693bf7999e",
+        "fromTable": "fact_film_performance",
+        "fromColumn": "date_key",
+        "toTable": "dim_date",
+        "toColumn": "date_key",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "ea0b8f40-84d8-43fb-a227-30ceaae4c5d1",
+        "fromTable": "fact_attention_monthly",
+        "fromColumn": "date_key",
+        "toTable": "dim_date",
+        "toColumn": "date_key",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "65fd3105-77c5-4ff4-814d-a20abaa12599",
+        "fromTable": "fact_retail_monthly",
+        "fromColumn": "date_key",
+        "toTable": "dim_date",
+        "toColumn": "date_key",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "3f72f069-0304-4008-9b6b-ab91c3dbd081",
+        "fromTable": "fact_product_release",
+        "fromColumn": "date_key",
+        "toTable": "dim_date",
+        "toColumn": "date_key",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "05f6888b-00b6-4fe1-9b25-50cb1ba30cc6",
+        "fromTable": "fact_park_attendance",
+        "fromColumn": "date_key",
+        "toTable": "dim_date",
+        "toColumn": "date_key",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "a039bbf4-b1c5-494b-9781-380d4a86b3db",
+        "fromTable": "fact_film_performance",
+        "fromColumn": "film_key",
+        "toTable": "dim_film",
+        "toColumn": "film_key",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "aa6a16fa-7aed-49ee-a763-8eb115f1d8de",
+        "fromTable": "fact_product_release",
+        "fromColumn": "theme_key",
+        "toTable": "dim_product_theme",
+        "toColumn": "theme_key",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "b58cf685-5c19-45c2-818b-06244f0da4b9",
+        "fromTable": "fact_attention_monthly",
+        "fromColumn": "series",
+        "toTable": "dim_character",
+        "toColumn": "article",
+        "crossFilteringBehavior": "oneDirection"
+      }
+    ],
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"dim_character\", \"dim_country\", \"dim_date\", \"dim_film\", \"dim_product_theme\", \"fact_attention_monthly\", \"fact_film_performance\", \"fact_park_attendance\", \"fact_product_release\", \"fact_retail_monthly\", \"Key Measures\"]"
+      }
+    ]
+  }
+}

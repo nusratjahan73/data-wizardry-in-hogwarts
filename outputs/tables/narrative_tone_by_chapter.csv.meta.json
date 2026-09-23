@@ -1,0 +1,18 @@
+{
+  "file": "narrative_tone_by_chapter.csv",
+  "collected_at_utc": "2026-09-03T07:13:26+00:00",
+  "size_bytes": 1361,
+  "rows": 17,
+  "columns": [
+    "book_position",
+    "book_label",
+    "order",
+    "title",
+    "chapter_index",
+    "tone_compound",
+    "tone_positive",
+    "tone_negative",
+    "summary_words"
+  ],
+  "note": "VADER compound tone per chapter summary, reading order"
+}

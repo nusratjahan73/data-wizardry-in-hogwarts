@@ -1,0 +1,350 @@
+{
+  "id": 0,
+  "resourcePackages": [],
+  "sections": [
+    {
+      "name": "page0",
+      "displayName": "Overview",
+      "filters": "[]",
+      "ordinal": 0,
+      "visualContainers": [
+        {
+          "x": 16,
+          "y": 12,
+          "z": 0,
+          "width": 1248,
+          "height": 50,
+          "config": "{\"name\": \"e050a7b2-3ad8-4dfe-bc92-8c8e72d11f92\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 12, \"z\": 0, \"width\": 1248, \"height\": 50, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"Franchise attention has fallen since 2023, while the new series' own article rose sharply\", \"textStyle\": {\"fontSize\": \"14pt\", \"fontWeight\": \"bold\", \"color\": \"#1B1B22\"}}]}]}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 16,
+          "y": 74,
+          "z": 50,
+          "width": 232,
+          "height": 150,
+          "config": "{\"name\": \"469270b9-33c4-4f7b-ab03-6f96d50bbe60\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 74, \"z\": 50, \"width\": 232, \"height\": 150, \"tabOrder\": 50}}], \"singleVisual\": {\"visualType\": \"slicer\", \"projections\": {\"Values\": [{\"queryRef\": \"dim_date.era\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"dd\", \"Entity\": \"dim_date\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dd\"}}, \"Property\": \"era\"}, \"Name\": \"dim_date.era\", \"NativeReferenceName\": \"era\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Era'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 264,
+          "y": 74,
+          "z": 0,
+          "width": 236,
+          "height": 110,
+          "config": "{\"name\": \"32f815f7-e880-417f-a6e4-acd80febb3d0\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 264, \"y\": 74, \"z\": 0, \"width\": 236, \"height\": 110, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"Key Measures.Film Count\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Film Count\"}, \"Name\": \"Key Measures.Film Count\", \"NativeReferenceName\": \"Film Count\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Films'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 516,
+          "y": 74,
+          "z": 0,
+          "width": 236,
+          "height": 110,
+          "config": "{\"name\": \"a3865dd4-b14c-4708-8a0e-2a80904a1f9c\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 516, \"y\": 74, \"z\": 0, \"width\": 236, \"height\": 110, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"Key Measures.Total Worldwide Gross\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Total Worldwide Gross\"}, \"Name\": \"Key Measures.Total Worldwide Gross\", \"NativeReferenceName\": \"Total Worldwide Gross\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Franchise box office'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 768,
+          "y": 74,
+          "z": 0,
+          "width": 236,
+          "height": 110,
+          "config": "{\"name\": \"d2f50b34-e0bd-4bc2-b5f1-2934775aa278\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 768, \"y\": 74, \"z\": 0, \"width\": 236, \"height\": 110, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"Key Measures.Set Count\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Set Count\"}, \"Name\": \"Key Measures.Set Count\", \"NativeReferenceName\": \"Set Count\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Construction sets'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 1020,
+          "y": 74,
+          "z": 0,
+          "width": 244,
+          "height": 110,
+          "config": "{\"name\": \"64e0bfa8-2353-438a-8a28-e288bcbf62df\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 1020, \"y\": 74, \"z\": 0, \"width\": 244, \"height\": 110, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"Key Measures.Mean Weekly Attention\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Mean Weekly Attention\"}, \"Name\": \"Key Measures.Mean Weekly Attention\", \"NativeReferenceName\": \"Mean Weekly Attention\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Mean weekly attention'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 264,
+          "y": 200,
+          "z": 0,
+          "width": 1000,
+          "height": 250,
+          "config": "{\"name\": \"67e7a6b0-ba68-48fd-a524-78382a0cc4d9\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 264, \"y\": 200, \"z\": 0, \"width\": 1000, \"height\": 250, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"lineChart\", \"projections\": {\"Category\": [{\"queryRef\": \"dim_date.year_month\"}], \"Y\": [{\"queryRef\": \"Key Measures.Mean Weekly Attention\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"dd\", \"Entity\": \"dim_date\", \"Type\": 0}, {\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dd\"}}, \"Property\": \"year_month\"}, \"Name\": \"dim_date.year_month\", \"NativeReferenceName\": \"year_month\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Mean Weekly Attention\"}, \"Name\": \"Key Measures.Mean Weekly Attention\", \"NativeReferenceName\": \"Mean Weekly Attention\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Attention over time'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 16,
+          "y": 466,
+          "z": 0,
+          "width": 616,
+          "height": 238,
+          "config": "{\"name\": \"e88b7892-be7e-4217-ab92-f8640b0a611c\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 466, \"z\": 0, \"width\": 616, \"height\": 238, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"clusteredColumnChart\", \"projections\": {\"Category\": [{\"queryRef\": \"dim_date.year\"}], \"Y\": [{\"queryRef\": \"Key Measures.Total Worldwide Gross\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"dd\", \"Entity\": \"dim_date\", \"Type\": 0}, {\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dd\"}}, \"Property\": \"year\"}, \"Name\": \"dim_date.year\", \"NativeReferenceName\": \"year\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Total Worldwide Gross\"}, \"Name\": \"Key Measures.Total Worldwide Gross\", \"NativeReferenceName\": \"Total Worldwide Gross\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Box office by year'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 648,
+          "y": 466,
+          "z": 0,
+          "width": 616,
+          "height": 238,
+          "config": "{\"name\": \"09d1019b-4d06-4cbf-be99-6451def34797\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 648, \"y\": 466, \"z\": 0, \"width\": 616, \"height\": 238, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"clusteredColumnChart\", \"projections\": {\"Category\": [{\"queryRef\": \"dim_date.year\"}], \"Y\": [{\"queryRef\": \"Key Measures.Set Count\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"dd\", \"Entity\": \"dim_date\", \"Type\": 0}, {\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dd\"}}, \"Property\": \"year\"}, \"Name\": \"dim_date.year\", \"NativeReferenceName\": \"year\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Set Count\"}, \"Name\": \"Key Measures.Set Count\", \"NativeReferenceName\": \"Set Count\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Sets released by year'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{\"visibility\": 0, \"displayName\": \"Overview\", \"description\": \"Franchise attention has fallen 57% since 2023, while the new series' article rose a hundredfold\"}",
+      "displayOption": 1,
+      "height": 720.0,
+      "width": 1280.0
+    },
+    {
+      "name": "page1",
+      "displayName": "Return on investment",
+      "filters": "[]",
+      "ordinal": 1,
+      "visualContainers": [
+        {
+          "x": 16,
+          "y": 12,
+          "z": 0,
+          "width": 1248,
+          "height": 50,
+          "config": "{\"name\": \"e85ef7e4-25ea-445d-b95a-22fb97f4967e\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 12, \"z\": 0, \"width\": 1248, \"height\": 50, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"Deathly Hallows Part 2 returned 10.5x its assigned budget; Secrets of Dumbledore returned 2.0\", \"textStyle\": {\"fontSize\": \"14pt\", \"fontWeight\": \"bold\", \"color\": \"#1B1B22\"}}]}]}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 16,
+          "y": 74,
+          "z": 50,
+          "width": 232,
+          "height": 150,
+          "config": "{\"name\": \"284a12fb-d632-4da6-a850-ceb2d743c883\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 74, \"z\": 50, \"width\": 232, \"height\": 150, \"tabOrder\": 50}}], \"singleVisual\": {\"visualType\": \"slicer\", \"projections\": {\"Values\": [{\"queryRef\": \"dim_date.era\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"dd\", \"Entity\": \"dim_date\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dd\"}}, \"Property\": \"era\"}, \"Name\": \"dim_date.era\", \"NativeReferenceName\": \"era\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Era'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 264,
+          "y": 74,
+          "z": 0,
+          "width": 1000,
+          "height": 376,
+          "config": "{\"name\": \"f86ac002-9651-4750-82a9-180b4a181dc7\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 264, \"y\": 74, \"z\": 0, \"width\": 1000, \"height\": 376, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"scatterChart\", \"projections\": {\"Category\": [{\"queryRef\": \"dim_film.title\"}], \"X\": [{\"queryRef\": \"Key Measures.Total Budget\"}], \"Y\": [{\"queryRef\": \"Key Measures.Total Worldwide Gross\"}], \"Size\": [{\"queryRef\": \"Key Measures.Profit\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"df\", \"Entity\": \"dim_film\", \"Type\": 0}, {\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"df\"}}, \"Property\": \"title\"}, \"Name\": \"dim_film.title\", \"NativeReferenceName\": \"title\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Total Budget\"}, \"Name\": \"Key Measures.Total Budget\", \"NativeReferenceName\": \"Total Budget\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Total Worldwide Gross\"}, \"Name\": \"Key Measures.Total Worldwide Gross\", \"NativeReferenceName\": \"Total Worldwide Gross\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Profit\"}, \"Name\": \"Key Measures.Profit\", \"NativeReferenceName\": \"Profit\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Budget against worldwide gross, bubble size is gross profit'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 16,
+          "y": 466,
+          "z": 0,
+          "width": 1248,
+          "height": 238,
+          "config": "{\"name\": \"99cd1cbb-496b-4d64-98e9-ee02936ae9ee\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 466, \"z\": 0, \"width\": 1248, \"height\": 238, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"projections\": {\"Values\": [{\"queryRef\": \"dim_film.title\"}, {\"queryRef\": \"dim_film.era\"}, {\"queryRef\": \"Key Measures.Total Budget\"}, {\"queryRef\": \"Key Measures.Total Worldwide Gross\"}, {\"queryRef\": \"Key Measures.Return on Budget\"}, {\"queryRef\": \"Key Measures.Profit Margin\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"df\", \"Entity\": \"dim_film\", \"Type\": 0}, {\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"df\"}}, \"Property\": \"title\"}, \"Name\": \"dim_film.title\", \"NativeReferenceName\": \"title\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"df\"}}, \"Property\": \"era\"}, \"Name\": \"dim_film.era\", \"NativeReferenceName\": \"era\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Total Budget\"}, \"Name\": \"Key Measures.Total Budget\", \"NativeReferenceName\": \"Total Budget\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Total Worldwide Gross\"}, \"Name\": \"Key Measures.Total Worldwide Gross\", \"NativeReferenceName\": \"Total Worldwide Gross\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Return on Budget\"}, \"Name\": \"Key Measures.Return on Budget\", \"NativeReferenceName\": \"Return on Budget\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Profit Margin\"}, \"Name\": \"Key Measures.Profit Margin\", \"NativeReferenceName\": \"Profit Margin\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Film performance'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{\"visibility\": 0, \"displayName\": \"Return on investment\", \"description\": \"Deathly Hallows Part 2 returned 10.5x its assigned budget; Secrets of Dumbledore returned 2.0\"}",
+      "displayOption": 1,
+      "height": 720.0,
+      "width": 1280.0
+    },
+    {
+      "name": "page2",
+      "displayName": "Reception",
+      "filters": "[]",
+      "ordinal": 2,
+      "visualContainers": [
+        {
+          "x": 16,
+          "y": 12,
+          "z": 0,
+          "width": 1248,
+          "height": 50,
+          "config": "{\"name\": \"3fa1b144-d43a-4bbc-9849-8cc159508561\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 12, \"z\": 0, \"width\": 1248, \"height\": 50, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"Audiences rated Secrets of Dumbledore 37 points above critics\", \"textStyle\": {\"fontSize\": \"14pt\", \"fontWeight\": \"bold\", \"color\": \"#1B1B22\"}}]}]}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 16,
+          "y": 74,
+          "z": 0,
+          "width": 760,
+          "height": 376,
+          "config": "{\"name\": \"dabbeedb-fbf1-4506-b004-0156f74af3b5\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 74, \"z\": 0, \"width\": 760, \"height\": 376, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"scatterChart\", \"projections\": {\"Category\": [{\"queryRef\": \"dim_film.title\"}], \"X\": [{\"queryRef\": \"Avg(dim_film.rt_critic_score)\"}], \"Y\": [{\"queryRef\": \"Avg(dim_film.rt_audience_score)\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"df\", \"Entity\": \"dim_film\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"df\"}}, \"Property\": \"title\"}, \"Name\": \"dim_film.title\", \"NativeReferenceName\": \"title\"}, {\"Aggregation\": {\"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"df\"}}, \"Property\": \"rt_critic_score\"}}, \"Function\": 1}, \"Name\": \"Avg(dim_film.rt_critic_score)\", \"NativeReferenceName\": \"Critic score\"}, {\"Aggregation\": {\"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"df\"}}, \"Property\": \"rt_audience_score\"}}, \"Function\": 1}, \"Name\": \"Avg(dim_film.rt_audience_score)\", \"NativeReferenceName\": \"Audience score\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Critic score against audience score'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 792,
+          "y": 74,
+          "z": 0,
+          "width": 472,
+          "height": 376,
+          "config": "{\"name\": \"696b57e6-e808-47c6-b999-e8fd90f876a3\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 792, \"y\": 74, \"z\": 0, \"width\": 472, \"height\": 376, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"clusteredBarChart\", \"projections\": {\"Category\": [{\"queryRef\": \"dim_film.title\"}], \"Y\": [{\"queryRef\": \"Key Measures.Critic Audience Gap\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"df\", \"Entity\": \"dim_film\", \"Type\": 0}, {\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"df\"}}, \"Property\": \"title\"}, \"Name\": \"dim_film.title\", \"NativeReferenceName\": \"title\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Critic Audience Gap\"}, \"Name\": \"Key Measures.Critic Audience Gap\", \"NativeReferenceName\": \"Critic Audience Gap\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Critic minus audience; negative means audiences liked it more'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 16,
+          "y": 466,
+          "z": 0,
+          "width": 1248,
+          "height": 238,
+          "config": "{\"name\": \"c74d5e3b-7e35-4cc4-ae15-49f027e83d18\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 466, \"z\": 0, \"width\": 1248, \"height\": 238, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"projections\": {\"Values\": [{\"queryRef\": \"dim_film.title\"}, {\"queryRef\": \"Avg(dim_film.rt_critic_score)\"}, {\"queryRef\": \"Avg(dim_film.rt_audience_score)\"}, {\"queryRef\": \"Avg(dim_film.metacritic_score)\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"df\", \"Entity\": \"dim_film\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"df\"}}, \"Property\": \"title\"}, \"Name\": \"dim_film.title\", \"NativeReferenceName\": \"title\"}, {\"Aggregation\": {\"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"df\"}}, \"Property\": \"rt_critic_score\"}}, \"Function\": 1}, \"Name\": \"Avg(dim_film.rt_critic_score)\", \"NativeReferenceName\": \"Critic\"}, {\"Aggregation\": {\"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"df\"}}, \"Property\": \"rt_audience_score\"}}, \"Function\": 1}, \"Name\": \"Avg(dim_film.rt_audience_score)\", \"NativeReferenceName\": \"Audience\"}, {\"Aggregation\": {\"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"df\"}}, \"Property\": \"metacritic_score\"}}, \"Function\": 1}, \"Name\": \"Avg(dim_film.metacritic_score)\", \"NativeReferenceName\": \"Metacritic\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Reception scores'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{\"visibility\": 0, \"displayName\": \"Reception\", \"description\": \"Audiences rated Secrets of Dumbledore 37 points above critics\"}",
+      "displayOption": 1,
+      "height": 720.0,
+      "width": 1280.0
+    },
+    {
+      "name": "page3",
+      "displayName": "Geography",
+      "filters": "[]",
+      "ordinal": 3,
+      "visualContainers": [
+        {
+          "x": 16,
+          "y": 12,
+          "z": 0,
+          "width": 1248,
+          "height": 50,
+          "config": "{\"name\": \"cf32a87a-86f7-4eda-abca-e2beb1674ad5\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 12, \"z\": 0, \"width\": 1248, \"height\": 50, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"Search interest is near-saturated across Western markets: Canada is 9th of 61 at 97\", \"textStyle\": {\"fontSize\": \"14pt\", \"fontWeight\": \"bold\", \"color\": \"#1B1B22\"}}]}]}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 16,
+          "y": 74,
+          "z": 0,
+          "width": 760,
+          "height": 630,
+          "config": "{\"name\": \"cfe5eb94-2b26-48f1-87b8-49fa294cfc6d\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 74, \"z\": 0, \"width\": 760, \"height\": 630, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"clusteredBarChart\", \"projections\": {\"Category\": [{\"queryRef\": \"dim_country.country_name\"}], \"Y\": [{\"queryRef\": \"Avg(dim_country.search_interest)\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"dc\", \"Entity\": \"dim_country\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dc\"}}, \"Property\": \"country_name\"}, \"Name\": \"dim_country.country_name\", \"NativeReferenceName\": \"country_name\"}, {\"Aggregation\": {\"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dc\"}}, \"Property\": \"search_interest\"}}, \"Function\": 1}, \"Name\": \"Avg(dim_country.search_interest)\", \"NativeReferenceName\": \"Interest\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Franchise search interest by country'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 792,
+          "y": 74,
+          "z": 0,
+          "width": 472,
+          "height": 630,
+          "config": "{\"name\": \"73e034c5-4c7f-4b9a-a5e3-debf2aeaed1a\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 792, \"y\": 74, \"z\": 0, \"width\": 472, \"height\": 630, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"projections\": {\"Values\": [{\"queryRef\": \"dim_country.country_name\"}, {\"queryRef\": \"Min(dim_country.interest_rank)\"}, {\"queryRef\": \"Avg(dim_country.search_interest)\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"dc\", \"Entity\": \"dim_country\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dc\"}}, \"Property\": \"country_name\"}, \"Name\": \"dim_country.country_name\", \"NativeReferenceName\": \"country_name\"}, {\"Aggregation\": {\"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dc\"}}, \"Property\": \"interest_rank\"}}, \"Function\": 3}, \"Name\": \"Min(dim_country.interest_rank)\", \"NativeReferenceName\": \"Rank\"}, {\"Aggregation\": {\"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dc\"}}, \"Property\": \"search_interest\"}}, \"Function\": 1}, \"Name\": \"Avg(dim_country.search_interest)\", \"NativeReferenceName\": \"Interest\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Interest by country, ranked'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{\"visibility\": 0, \"displayName\": \"Geography\", \"description\": \"Canada ranks 9th of 61 countries at 97, within two points of the leaders\"}",
+      "displayOption": 1,
+      "height": 720.0,
+      "width": 1280.0
+    },
+    {
+      "name": "page4",
+      "displayName": "Product line",
+      "filters": "[]",
+      "ordinal": 4,
+      "visualContainers": [
+        {
+          "x": 16,
+          "y": 12,
+          "z": 0,
+          "width": 1248,
+          "height": 50,
+          "config": "{\"name\": \"71217ddf-c318-4343-8819-95c431a5aaf6\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 12, \"z\": 0, \"width\": 1248, \"height\": 50, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"No retail price source was available, so the licensing premium is untested; size and count are not\", \"textStyle\": {\"fontSize\": \"14pt\", \"fontWeight\": \"bold\", \"color\": \"#1B1B22\"}}]}]}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 16,
+          "y": 74,
+          "z": 0,
+          "width": 400,
+          "height": 110,
+          "config": "{\"name\": \"0ba3ca43-4e8e-49c4-b010-5367548de0db\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 74, \"z\": 0, \"width\": 400, \"height\": 110, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"Key Measures.Set Count\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Set Count\"}, \"Name\": \"Key Measures.Set Count\", \"NativeReferenceName\": \"Set Count\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Sets in the line'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 432,
+          "y": 74,
+          "z": 0,
+          "width": 400,
+          "height": 110,
+          "config": "{\"name\": \"319c00c5-03eb-4bf8-a56c-35a9f3ec16df\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 432, \"y\": 74, \"z\": 0, \"width\": 400, \"height\": 110, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"Key Measures.Total Pieces\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Total Pieces\"}, \"Name\": \"Key Measures.Total Pieces\", \"NativeReferenceName\": \"Total Pieces\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Total pieces'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 848,
+          "y": 74,
+          "z": 0,
+          "width": 416,
+          "height": 110,
+          "config": "{\"name\": \"195cd6dc-97f8-4f29-b51e-4029e4fb66fd\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 848, \"y\": 74, \"z\": 0, \"width\": 416, \"height\": 110, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"Key Measures.Film Count\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Film Count\"}, \"Name\": \"Key Measures.Film Count\", \"NativeReferenceName\": \"Film Count\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Films released'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 16,
+          "y": 200,
+          "z": 0,
+          "width": 616,
+          "height": 504,
+          "config": "{\"name\": \"f9c9cfe2-58e8-4b53-a332-c8eb736c2a1b\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 200, \"z\": 0, \"width\": 616, \"height\": 504, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"clusteredColumnChart\", \"projections\": {\"Category\": [{\"queryRef\": \"fact_product_release.year\"}], \"Y\": [{\"queryRef\": \"Key Measures.Set Count\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"fpr\", \"Entity\": \"fact_product_release\", \"Type\": 0}, {\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"fpr\"}}, \"Property\": \"year\"}, \"Name\": \"fact_product_release.year\", \"NativeReferenceName\": \"year\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Set Count\"}, \"Name\": \"Key Measures.Set Count\", \"NativeReferenceName\": \"Set Count\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Sets released per year'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 648,
+          "y": 200,
+          "z": 0,
+          "width": 616,
+          "height": 504,
+          "config": "{\"name\": \"028d3dcb-f2be-4603-bcbd-359c7c07762a\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 648, \"y\": 200, \"z\": 0, \"width\": 616, \"height\": 504, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"lineChart\", \"projections\": {\"Category\": [{\"queryRef\": \"fact_product_release.year\"}], \"Y\": [{\"queryRef\": \"Avg(fact_product_release.num_parts)\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"fpr\", \"Entity\": \"fact_product_release\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"fpr\"}}, \"Property\": \"year\"}, \"Name\": \"fact_product_release.year\", \"NativeReferenceName\": \"year\"}, {\"Aggregation\": {\"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"fpr\"}}, \"Property\": \"num_parts\"}}, \"Function\": 1}, \"Name\": \"Avg(fact_product_release.num_parts)\", \"NativeReferenceName\": \"Average pieces\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Average pieces per set by year'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{\"visibility\": 0, \"displayName\": \"Product line\", \"description\": \"Blocked: no retail price source, so price per piece is empty\"}",
+      "displayOption": 1,
+      "height": 720.0,
+      "width": 1280.0
+    },
+    {
+      "name": "page5",
+      "displayName": "Timing",
+      "filters": "[]",
+      "ordinal": 5,
+      "visualContainers": [
+        {
+          "x": 16,
+          "y": 12,
+          "z": 0,
+          "width": 1248,
+          "height": 50,
+          "config": "{\"name\": \"a1919f24-a8e9-4ce4-b33c-96313a424b47\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 12, \"z\": 0, \"width\": 1248, \"height\": 50, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"The category peaks at 172 in December and collapses to 86 in January; attention barely moves\", \"textStyle\": {\"fontSize\": \"14pt\", \"fontWeight\": \"bold\", \"color\": \"#1B1B22\"}}]}]}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 16,
+          "y": 74,
+          "z": 0,
+          "width": 1248,
+          "height": 330,
+          "config": "{\"name\": \"62f0476c-2b77-43b8-9595-02d535c1909b\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 74, \"z\": 0, \"width\": 1248, \"height\": 330, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"lineChart\", \"projections\": {\"Category\": [{\"queryRef\": \"dim_date.month_name\"}], \"Y\": [{\"queryRef\": \"Key Measures.Seasonality Index\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"dd\", \"Entity\": \"dim_date\", \"Type\": 0}, {\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dd\"}}, \"Property\": \"month_name\"}, \"Name\": \"dim_date.month_name\", \"NativeReferenceName\": \"month_name\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Seasonality Index\"}, \"Name\": \"Key Measures.Seasonality Index\", \"NativeReferenceName\": \"Seasonality Index\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Category seasonality index, 100 is an average month'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 16,
+          "y": 420,
+          "z": 0,
+          "width": 616,
+          "height": 284,
+          "config": "{\"name\": \"3e0fe25f-b399-49eb-b812-d0f71abce6a2\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 16, \"y\": 420, \"z\": 0, \"width\": 616, \"height\": 284, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"clusteredColumnChart\", \"projections\": {\"Category\": [{\"queryRef\": \"dim_date.month_name\"}], \"Y\": [{\"queryRef\": \"Key Measures.Category Sales Real\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"dd\", \"Entity\": \"dim_date\", \"Type\": 0}, {\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dd\"}}, \"Property\": \"month_name\"}, \"Name\": \"dim_date.month_name\", \"NativeReferenceName\": \"month_name\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Category Sales Real\"}, \"Name\": \"Key Measures.Category Sales Real\", \"NativeReferenceName\": \"Category Sales Real\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Category sales by month'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 648,
+          "y": 420,
+          "z": 0,
+          "width": 616,
+          "height": 284,
+          "config": "{\"name\": \"027ae8b0-cab0-42d9-8699-cde2605e8dae\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 648, \"y\": 420, \"z\": 0, \"width\": 616, \"height\": 284, \"tabOrder\": 0}}], \"singleVisual\": {\"visualType\": \"lineChart\", \"projections\": {\"Category\": [{\"queryRef\": \"dim_date.month_name\"}], \"Y\": [{\"queryRef\": \"Key Measures.Mean Weekly Attention\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"dd\", \"Entity\": \"dim_date\", \"Type\": 0}, {\"Name\": \"km\", \"Entity\": \"Key Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"dd\"}}, \"Property\": \"month_name\"}, \"Name\": \"dim_date.month_name\", \"NativeReferenceName\": \"month_name\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"km\"}}, \"Property\": \"Mean Weekly Attention\"}, \"Name\": \"Key Measures.Mean Weekly Attention\", \"NativeReferenceName\": \"Mean Weekly Attention\"}]}, \"columnProperties\": {}, \"drillFilterOtherVisuals\": true, \"objects\": {}, \"vcObjects\": {\"title\": [{\"properties\": {\"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Franchise attention by month'\"}}}, \"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}}}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{\"visibility\": 0, \"displayName\": \"Timing\", \"description\": \"The category peaks at 172 in December and collapses to 86 in January; attention barely moves\"}",
+      "displayOption": 1,
+      "height": 720.0,
+      "width": 1280.0
+    }
+  ],
+  "config": "{\"version\": \"5.43\", \"themeCollection\": {\"baseTheme\": {\"name\": \"CY24SU06\"}}, \"activeSectionIndex\": 0, \"settings\": {\"useStylableVisualContainerHeader\": true}}",
+  "layoutOptimization": 0
+}

@@ -1,0 +1,457 @@
+date_key,month_start,year,month_number,month_name,quarter,year_month,era,is_gift_season,is_after_premiere,months_from_premiere,is_pandemic
+199101,1991-01-01,1991,1,Jan,Q1,1991-01,before the films,False,False,-431,False
+199102,1991-02-01,1991,2,Feb,Q1,1991-02,before the films,False,False,-430,False
+199103,1991-03-01,1991,3,Mar,Q1,1991-03,before the films,False,False,-429,False
+199104,1991-04-01,1991,4,Apr,Q2,1991-04,before the films,False,False,-428,False
+199105,1991-05-01,1991,5,May,Q2,1991-05,before the films,False,False,-427,False
+199106,1991-06-01,1991,6,Jun,Q2,1991-06,before the films,False,False,-426,False
+199107,1991-07-01,1991,7,Jul,Q3,1991-07,before the films,False,False,-425,False
+199108,1991-08-01,1991,8,Aug,Q3,1991-08,before the films,False,False,-424,False
+199109,1991-09-01,1991,9,Sep,Q3,1991-09,before the films,False,False,-423,False
+199110,1991-10-01,1991,10,Oct,Q4,1991-10,before the films,False,False,-422,False
+199111,1991-11-01,1991,11,Nov,Q4,1991-11,before the films,True,False,-421,False
+199112,1991-12-01,1991,12,Dec,Q4,1991-12,before the films,True,False,-420,False
+199201,1992-01-01,1992,1,Jan,Q1,1992-01,before the films,False,False,-419,False
+199202,1992-02-01,1992,2,Feb,Q1,1992-02,before the films,False,False,-418,False
+199203,1992-03-01,1992,3,Mar,Q1,1992-03,before the films,False,False,-417,False
+199204,1992-04-01,1992,4,Apr,Q2,1992-04,before the films,False,False,-416,False
+199205,1992-05-01,1992,5,May,Q2,1992-05,before the films,False,False,-415,False
+199206,1992-06-01,1992,6,Jun,Q2,1992-06,before the films,False,False,-414,False
+199207,1992-07-01,1992,7,Jul,Q3,1992-07,before the films,False,False,-413,False
+199208,1992-08-01,1992,8,Aug,Q3,1992-08,before the films,False,False,-412,False
+199209,1992-09-01,1992,9,Sep,Q3,1992-09,before the films,False,False,-411,False
+199210,1992-10-01,1992,10,Oct,Q4,1992-10,before the films,False,False,-410,False
+199211,1992-11-01,1992,11,Nov,Q4,1992-11,before the films,True,False,-409,False
+199212,1992-12-01,1992,12,Dec,Q4,1992-12,before the films,True,False,-408,False
+199301,1993-01-01,1993,1,Jan,Q1,1993-01,before the films,False,False,-407,False
+199302,1993-02-01,1993,2,Feb,Q1,1993-02,before the films,False,False,-406,False
+199303,1993-03-01,1993,3,Mar,Q1,1993-03,before the films,False,False,-405,False
+199304,1993-04-01,1993,4,Apr,Q2,1993-04,before the films,False,False,-404,False
+199305,1993-05-01,1993,5,May,Q2,1993-05,before the films,False,False,-403,False
+199306,1993-06-01,1993,6,Jun,Q2,1993-06,before the films,False,False,-402,False
+199307,1993-07-01,1993,7,Jul,Q3,1993-07,before the films,False,False,-401,False
+199308,1993-08-01,1993,8,Aug,Q3,1993-08,before the films,False,False,-400,False
+199309,1993-09-01,1993,9,Sep,Q3,1993-09,before the films,False,False,-399,False
+199310,1993-10-01,1993,10,Oct,Q4,1993-10,before the films,False,False,-398,False
+199311,1993-11-01,1993,11,Nov,Q4,1993-11,before the films,True,False,-397,False
+199312,1993-12-01,1993,12,Dec,Q4,1993-12,before the films,True,False,-396,False
+199401,1994-01-01,1994,1,Jan,Q1,1994-01,before the films,False,False,-395,False
+199402,1994-02-01,1994,2,Feb,Q1,1994-02,before the films,False,False,-394,False
+199403,1994-03-01,1994,3,Mar,Q1,1994-03,before the films,False,False,-393,False
+199404,1994-04-01,1994,4,Apr,Q2,1994-04,before the films,False,False,-392,False
+199405,1994-05-01,1994,5,May,Q2,1994-05,before the films,False,False,-391,False
+199406,1994-06-01,1994,6,Jun,Q2,1994-06,before the films,False,False,-390,False
+199407,1994-07-01,1994,7,Jul,Q3,1994-07,before the films,False,False,-389,False
+199408,1994-08-01,1994,8,Aug,Q3,1994-08,before the films,False,False,-388,False
+199409,1994-09-01,1994,9,Sep,Q3,1994-09,before the films,False,False,-387,False
+199410,1994-10-01,1994,10,Oct,Q4,1994-10,before the films,False,False,-386,False
+199411,1994-11-01,1994,11,Nov,Q4,1994-11,before the films,True,False,-385,False
+199412,1994-12-01,1994,12,Dec,Q4,1994-12,before the films,True,False,-384,False
+199501,1995-01-01,1995,1,Jan,Q1,1995-01,before the films,False,False,-383,False
+199502,1995-02-01,1995,2,Feb,Q1,1995-02,before the films,False,False,-382,False
+199503,1995-03-01,1995,3,Mar,Q1,1995-03,before the films,False,False,-381,False
+199504,1995-04-01,1995,4,Apr,Q2,1995-04,before the films,False,False,-380,False
+199505,1995-05-01,1995,5,May,Q2,1995-05,before the films,False,False,-379,False
+199506,1995-06-01,1995,6,Jun,Q2,1995-06,before the films,False,False,-378,False
+199507,1995-07-01,1995,7,Jul,Q3,1995-07,before the films,False,False,-377,False
+199508,1995-08-01,1995,8,Aug,Q3,1995-08,before the films,False,False,-376,False
+199509,1995-09-01,1995,9,Sep,Q3,1995-09,before the films,False,False,-375,False
+199510,1995-10-01,1995,10,Oct,Q4,1995-10,before the films,False,False,-374,False
+199511,1995-11-01,1995,11,Nov,Q4,1995-11,before the films,True,False,-373,False
+199512,1995-12-01,1995,12,Dec,Q4,1995-12,before the films,True,False,-372,False
+199601,1996-01-01,1996,1,Jan,Q1,1996-01,before the films,False,False,-371,False
+199602,1996-02-01,1996,2,Feb,Q1,1996-02,before the films,False,False,-370,False
+199603,1996-03-01,1996,3,Mar,Q1,1996-03,before the films,False,False,-369,False
+199604,1996-04-01,1996,4,Apr,Q2,1996-04,before the films,False,False,-368,False
+199605,1996-05-01,1996,5,May,Q2,1996-05,before the films,False,False,-367,False
+199606,1996-06-01,1996,6,Jun,Q2,1996-06,before the films,False,False,-366,False
+199607,1996-07-01,1996,7,Jul,Q3,1996-07,before the films,False,False,-365,False
+199608,1996-08-01,1996,8,Aug,Q3,1996-08,before the films,False,False,-364,False
+199609,1996-09-01,1996,9,Sep,Q3,1996-09,before the films,False,False,-363,False
+199610,1996-10-01,1996,10,Oct,Q4,1996-10,before the films,False,False,-362,False
+199611,1996-11-01,1996,11,Nov,Q4,1996-11,before the films,True,False,-361,False
+199612,1996-12-01,1996,12,Dec,Q4,1996-12,before the films,True,False,-360,False
+199701,1997-01-01,1997,1,Jan,Q1,1997-01,before the films,False,False,-359,False
+199702,1997-02-01,1997,2,Feb,Q1,1997-02,before the films,False,False,-358,False
+199703,1997-03-01,1997,3,Mar,Q1,1997-03,before the films,False,False,-357,False
+199704,1997-04-01,1997,4,Apr,Q2,1997-04,before the films,False,False,-356,False
+199705,1997-05-01,1997,5,May,Q2,1997-05,before the films,False,False,-355,False
+199706,1997-06-01,1997,6,Jun,Q2,1997-06,before the films,False,False,-354,False
+199707,1997-07-01,1997,7,Jul,Q3,1997-07,before the films,False,False,-353,False
+199708,1997-08-01,1997,8,Aug,Q3,1997-08,before the films,False,False,-352,False
+199709,1997-09-01,1997,9,Sep,Q3,1997-09,before the films,False,False,-351,False
+199710,1997-10-01,1997,10,Oct,Q4,1997-10,before the films,False,False,-350,False
+199711,1997-11-01,1997,11,Nov,Q4,1997-11,before the films,True,False,-349,False
+199712,1997-12-01,1997,12,Dec,Q4,1997-12,before the films,True,False,-348,False
+199801,1998-01-01,1998,1,Jan,Q1,1998-01,before the films,False,False,-347,False
+199802,1998-02-01,1998,2,Feb,Q1,1998-02,before the films,False,False,-346,False
+199803,1998-03-01,1998,3,Mar,Q1,1998-03,before the films,False,False,-345,False
+199804,1998-04-01,1998,4,Apr,Q2,1998-04,before the films,False,False,-344,False
+199805,1998-05-01,1998,5,May,Q2,1998-05,before the films,False,False,-343,False
+199806,1998-06-01,1998,6,Jun,Q2,1998-06,before the films,False,False,-342,False
+199807,1998-07-01,1998,7,Jul,Q3,1998-07,before the films,False,False,-341,False
+199808,1998-08-01,1998,8,Aug,Q3,1998-08,before the films,False,False,-340,False
+199809,1998-09-01,1998,9,Sep,Q3,1998-09,before the films,False,False,-339,False
+199810,1998-10-01,1998,10,Oct,Q4,1998-10,before the films,False,False,-338,False
+199811,1998-11-01,1998,11,Nov,Q4,1998-11,before the films,True,False,-337,False
+199812,1998-12-01,1998,12,Dec,Q4,1998-12,before the films,True,False,-336,False
+199901,1999-01-01,1999,1,Jan,Q1,1999-01,before the films,False,False,-335,False
+199902,1999-02-01,1999,2,Feb,Q1,1999-02,before the films,False,False,-334,False
+199903,1999-03-01,1999,3,Mar,Q1,1999-03,before the films,False,False,-333,False
+199904,1999-04-01,1999,4,Apr,Q2,1999-04,before the films,False,False,-332,False
+199905,1999-05-01,1999,5,May,Q2,1999-05,before the films,False,False,-331,False
+199906,1999-06-01,1999,6,Jun,Q2,1999-06,before the films,False,False,-330,False
+199907,1999-07-01,1999,7,Jul,Q3,1999-07,before the films,False,False,-329,False
+199908,1999-08-01,1999,8,Aug,Q3,1999-08,before the films,False,False,-328,False
+199909,1999-09-01,1999,9,Sep,Q3,1999-09,before the films,False,False,-327,False
+199910,1999-10-01,1999,10,Oct,Q4,1999-10,before the films,False,False,-326,False
+199911,1999-11-01,1999,11,Nov,Q4,1999-11,before the films,True,False,-325,False
+199912,1999-12-01,1999,12,Dec,Q4,1999-12,before the films,True,False,-324,False
+200001,2000-01-01,2000,1,Jan,Q1,2000-01,before the films,False,False,-323,False
+200002,2000-02-01,2000,2,Feb,Q1,2000-02,before the films,False,False,-322,False
+200003,2000-03-01,2000,3,Mar,Q1,2000-03,before the films,False,False,-321,False
+200004,2000-04-01,2000,4,Apr,Q2,2000-04,before the films,False,False,-320,False
+200005,2000-05-01,2000,5,May,Q2,2000-05,before the films,False,False,-319,False
+200006,2000-06-01,2000,6,Jun,Q2,2000-06,before the films,False,False,-318,False
+200007,2000-07-01,2000,7,Jul,Q3,2000-07,before the films,False,False,-317,False
+200008,2000-08-01,2000,8,Aug,Q3,2000-08,before the films,False,False,-316,False
+200009,2000-09-01,2000,9,Sep,Q3,2000-09,before the films,False,False,-315,False
+200010,2000-10-01,2000,10,Oct,Q4,2000-10,before the films,False,False,-314,False
+200011,2000-11-01,2000,11,Nov,Q4,2000-11,before the films,True,False,-313,False
+200012,2000-12-01,2000,12,Dec,Q4,2000-12,before the films,True,False,-312,False
+200101,2001-01-01,2001,1,Jan,Q1,2001-01,original,False,False,-311,False
+200102,2001-02-01,2001,2,Feb,Q1,2001-02,original,False,False,-310,False
+200103,2001-03-01,2001,3,Mar,Q1,2001-03,original,False,False,-309,False
+200104,2001-04-01,2001,4,Apr,Q2,2001-04,original,False,False,-308,False
+200105,2001-05-01,2001,5,May,Q2,2001-05,original,False,False,-307,False
+200106,2001-06-01,2001,6,Jun,Q2,2001-06,original,False,False,-306,False
+200107,2001-07-01,2001,7,Jul,Q3,2001-07,original,False,False,-305,False
+200108,2001-08-01,2001,8,Aug,Q3,2001-08,original,False,False,-304,False
+200109,2001-09-01,2001,9,Sep,Q3,2001-09,original,False,False,-303,False
+200110,2001-10-01,2001,10,Oct,Q4,2001-10,original,False,False,-302,False
+200111,2001-11-01,2001,11,Nov,Q4,2001-11,original,True,False,-301,False
+200112,2001-12-01,2001,12,Dec,Q4,2001-12,original,True,False,-300,False
+200201,2002-01-01,2002,1,Jan,Q1,2002-01,original,False,False,-299,False
+200202,2002-02-01,2002,2,Feb,Q1,2002-02,original,False,False,-298,False
+200203,2002-03-01,2002,3,Mar,Q1,2002-03,original,False,False,-297,False
+200204,2002-04-01,2002,4,Apr,Q2,2002-04,original,False,False,-296,False
+200205,2002-05-01,2002,5,May,Q2,2002-05,original,False,False,-295,False
+200206,2002-06-01,2002,6,Jun,Q2,2002-06,original,False,False,-294,False
+200207,2002-07-01,2002,7,Jul,Q3,2002-07,original,False,False,-293,False
+200208,2002-08-01,2002,8,Aug,Q3,2002-08,original,False,False,-292,False
+200209,2002-09-01,2002,9,Sep,Q3,2002-09,original,False,False,-291,False
+200210,2002-10-01,2002,10,Oct,Q4,2002-10,original,False,False,-290,False
+200211,2002-11-01,2002,11,Nov,Q4,2002-11,original,True,False,-289,False
+200212,2002-12-01,2002,12,Dec,Q4,2002-12,original,True,False,-288,False
+200301,2003-01-01,2003,1,Jan,Q1,2003-01,original,False,False,-287,False
+200302,2003-02-01,2003,2,Feb,Q1,2003-02,original,False,False,-286,False
+200303,2003-03-01,2003,3,Mar,Q1,2003-03,original,False,False,-285,False
+200304,2003-04-01,2003,4,Apr,Q2,2003-04,original,False,False,-284,False
+200305,2003-05-01,2003,5,May,Q2,2003-05,original,False,False,-283,False
+200306,2003-06-01,2003,6,Jun,Q2,2003-06,original,False,False,-282,False
+200307,2003-07-01,2003,7,Jul,Q3,2003-07,original,False,False,-281,False
+200308,2003-08-01,2003,8,Aug,Q3,2003-08,original,False,False,-280,False
+200309,2003-09-01,2003,9,Sep,Q3,2003-09,original,False,False,-279,False
+200310,2003-10-01,2003,10,Oct,Q4,2003-10,original,False,False,-278,False
+200311,2003-11-01,2003,11,Nov,Q4,2003-11,original,True,False,-277,False
+200312,2003-12-01,2003,12,Dec,Q4,2003-12,original,True,False,-276,False
+200401,2004-01-01,2004,1,Jan,Q1,2004-01,original,False,False,-275,False
+200402,2004-02-01,2004,2,Feb,Q1,2004-02,original,False,False,-274,False
+200403,2004-03-01,2004,3,Mar,Q1,2004-03,original,False,False,-273,False
+200404,2004-04-01,2004,4,Apr,Q2,2004-04,original,False,False,-272,False
+200405,2004-05-01,2004,5,May,Q2,2004-05,original,False,False,-271,False
+200406,2004-06-01,2004,6,Jun,Q2,2004-06,original,False,False,-270,False
+200407,2004-07-01,2004,7,Jul,Q3,2004-07,original,False,False,-269,False
+200408,2004-08-01,2004,8,Aug,Q3,2004-08,original,False,False,-268,False
+200409,2004-09-01,2004,9,Sep,Q3,2004-09,original,False,False,-267,False
+200410,2004-10-01,2004,10,Oct,Q4,2004-10,original,False,False,-266,False
+200411,2004-11-01,2004,11,Nov,Q4,2004-11,original,True,False,-265,False
+200412,2004-12-01,2004,12,Dec,Q4,2004-12,original,True,False,-264,False
+200501,2005-01-01,2005,1,Jan,Q1,2005-01,original,False,False,-263,False
+200502,2005-02-01,2005,2,Feb,Q1,2005-02,original,False,False,-262,False
+200503,2005-03-01,2005,3,Mar,Q1,2005-03,original,False,False,-261,False
+200504,2005-04-01,2005,4,Apr,Q2,2005-04,original,False,False,-260,False
+200505,2005-05-01,2005,5,May,Q2,2005-05,original,False,False,-259,False
+200506,2005-06-01,2005,6,Jun,Q2,2005-06,original,False,False,-258,False
+200507,2005-07-01,2005,7,Jul,Q3,2005-07,original,False,False,-257,False
+200508,2005-08-01,2005,8,Aug,Q3,2005-08,original,False,False,-256,False
+200509,2005-09-01,2005,9,Sep,Q3,2005-09,original,False,False,-255,False
+200510,2005-10-01,2005,10,Oct,Q4,2005-10,original,False,False,-254,False
+200511,2005-11-01,2005,11,Nov,Q4,2005-11,original,True,False,-253,False
+200512,2005-12-01,2005,12,Dec,Q4,2005-12,original,True,False,-252,False
+200601,2006-01-01,2006,1,Jan,Q1,2006-01,original,False,False,-251,False
+200602,2006-02-01,2006,2,Feb,Q1,2006-02,original,False,False,-250,False
+200603,2006-03-01,2006,3,Mar,Q1,2006-03,original,False,False,-249,False
+200604,2006-04-01,2006,4,Apr,Q2,2006-04,original,False,False,-248,False
+200605,2006-05-01,2006,5,May,Q2,2006-05,original,False,False,-247,False
+200606,2006-06-01,2006,6,Jun,Q2,2006-06,original,False,False,-246,False
+200607,2006-07-01,2006,7,Jul,Q3,2006-07,original,False,False,-245,False
+200608,2006-08-01,2006,8,Aug,Q3,2006-08,original,False,False,-244,False
+200609,2006-09-01,2006,9,Sep,Q3,2006-09,original,False,False,-243,False
+200610,2006-10-01,2006,10,Oct,Q4,2006-10,original,False,False,-242,False
+200611,2006-11-01,2006,11,Nov,Q4,2006-11,original,True,False,-241,False
+200612,2006-12-01,2006,12,Dec,Q4,2006-12,original,True,False,-240,False
+200701,2007-01-01,2007,1,Jan,Q1,2007-01,original,False,False,-239,False
+200702,2007-02-01,2007,2,Feb,Q1,2007-02,original,False,False,-238,False
+200703,2007-03-01,2007,3,Mar,Q1,2007-03,original,False,False,-237,False
+200704,2007-04-01,2007,4,Apr,Q2,2007-04,original,False,False,-236,False
+200705,2007-05-01,2007,5,May,Q2,2007-05,original,False,False,-235,False
+200706,2007-06-01,2007,6,Jun,Q2,2007-06,original,False,False,-234,False
+200707,2007-07-01,2007,7,Jul,Q3,2007-07,original,False,False,-233,False
+200708,2007-08-01,2007,8,Aug,Q3,2007-08,original,False,False,-232,False
+200709,2007-09-01,2007,9,Sep,Q3,2007-09,original,False,False,-231,False
+200710,2007-10-01,2007,10,Oct,Q4,2007-10,original,False,False,-230,False
+200711,2007-11-01,2007,11,Nov,Q4,2007-11,original,True,False,-229,False
+200712,2007-12-01,2007,12,Dec,Q4,2007-12,original,True,False,-228,False
+200801,2008-01-01,2008,1,Jan,Q1,2008-01,original,False,False,-227,False
+200802,2008-02-01,2008,2,Feb,Q1,2008-02,original,False,False,-226,False
+200803,2008-03-01,2008,3,Mar,Q1,2008-03,original,False,False,-225,False
+200804,2008-04-01,2008,4,Apr,Q2,2008-04,original,False,False,-224,False
+200805,2008-05-01,2008,5,May,Q2,2008-05,original,False,False,-223,False
+200806,2008-06-01,2008,6,Jun,Q2,2008-06,original,False,False,-222,False
+200807,2008-07-01,2008,7,Jul,Q3,2008-07,original,False,False,-221,False
+200808,2008-08-01,2008,8,Aug,Q3,2008-08,original,False,False,-220,False
+200809,2008-09-01,2008,9,Sep,Q3,2008-09,original,False,False,-219,False
+200810,2008-10-01,2008,10,Oct,Q4,2008-10,original,False,False,-218,False
+200811,2008-11-01,2008,11,Nov,Q4,2008-11,original,True,False,-217,False
+200812,2008-12-01,2008,12,Dec,Q4,2008-12,original,True,False,-216,False
+200901,2009-01-01,2009,1,Jan,Q1,2009-01,original,False,False,-215,False
+200902,2009-02-01,2009,2,Feb,Q1,2009-02,original,False,False,-214,False
+200903,2009-03-01,2009,3,Mar,Q1,2009-03,original,False,False,-213,False
+200904,2009-04-01,2009,4,Apr,Q2,2009-04,original,False,False,-212,False
+200905,2009-05-01,2009,5,May,Q2,2009-05,original,False,False,-211,False
+200906,2009-06-01,2009,6,Jun,Q2,2009-06,original,False,False,-210,False
+200907,2009-07-01,2009,7,Jul,Q3,2009-07,original,False,False,-209,False
+200908,2009-08-01,2009,8,Aug,Q3,2009-08,original,False,False,-208,False
+200909,2009-09-01,2009,9,Sep,Q3,2009-09,original,False,False,-207,False
+200910,2009-10-01,2009,10,Oct,Q4,2009-10,original,False,False,-206,False
+200911,2009-11-01,2009,11,Nov,Q4,2009-11,original,True,False,-205,False
+200912,2009-12-01,2009,12,Dec,Q4,2009-12,original,True,False,-204,False
+201001,2010-01-01,2010,1,Jan,Q1,2010-01,original,False,False,-203,False
+201002,2010-02-01,2010,2,Feb,Q1,2010-02,original,False,False,-202,False
+201003,2010-03-01,2010,3,Mar,Q1,2010-03,original,False,False,-201,False
+201004,2010-04-01,2010,4,Apr,Q2,2010-04,original,False,False,-200,False
+201005,2010-05-01,2010,5,May,Q2,2010-05,original,False,False,-199,False
+201006,2010-06-01,2010,6,Jun,Q2,2010-06,original,False,False,-198,False
+201007,2010-07-01,2010,7,Jul,Q3,2010-07,original,False,False,-197,False
+201008,2010-08-01,2010,8,Aug,Q3,2010-08,original,False,False,-196,False
+201009,2010-09-01,2010,9,Sep,Q3,2010-09,original,False,False,-195,False
+201010,2010-10-01,2010,10,Oct,Q4,2010-10,original,False,False,-194,False
+201011,2010-11-01,2010,11,Nov,Q4,2010-11,original,True,False,-193,False
+201012,2010-12-01,2010,12,Dec,Q4,2010-12,original,True,False,-192,False
+201101,2011-01-01,2011,1,Jan,Q1,2011-01,original,False,False,-191,False
+201102,2011-02-01,2011,2,Feb,Q1,2011-02,original,False,False,-190,False
+201103,2011-03-01,2011,3,Mar,Q1,2011-03,original,False,False,-189,False
+201104,2011-04-01,2011,4,Apr,Q2,2011-04,original,False,False,-188,False
+201105,2011-05-01,2011,5,May,Q2,2011-05,original,False,False,-187,False
+201106,2011-06-01,2011,6,Jun,Q2,2011-06,original,False,False,-186,False
+201107,2011-07-01,2011,7,Jul,Q3,2011-07,original,False,False,-185,False
+201108,2011-08-01,2011,8,Aug,Q3,2011-08,original,False,False,-184,False
+201109,2011-09-01,2011,9,Sep,Q3,2011-09,original,False,False,-183,False
+201110,2011-10-01,2011,10,Oct,Q4,2011-10,original,False,False,-182,False
+201111,2011-11-01,2011,11,Nov,Q4,2011-11,original,True,False,-181,False
+201112,2011-12-01,2011,12,Dec,Q4,2011-12,original,True,False,-180,False
+201201,2012-01-01,2012,1,Jan,Q1,2012-01,middle,False,False,-179,False
+201202,2012-02-01,2012,2,Feb,Q1,2012-02,middle,False,False,-178,False
+201203,2012-03-01,2012,3,Mar,Q1,2012-03,middle,False,False,-177,False
+201204,2012-04-01,2012,4,Apr,Q2,2012-04,middle,False,False,-176,False
+201205,2012-05-01,2012,5,May,Q2,2012-05,middle,False,False,-175,False
+201206,2012-06-01,2012,6,Jun,Q2,2012-06,middle,False,False,-174,False
+201207,2012-07-01,2012,7,Jul,Q3,2012-07,middle,False,False,-173,False
+201208,2012-08-01,2012,8,Aug,Q3,2012-08,middle,False,False,-172,False
+201209,2012-09-01,2012,9,Sep,Q3,2012-09,middle,False,False,-171,False
+201210,2012-10-01,2012,10,Oct,Q4,2012-10,middle,False,False,-170,False
+201211,2012-11-01,2012,11,Nov,Q4,2012-11,middle,True,False,-169,False
+201212,2012-12-01,2012,12,Dec,Q4,2012-12,middle,True,False,-168,False
+201301,2013-01-01,2013,1,Jan,Q1,2013-01,middle,False,False,-167,False
+201302,2013-02-01,2013,2,Feb,Q1,2013-02,middle,False,False,-166,False
+201303,2013-03-01,2013,3,Mar,Q1,2013-03,middle,False,False,-165,False
+201304,2013-04-01,2013,4,Apr,Q2,2013-04,middle,False,False,-164,False
+201305,2013-05-01,2013,5,May,Q2,2013-05,middle,False,False,-163,False
+201306,2013-06-01,2013,6,Jun,Q2,2013-06,middle,False,False,-162,False
+201307,2013-07-01,2013,7,Jul,Q3,2013-07,middle,False,False,-161,False
+201308,2013-08-01,2013,8,Aug,Q3,2013-08,middle,False,False,-160,False
+201309,2013-09-01,2013,9,Sep,Q3,2013-09,middle,False,False,-159,False
+201310,2013-10-01,2013,10,Oct,Q4,2013-10,middle,False,False,-158,False
+201311,2013-11-01,2013,11,Nov,Q4,2013-11,middle,True,False,-157,False
+201312,2013-12-01,2013,12,Dec,Q4,2013-12,middle,True,False,-156,False
+201401,2014-01-01,2014,1,Jan,Q1,2014-01,middle,False,False,-155,False
+201402,2014-02-01,2014,2,Feb,Q1,2014-02,middle,False,False,-154,False
+201403,2014-03-01,2014,3,Mar,Q1,2014-03,middle,False,False,-153,False
+201404,2014-04-01,2014,4,Apr,Q2,2014-04,middle,False,False,-152,False
+201405,2014-05-01,2014,5,May,Q2,2014-05,middle,False,False,-151,False
+201406,2014-06-01,2014,6,Jun,Q2,2014-06,middle,False,False,-150,False
+201407,2014-07-01,2014,7,Jul,Q3,2014-07,middle,False,False,-149,False
+201408,2014-08-01,2014,8,Aug,Q3,2014-08,middle,False,False,-148,False
+201409,2014-09-01,2014,9,Sep,Q3,2014-09,middle,False,False,-147,False
+201410,2014-10-01,2014,10,Oct,Q4,2014-10,middle,False,False,-146,False
+201411,2014-11-01,2014,11,Nov,Q4,2014-11,middle,True,False,-145,False
+201412,2014-12-01,2014,12,Dec,Q4,2014-12,middle,True,False,-144,False
+201501,2015-01-01,2015,1,Jan,Q1,2015-01,middle,False,False,-143,False
+201502,2015-02-01,2015,2,Feb,Q1,2015-02,middle,False,False,-142,False
+201503,2015-03-01,2015,3,Mar,Q1,2015-03,middle,False,False,-141,False
+201504,2015-04-01,2015,4,Apr,Q2,2015-04,middle,False,False,-140,False
+201505,2015-05-01,2015,5,May,Q2,2015-05,middle,False,False,-139,False
+201506,2015-06-01,2015,6,Jun,Q2,2015-06,middle,False,False,-138,False
+201507,2015-07-01,2015,7,Jul,Q3,2015-07,middle,False,False,-137,False
+201508,2015-08-01,2015,8,Aug,Q3,2015-08,middle,False,False,-136,False
+201509,2015-09-01,2015,9,Sep,Q3,2015-09,middle,False,False,-135,False
+201510,2015-10-01,2015,10,Oct,Q4,2015-10,middle,False,False,-134,False
+201511,2015-11-01,2015,11,Nov,Q4,2015-11,middle,True,False,-133,False
+201512,2015-12-01,2015,12,Dec,Q4,2015-12,middle,True,False,-132,False
+201601,2016-01-01,2016,1,Jan,Q1,2016-01,middle,False,False,-131,False
+201602,2016-02-01,2016,2,Feb,Q1,2016-02,middle,False,False,-130,False
+201603,2016-03-01,2016,3,Mar,Q1,2016-03,middle,False,False,-129,False
+201604,2016-04-01,2016,4,Apr,Q2,2016-04,middle,False,False,-128,False
+201605,2016-05-01,2016,5,May,Q2,2016-05,middle,False,False,-127,False
+201606,2016-06-01,2016,6,Jun,Q2,2016-06,middle,False,False,-126,False
+201607,2016-07-01,2016,7,Jul,Q3,2016-07,middle,False,False,-125,False
+201608,2016-08-01,2016,8,Aug,Q3,2016-08,middle,False,False,-124,False
+201609,2016-09-01,2016,9,Sep,Q3,2016-09,middle,False,False,-123,False
+201610,2016-10-01,2016,10,Oct,Q4,2016-10,middle,False,False,-122,False
+201611,2016-11-01,2016,11,Nov,Q4,2016-11,middle,True,False,-121,False
+201612,2016-12-01,2016,12,Dec,Q4,2016-12,middle,True,False,-120,False
+201701,2017-01-01,2017,1,Jan,Q1,2017-01,middle,False,False,-119,False
+201702,2017-02-01,2017,2,Feb,Q1,2017-02,middle,False,False,-118,False
+201703,2017-03-01,2017,3,Mar,Q1,2017-03,middle,False,False,-117,False
+201704,2017-04-01,2017,4,Apr,Q2,2017-04,middle,False,False,-116,False
+201705,2017-05-01,2017,5,May,Q2,2017-05,middle,False,False,-115,False
+201706,2017-06-01,2017,6,Jun,Q2,2017-06,middle,False,False,-114,False
+201707,2017-07-01,2017,7,Jul,Q3,2017-07,middle,False,False,-113,False
+201708,2017-08-01,2017,8,Aug,Q3,2017-08,middle,False,False,-112,False
+201709,2017-09-01,2017,9,Sep,Q3,2017-09,middle,False,False,-111,False
+201710,2017-10-01,2017,10,Oct,Q4,2017-10,middle,False,False,-110,False
+201711,2017-11-01,2017,11,Nov,Q4,2017-11,middle,True,False,-109,False
+201712,2017-12-01,2017,12,Dec,Q4,2017-12,middle,True,False,-108,False
+201801,2018-01-01,2018,1,Jan,Q1,2018-01,middle,False,False,-107,False
+201802,2018-02-01,2018,2,Feb,Q1,2018-02,middle,False,False,-106,False
+201803,2018-03-01,2018,3,Mar,Q1,2018-03,middle,False,False,-105,False
+201804,2018-04-01,2018,4,Apr,Q2,2018-04,middle,False,False,-104,False
+201805,2018-05-01,2018,5,May,Q2,2018-05,middle,False,False,-103,False
+201806,2018-06-01,2018,6,Jun,Q2,2018-06,middle,False,False,-102,False
+201807,2018-07-01,2018,7,Jul,Q3,2018-07,middle,False,False,-101,False
+201808,2018-08-01,2018,8,Aug,Q3,2018-08,middle,False,False,-100,False
+201809,2018-09-01,2018,9,Sep,Q3,2018-09,middle,False,False,-99,False
+201810,2018-10-01,2018,10,Oct,Q4,2018-10,middle,False,False,-98,False
+201811,2018-11-01,2018,11,Nov,Q4,2018-11,middle,True,False,-97,False
+201812,2018-12-01,2018,12,Dec,Q4,2018-12,middle,True,False,-96,False
+201901,2019-01-01,2019,1,Jan,Q1,2019-01,middle,False,False,-95,False
+201902,2019-02-01,2019,2,Feb,Q1,2019-02,middle,False,False,-94,False
+201903,2019-03-01,2019,3,Mar,Q1,2019-03,middle,False,False,-93,False
+201904,2019-04-01,2019,4,Apr,Q2,2019-04,middle,False,False,-92,False
+201905,2019-05-01,2019,5,May,Q2,2019-05,middle,False,False,-91,False
+201906,2019-06-01,2019,6,Jun,Q2,2019-06,middle,False,False,-90,False
+201907,2019-07-01,2019,7,Jul,Q3,2019-07,middle,False,False,-89,False
+201908,2019-08-01,2019,8,Aug,Q3,2019-08,middle,False,False,-88,False
+201909,2019-09-01,2019,9,Sep,Q3,2019-09,middle,False,False,-87,False
+201910,2019-10-01,2019,10,Oct,Q4,2019-10,middle,False,False,-86,False
+201911,2019-11-01,2019,11,Nov,Q4,2019-11,middle,True,False,-85,False
+201912,2019-12-01,2019,12,Dec,Q4,2019-12,middle,True,False,-84,False
+202001,2020-01-01,2020,1,Jan,Q1,2020-01,middle,False,False,-83,True
+202002,2020-02-01,2020,2,Feb,Q1,2020-02,middle,False,False,-82,True
+202003,2020-03-01,2020,3,Mar,Q1,2020-03,middle,False,False,-81,True
+202004,2020-04-01,2020,4,Apr,Q2,2020-04,middle,False,False,-80,True
+202005,2020-05-01,2020,5,May,Q2,2020-05,middle,False,False,-79,True
+202006,2020-06-01,2020,6,Jun,Q2,2020-06,middle,False,False,-78,True
+202007,2020-07-01,2020,7,Jul,Q3,2020-07,middle,False,False,-77,True
+202008,2020-08-01,2020,8,Aug,Q3,2020-08,middle,False,False,-76,True
+202009,2020-09-01,2020,9,Sep,Q3,2020-09,middle,False,False,-75,True
+202010,2020-10-01,2020,10,Oct,Q4,2020-10,middle,False,False,-74,True
+202011,2020-11-01,2020,11,Nov,Q4,2020-11,middle,True,False,-73,True
+202012,2020-12-01,2020,12,Dec,Q4,2020-12,middle,True,False,-72,True
+202101,2021-01-01,2021,1,Jan,Q1,2021-01,middle,False,False,-71,True
+202102,2021-02-01,2021,2,Feb,Q1,2021-02,middle,False,False,-70,True
+202103,2021-03-01,2021,3,Mar,Q1,2021-03,middle,False,False,-69,True
+202104,2021-04-01,2021,4,Apr,Q2,2021-04,middle,False,False,-68,True
+202105,2021-05-01,2021,5,May,Q2,2021-05,middle,False,False,-67,True
+202106,2021-06-01,2021,6,Jun,Q2,2021-06,middle,False,False,-66,True
+202107,2021-07-01,2021,7,Jul,Q3,2021-07,middle,False,False,-65,True
+202108,2021-08-01,2021,8,Aug,Q3,2021-08,middle,False,False,-64,True
+202109,2021-09-01,2021,9,Sep,Q3,2021-09,middle,False,False,-63,True
+202110,2021-10-01,2021,10,Oct,Q4,2021-10,middle,False,False,-62,True
+202111,2021-11-01,2021,11,Nov,Q4,2021-11,middle,True,False,-61,True
+202112,2021-12-01,2021,12,Dec,Q4,2021-12,middle,True,False,-60,True
+202201,2022-01-01,2022,1,Jan,Q1,2022-01,middle,False,False,-59,False
+202202,2022-02-01,2022,2,Feb,Q1,2022-02,middle,False,False,-58,False
+202203,2022-03-01,2022,3,Mar,Q1,2022-03,middle,False,False,-57,False
+202204,2022-04-01,2022,4,Apr,Q2,2022-04,middle,False,False,-56,False
+202205,2022-05-01,2022,5,May,Q2,2022-05,middle,False,False,-55,False
+202206,2022-06-01,2022,6,Jun,Q2,2022-06,middle,False,False,-54,False
+202207,2022-07-01,2022,7,Jul,Q3,2022-07,middle,False,False,-53,False
+202208,2022-08-01,2022,8,Aug,Q3,2022-08,middle,False,False,-52,False
+202209,2022-09-01,2022,9,Sep,Q3,2022-09,middle,False,False,-51,False
+202210,2022-10-01,2022,10,Oct,Q4,2022-10,middle,False,False,-50,False
+202211,2022-11-01,2022,11,Nov,Q4,2022-11,middle,True,False,-49,False
+202212,2022-12-01,2022,12,Dec,Q4,2022-12,middle,True,False,-48,False
+202301,2023-01-01,2023,1,Jan,Q1,2023-01,revival,False,False,-47,False
+202302,2023-02-01,2023,2,Feb,Q1,2023-02,revival,False,False,-46,False
+202303,2023-03-01,2023,3,Mar,Q1,2023-03,revival,False,False,-45,False
+202304,2023-04-01,2023,4,Apr,Q2,2023-04,revival,False,False,-44,False
+202305,2023-05-01,2023,5,May,Q2,2023-05,revival,False,False,-43,False
+202306,2023-06-01,2023,6,Jun,Q2,2023-06,revival,False,False,-42,False
+202307,2023-07-01,2023,7,Jul,Q3,2023-07,revival,False,False,-41,False
+202308,2023-08-01,2023,8,Aug,Q3,2023-08,revival,False,False,-40,False
+202309,2023-09-01,2023,9,Sep,Q3,2023-09,revival,False,False,-39,False
+202310,2023-10-01,2023,10,Oct,Q4,2023-10,revival,False,False,-38,False
+202311,2023-11-01,2023,11,Nov,Q4,2023-11,revival,True,False,-37,False
+202312,2023-12-01,2023,12,Dec,Q4,2023-12,revival,True,False,-36,False
+202401,2024-01-01,2024,1,Jan,Q1,2024-01,revival,False,False,-35,False
+202402,2024-02-01,2024,2,Feb,Q1,2024-02,revival,False,False,-34,False
+202403,2024-03-01,2024,3,Mar,Q1,2024-03,revival,False,False,-33,False
+202404,2024-04-01,2024,4,Apr,Q2,2024-04,revival,False,False,-32,False
+202405,2024-05-01,2024,5,May,Q2,2024-05,revival,False,False,-31,False
+202406,2024-06-01,2024,6,Jun,Q2,2024-06,revival,False,False,-30,False
+202407,2024-07-01,2024,7,Jul,Q3,2024-07,revival,False,False,-29,False
+202408,2024-08-01,2024,8,Aug,Q3,2024-08,revival,False,False,-28,False
+202409,2024-09-01,2024,9,Sep,Q3,2024-09,revival,False,False,-27,False
+202410,2024-10-01,2024,10,Oct,Q4,2024-10,revival,False,False,-26,False
+202411,2024-11-01,2024,11,Nov,Q4,2024-11,revival,True,False,-25,False
+202412,2024-12-01,2024,12,Dec,Q4,2024-12,revival,True,False,-24,False
+202501,2025-01-01,2025,1,Jan,Q1,2025-01,revival,False,False,-23,False
+202502,2025-02-01,2025,2,Feb,Q1,2025-02,revival,False,False,-22,False
+202503,2025-03-01,2025,3,Mar,Q1,2025-03,revival,False,False,-21,False
+202504,2025-04-01,2025,4,Apr,Q2,2025-04,revival,False,False,-20,False
+202505,2025-05-01,2025,5,May,Q2,2025-05,revival,False,False,-19,False
+202506,2025-06-01,2025,6,Jun,Q2,2025-06,revival,False,False,-18,False
+202507,2025-07-01,2025,7,Jul,Q3,2025-07,revival,False,False,-17,False
+202508,2025-08-01,2025,8,Aug,Q3,2025-08,revival,False,False,-16,False
+202509,2025-09-01,2025,9,Sep,Q3,2025-09,revival,False,False,-15,False
+202510,2025-10-01,2025,10,Oct,Q4,2025-10,revival,False,False,-14,False
+202511,2025-11-01,2025,11,Nov,Q4,2025-11,revival,True,False,-13,False
+202512,2025-12-01,2025,12,Dec,Q4,2025-12,revival,True,False,-12,False
+202601,2026-01-01,2026,1,Jan,Q1,2026-01,revival,False,False,-11,False
+202602,2026-02-01,2026,2,Feb,Q1,2026-02,revival,False,False,-10,False
+202603,2026-03-01,2026,3,Mar,Q1,2026-03,revival,False,False,-9,False
+202604,2026-04-01,2026,4,Apr,Q2,2026-04,revival,False,False,-8,False
+202605,2026-05-01,2026,5,May,Q2,2026-05,revival,False,False,-7,False
+202606,2026-06-01,2026,6,Jun,Q2,2026-06,revival,False,False,-6,False
+202607,2026-07-01,2026,7,Jul,Q3,2026-07,revival,False,False,-5,False
+202608,2026-08-01,2026,8,Aug,Q3,2026-08,revival,False,False,-4,False
+202609,2026-09-01,2026,9,Sep,Q3,2026-09,revival,False,False,-3,False
+202610,2026-10-01,2026,10,Oct,Q4,2026-10,revival,False,False,-2,False
+202611,2026-11-01,2026,11,Nov,Q4,2026-11,revival,True,False,-1,False
+202612,2026-12-01,2026,12,Dec,Q4,2026-12,revival,True,True,0,False
+202701,2027-01-01,2027,1,Jan,Q1,2027-01,revival,False,True,1,False
+202702,2027-02-01,2027,2,Feb,Q1,2027-02,revival,False,True,2,False
+202703,2027-03-01,2027,3,Mar,Q1,2027-03,revival,False,True,3,False
+202704,2027-04-01,2027,4,Apr,Q2,2027-04,revival,False,True,4,False
+202705,2027-05-01,2027,5,May,Q2,2027-05,revival,False,True,5,False
+202706,2027-06-01,2027,6,Jun,Q2,2027-06,revival,False,True,6,False
+202707,2027-07-01,2027,7,Jul,Q3,2027-07,revival,False,True,7,False
+202708,2027-08-01,2027,8,Aug,Q3,2027-08,revival,False,True,8,False
+202709,2027-09-01,2027,9,Sep,Q3,2027-09,revival,False,True,9,False
+202710,2027-10-01,2027,10,Oct,Q4,2027-10,revival,False,True,10,False
+202711,2027-11-01,2027,11,Nov,Q4,2027-11,revival,True,True,11,False
+202712,2027-12-01,2027,12,Dec,Q4,2027-12,revival,True,True,12,False
+202801,2028-01-01,2028,1,Jan,Q1,2028-01,before the films,False,True,13,False
+202802,2028-02-01,2028,2,Feb,Q1,2028-02,before the films,False,True,14,False
+202803,2028-03-01,2028,3,Mar,Q1,2028-03,before the films,False,True,15,False
+202804,2028-04-01,2028,4,Apr,Q2,2028-04,before the films,False,True,16,False
+202805,2028-05-01,2028,5,May,Q2,2028-05,before the films,False,True,17,False
+202806,2028-06-01,2028,6,Jun,Q2,2028-06,before the films,False,True,18,False
+202807,2028-07-01,2028,7,Jul,Q3,2028-07,before the films,False,True,19,False
+202808,2028-08-01,2028,8,Aug,Q3,2028-08,before the films,False,True,20,False
+202809,2028-09-01,2028,9,Sep,Q3,2028-09,before the films,False,True,21,False
+202810,2028-10-01,2028,10,Oct,Q4,2028-10,before the films,False,True,22,False
+202811,2028-11-01,2028,11,Nov,Q4,2028-11,before the films,True,True,23,False
+202812,2028-12-01,2028,12,Dec,Q4,2028-12,before the films,True,True,24,False

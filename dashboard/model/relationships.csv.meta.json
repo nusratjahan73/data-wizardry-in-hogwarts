@@ -1,0 +1,16 @@
+{
+  "file": "relationships.csv",
+  "collected_at_utc": "2026-09-03T07:13:24+00:00",
+  "size_bytes": 627,
+  "table": "relationships",
+  "grain": "relationship",
+  "rows": 8,
+  "columns": [
+    "from_table",
+    "from_column",
+    "to_table",
+    "to_column",
+    "cardinality",
+    "cross_filter"
+  ]
+}

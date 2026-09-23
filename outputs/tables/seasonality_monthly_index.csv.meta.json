@@ -1,0 +1,13 @@
+{
+  "file": "seasonality_monthly_index.csv",
+  "collected_at_utc": "2026-09-03T07:52:18+00:00",
+  "size_bytes": 1890,
+  "rows": 36,
+  "columns": [
+    "series",
+    "month_number",
+    "month_name",
+    "seasonal_index"
+  ],
+  "note": "100 means an average month for that series"
+}

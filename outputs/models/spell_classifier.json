@@ -1,0 +1,33 @@
+{
+  "task": "predict spell category from its free-text effect description",
+  "not_a_sentiment_model": true,
+  "features": "char_wb TF-IDF, 2-5 grams, min_df=2, sublinear",
+  "model": "logistic regression, balanced class weights",
+  "classes": [
+    "Charm",
+    "Conjuration",
+    "Curse",
+    "Dark charm",
+    "Hex",
+    "Jinx",
+    "Spell",
+    "Transfiguration"
+  ],
+  "class_sizes": {
+    "Charm": 181,
+    "Jinx": 31,
+    "Transfiguration": 29,
+    "Curse": 25,
+    "Hex": 16,
+    "Dark charm": 12,
+    "Conjuration": 11,
+    "Spell": 10
+  },
+  "accuracy": 0.5111111111111111,
+  "baseline_accuracy": 0.5746031746031746,
+  "macro_f1": 0.3809880830344744,
+  "baseline_macro_f1": 0.09122983870967742,
+  "observations": 315,
+  "folds": 5,
+  "random_seed": 42
+}

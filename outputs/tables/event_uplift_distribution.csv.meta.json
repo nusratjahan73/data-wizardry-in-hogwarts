@@ -1,0 +1,16 @@
+{
+  "file": "event_uplift_distribution.csv",
+  "collected_at_utc": "2026-09-03T07:13:19+00:00",
+  "size_bytes": 250,
+  "rows": 2,
+  "columns": [
+    "event_kind",
+    "events",
+    "peak_multiple_min",
+    "peak_multiple_median",
+    "peak_multiple_max",
+    "window_multiple_median",
+    "residual_multiple_median",
+    "step_multiple_median"
+  ]
+}

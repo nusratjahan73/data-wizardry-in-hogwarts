@@ -1,0 +1,4 @@
+scenario,premiere_peak_weekly_attention,peak_multiple_vs_last_year_mean,gift_window_mean_weekly,january_window_mean_weekly,january_vs_gift_window_ratio,twelve_month_total_after_premiere,uplift_vs_counterfactual,assumed_peak_multiple,assumed_sustained_multiple,assumed_decay_weeks
+low,219703.0,1.57,143949.0,173909.0,1.21,7216221.0,1.18,1.33,1.15,8
+central,342018.0,2.45,148397.0,270348.0,1.82,10563674.0,1.73,2.07,1.6,14
+high,534695.0,3.82,155370.0,425437.0,2.74,16646421.0,2.72,3.23,2.4,22

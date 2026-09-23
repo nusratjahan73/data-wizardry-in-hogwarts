@@ -1,0 +1,21 @@
+{
+  "file": "retail_recommendation.csv",
+  "collected_at_utc": "2026-09-03T07:14:59+00:00",
+  "size_bytes": 427,
+  "rows": 1,
+  "columns": [
+    "recommended_buy_cad_retail",
+    "recommended_units",
+    "central_season_demand_cad",
+    "low_season_demand_cad",
+    "high_season_demand_cad",
+    "safety_stock_cad",
+    "service_level_used",
+    "safety_stock_at_assumed_95pc_cad",
+    "service_level_assumed",
+    "safety_stock_difference_cad",
+    "january_reserve_share",
+    "january_order_by_imported",
+    "january_share_of_incremental_sales"
+  ]
+}

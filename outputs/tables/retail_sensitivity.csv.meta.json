@@ -1,0 +1,14 @@
+{
+  "file": "retail_sensitivity.csv",
+  "collected_at_utc": "2026-09-03T07:14:59+00:00",
+  "size_bytes": 407,
+  "rows": 5,
+  "columns": [
+    "attention_pass_through",
+    "season_sales_low_cad",
+    "season_sales_central_cad",
+    "season_sales_high_cad",
+    "incremental_vs_baseline_central_cad",
+    "uplift_vs_baseline_central"
+  ]
+}

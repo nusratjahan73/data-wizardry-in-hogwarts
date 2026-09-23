@@ -1,0 +1,9 @@
+class,precision,recall,f1-score,support
+Charm,0.754,0.575,0.652,181.0
+Conjuration,0.412,0.636,0.5,11.0
+Curse,0.31,0.36,0.333,25.0
+Dark charm,0.2,0.25,0.222,12.0
+Hex,0.263,0.312,0.286,16.0
+Jinx,0.175,0.323,0.227,31.0
+Spell,0.143,0.1,0.118,10.0
+Transfiguration,0.667,0.759,0.71,29.0

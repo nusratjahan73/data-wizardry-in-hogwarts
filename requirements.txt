@@ -1,0 +1,52 @@
+# Data Wizardry in Hogwarts - pinned environment
+# Built and verified on Python 3.14.2, Windows 11, September 2026.
+# Every version below is the one actually installed and exercised by the build,
+# read back from pip rather than typed from memory. The one package the brief
+# asks for that is not here is recorded at the bottom with its reason.
+
+# --- core ---
+pandas==3.0.3
+numpy==2.4.6
+requests==2.34.2
+PyYAML==6.0.3
+python-dotenv==1.2.3
+tqdm==4.70.0
+
+# --- visualisation ---
+matplotlib==3.10.9
+seaborn==0.13.2
+
+# --- modelling ---
+scikit-learn==1.9.0
+scipy==1.17.1
+statsmodels==0.15.0
+prophet==1.4.0
+
+# --- text and graph ---
+nltk==3.10.3
+vaderSentiment==3.3.2
+networkx==3.6.1
+
+# --- collection ---
+praw==8.0.3
+trendspy==0.1.6
+
+# --- big data ---
+dask==2026.8.0
+pyarrow==25.0.1
+
+# --- documents ---
+python-docx==1.2.0
+
+# --- quality ---
+pytest==9.1.1
+ruff==0.16.5
+
+# --- deliberately absent ---
+# pyspark : pip installs cleanly (4.2.0) but needs a Java runtime, and no JVM is
+#           present on the build machine. Section 13 permits "PySpark or Dask",
+#           so module 7 uses Dask as the out of core engine. src/bigdata keeps a
+#           PySpark code path behind an availability check so the comparison can
+#           be rerun on a machine that has Java, and docs/word/methods.docx records this.
+# plotly  : not needed. The dashboard is Power BI and every figure in the report
+#           is matplotlib. Listing an unused package would overstate the stack.

@@ -1,0 +1,20 @@
+{
+  "file": "demand_scenarios.csv",
+  "collected_at_utc": "2026-09-03T07:14:47+00:00",
+  "size_bytes": 495,
+  "rows": 3,
+  "columns": [
+    "scenario",
+    "premiere_peak_weekly_attention",
+    "peak_multiple_vs_last_year_mean",
+    "gift_window_mean_weekly",
+    "january_window_mean_weekly",
+    "january_vs_gift_window_ratio",
+    "twelve_month_total_after_premiere",
+    "uplift_vs_counterfactual",
+    "assumed_peak_multiple",
+    "assumed_sustained_multiple",
+    "assumed_decay_weeks"
+  ],
+  "note": "the three scenarios module 6 converts into an order quantity"
+}

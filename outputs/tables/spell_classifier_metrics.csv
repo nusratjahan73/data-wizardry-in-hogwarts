@@ -1,0 +1,3 @@
+model,accuracy,macro_f1,classes,observations,evaluation
+character n-gram TF-IDF + logistic regression,0.5111,0.381,8,315,5-fold stratified cross validation
+majority class baseline (always predicts the commonest class),0.5746,0.0912,8,315,5-fold stratified cross validation

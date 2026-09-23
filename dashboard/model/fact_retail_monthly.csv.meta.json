@@ -1,0 +1,17 @@
+{
+  "file": "fact_retail_monthly.csv",
+  "collected_at_utc": "2026-09-03T07:13:24+00:00",
+  "size_bytes": 901136,
+  "table": "fact_retail_monthly",
+  "grain": "naics_code + month",
+  "rows": 9015,
+  "columns": [
+    "naics_code",
+    "naics_name",
+    "sales_thousands_cad",
+    "sales_thousands_cad_real",
+    "is_focus_category",
+    "is_total_retail",
+    "date_key"
+  ]
+}

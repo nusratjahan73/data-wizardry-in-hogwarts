@@ -1,0 +1,16 @@
+{
+  "file": "theme_part_profile.csv",
+  "collected_at_utc": "2026-09-03T07:16:23+00:00",
+  "size_bytes": 81139,
+  "rows": 2315,
+  "columns": [
+    "theme_name",
+    "year",
+    "total_parts",
+    "distinct_parts",
+    "distinct_colours",
+    "spare_parts",
+    "rows"
+  ],
+  "note": "part usage per theme and year; consumed by module 4 clustering"
+}

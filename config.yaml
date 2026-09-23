@@ -1,0 +1,368 @@
+# Data Wizardry in Hogwarts - central configuration
+# Every date, path, threshold and parameter used anywhere in this project lives
+# in this file. No script may hard code any of these values.
+
+project:
+  name: data-wizardry-in-hogwarts
+  reporting_currency: CAD          # section 20, client is Canadian
+  random_seed: 42
+  user_agent: "data-wizardry-in-hogwarts/1.0 (MBAI student project; contact via repository)"
+
+dates:
+  premiere: 2026-12-25             # section 5, the fixed event the project plans around
+  pageviews_start: 2015-07-01      # Wikimedia daily article data begins here
+  pageviews_end: 2026-09-01        # brief issue date, sources verified
+  forecast_horizon_months: 12      # at least twelve months past the premiere
+  gift_season_start: 2026-11-01
+  january_position_end: 2027-01-31
+
+paths:
+  data_raw: data/raw
+  data_cleaned: data/cleaned
+  data_processed: data/processed
+  data_external: data/external
+  images: images
+  figures: images/figures
+  images_dashboard: images/dashboard
+  images_infographic: images/infographic
+  outputs_tables: outputs/tables
+  outputs_models: outputs/models
+  docs: docs
+  logs: logs
+  dashboard: dashboard
+  infographic: infographic
+
+sources:
+  potterdb:
+    base_url: https://api.potterdb.com/v1
+    # Chapters are not a top level endpoint. They hang off each book as
+    # /v1/books/<slug>/chapters, so they are collected separately. Verified
+    # 2 September 2026; the flat /v1/chapters path returns 404.
+    endpoints: [books, characters, movies, spells, potions]
+    page_size: 100                 # 100 is accepted and cuts 217 calls to 55
+    rate_limit_per_hour: 900       # appendix A, 900/hour = 15/minute
+    min_seconds_between_calls: 4.0
+  hpapi:
+    base_url: https://hp-api.onrender.com/api
+    endpoints: [characters, spells]
+  pageviews:
+    base_url: https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article
+    project: en.wikipedia
+    access: all-access
+    agent: all-agents
+    granularity: daily
+    min_seconds_between_calls: 0.2
+    # Wikipedia article titles, grouped by what they measure. Titles must match
+    # the live article exactly; a redirect returns no data rather than an error,
+    # so any article returning nothing is logged as a data issue and dropped
+    # rather than silently treated as zero attention.
+    articles:
+      franchise:
+        - Harry_Potter
+        - Wizarding_World
+        - Harry_Potter_(film_series)
+        - Fantastic_Beasts
+      series:
+        - Harry_Potter_(TV_series)
+        - HBO_Max
+      films:
+        - Harry_Potter_and_the_Philosopher's_Stone_(film)
+        - Harry_Potter_and_the_Chamber_of_Secrets_(film)
+        - Harry_Potter_and_the_Prisoner_of_Azkaban_(film)
+        - Harry_Potter_and_the_Goblet_of_Fire_(film)
+        - Harry_Potter_and_the_Order_of_the_Phoenix_(film)
+        - Harry_Potter_and_the_Half-Blood_Prince_(film)
+        - Harry_Potter_and_the_Deathly_Hallows_–_Part_1
+        - Harry_Potter_and_the_Deathly_Hallows_–_Part_2
+        - Fantastic_Beasts_and_Where_to_Find_Them_(film)
+        - Fantastic_Beasts:_The_Crimes_of_Grindelwald
+        - Fantastic_Beasts:_The_Secrets_of_Dumbledore
+      characters:
+        - Harry_Potter_(character)
+        - Hermione_Granger
+        - Ron_Weasley
+        - Albus_Dumbledore
+        - Severus_Snape
+        - Lord_Voldemort
+        - Draco_Malfoy
+        - Rubeus_Hagrid
+        - Sirius_Black
+        - Minerva_McGonagall
+        - Bellatrix_Lestrange
+        - Luna_Lovegood
+        - Neville_Longbottom
+        - Ginny_Weasley
+        - Dobby_(Harry_Potter)
+        - Remus_Lupin
+      control:
+        # Comparison franchises, so a general seasonal rise in attention is not
+        # mistaken for a franchise specific one. Section 6, keyword group D.
+        - The_Lord_of_the_Rings
+        - Star_Wars
+        - The_Chronicles_of_Narnia
+        - Percy_Jackson
+    # Wikipedia article -> PotterDB character slug. Written out by hand because
+    # the two sources name people differently and no automatic rule joins them
+    # safely. Wikipedia uses the common name ("Ron Weasley", "Lord Voldemort");
+    # PotterDB uses the canonical one ("Ronald Bilius Weasley", "Tom Marvolo
+    # Riddle"). Matching on a normalised name misses nine of the sixteen, and
+    # loosening the match until they join starts pairing "Sirius Black" with his
+    # grandfather, who is a different character in a different house. Sixteen
+    # explicit lines that a reader can check beat a clever rule that is wrong in
+    # ways nobody notices. The slug is used rather than the name because it is
+    # ASCII and stable, where several names carry an accented "née".
+    character_article_to_potterdb_slug:
+      Harry_Potter_(character): harry-potter
+      Hermione_Granger: hermione-granger
+      Ron_Weasley: ronald-weasley
+      Albus_Dumbledore: albus-dumbledore
+      Severus_Snape: severus-snape
+      Lord_Voldemort: tom-riddle
+      Draco_Malfoy: draco-malfoy
+      Rubeus_Hagrid: rubeus-hagrid
+      Sirius_Black: sirius-black          # Sirius Black III, Harry's godfather
+      Minerva_McGonagall: minerva-mcgonagall
+      Bellatrix_Lestrange: bellatrix-lestrange
+      Luna_Lovegood: luna-lovegood
+      Neville_Longbottom: neville-longbottom
+      Ginny_Weasley: ginevra-weasley
+      Dobby_(Harry_Potter): dobby
+      Remus_Lupin: remus-lupin
+  trends:
+    library: trendspy               # section 6, pytrends is archived and broken
+    geos: ["", "CA"]                # worldwide and Canada
+    timeframe: "2004-01-01 2026-09-01"
+    request_delay_seconds: 12       # Trends throttles hard; slow is the only way through
+    max_terms_per_group: 5          # a Trends comparison accepts no more than five
+    anchor_term: "harry potter"     # present in every group so groups are comparable
+    # Google chooses the granularity from the length of the window, and does not
+    # let the caller ask. A request spanning more than about five years comes
+    # back monthly. Verified 2 September 2026: 2004-01-01 to 2026-09-01 returned
+    # 273 monthly points, not weeks. So the series is pulled twice.
+    #   full range  -> monthly, the long history the seasonality work needs
+    #   short windows -> weekly, the granularity section 6 asks for
+    # The windows overlap so the cleaning step can rescale them onto one series
+    # using the ratio of the overlapping months, rather than pretending that a
+    # value of 100 in one window means the same as 100 in the next.
+    weekly_window_years: 4
+    weekly_window_step_years: 3     # a four year window every three years = one year of overlap
+    weekly_groups:                  # only the groups the timing argument needs
+      - a_franchise
+      - b_product_intent
+    keyword_groups:
+      # Each group is scaled relative to its own maximum, so the same anchor term
+      # appears in all four. Without it, a value of 60 in group A and a value of
+      # 60 in group C would mean different things and could not be compared.
+      a_franchise:
+        - harry potter
+        - wizarding world
+        - harry potter tv series
+        - hbo max
+      b_product_intent:
+        - harry potter
+        - harry potter gift
+        - harry potter book set
+        - harry potter costume
+        - harry potter lego
+      c_characters:
+        - harry potter
+        - hermione granger
+        - severus snape
+        - draco malfoy
+        - dumbledore
+      d_control:
+        # Comparison franchises. If all five rise together in November, the rise
+        # is Christmas, not the wizarding revival.
+        - harry potter
+        - lord of the rings
+        - star wars
+        - percy jackson
+        - narnia
+  statcan:
+    base_url: https://www150.statcan.gc.ca/t1/wds/rest
+    # Verified against the live cube list on 2 September 2026. The brief's
+    # appendix warned that one retail table was archived, and it is: 20-10-0008
+    # stopped in December 2022. It is still downloadable and it is the only way
+    # to reach back beyond 2017, so both tables are collected and the cleaning
+    # step chains them on their 2017 to 2022 overlap. Both carry identical
+    # geography and NAICS dimensions, which is what makes the chain defensible.
+    tables:
+      retail_current:
+        product_id: 20100056
+        table_number: "20-10-0056-01"
+        title: Monthly retail trade sales by province and territory
+        status: active
+        coverage: 2017-01 to 2026-06
+      retail_historical:
+        product_id: 20100008
+        table_number: "20-10-0008-01"
+        title: Retail trade sales by province and territory
+        status: archived December 2022, retained for history before 2017
+        coverage: 1991-01 to 2022-12
+      cpi:
+        product_id: 18100004
+        table_number: "18-10-0004-01"
+        title: Consumer Price Index, monthly, not seasonally adjusted
+        status: active
+        coverage: 1914-01 to 2026-07
+        # Fetched as a single series rather than as the whole table. The bulk
+        # download is 162MB covering 30 geographies and 359 product groups, of
+        # which this project uses one combination: Canada, All-items. That is
+        # 1,351 rows, or 0.12 per cent of what the bulk file contains.
+        #
+        # The coordinate addresses one cell of the cube. Positions are
+        # Geography then Products, and the trailing zeros pad it to the ten
+        # dimensions the API always expects. Member 2 is Canada and member 2 is
+        # All-items, both read from the cube metadata rather than guessed.
+        #
+        # The trade is real: the bulk file needs no identifier and cannot go
+        # stale, while this coordinate breaks if Statistics Canada renumbers a
+        # member. 05_statcan.py falls back to the bulk download if the series
+        # request fails, so a renumbering costs disk space rather than the run.
+        mode: series
+        coordinate: "2.2.0.0.0.0.0.0.0.0"
+        geography_member: Canada
+        product_member: All-items
+        max_periods: 1500
+    geography: Canada
+    # NAICS 459A is the closest published match to a book and lifestyle retailer.
+    # 44-45 is total retail trade, used as the control for general seasonality:
+    # without it, a November rise in the category cannot be told apart from
+    # Christmas happening to every shop in the country.
+    naics_focus: "459A"
+    naics_focus_name: "Sporting goods, hobby, musical instrument, book retailers and news dealers"
+    naics_control: "44-45"
+    cpi_products: ["All-items"]
+    adjustment: "Unadjusted"    # seasonality must be measured, not removed first
+    # The archived table is coded to NAICS 2017 and the active one to NAICS 2022,
+    # so the same shop sits under a different code either side of the join. Left
+    # unmapped, the category this project is about would have no history before
+    # 2017 at all. This crosswalk maps the old code to the new one; the chaining
+    # step then measures, on the six year overlap, how well the two actually
+    # agree, so the quality of each mapping is reported rather than assumed.
+    # Codes absent from this map were not renumbered and carry across unchanged.
+    naics_crosswalk_2017_to_2022:
+      "451": "459A"     # sporting goods, hobby, book and music stores -> ... book retailers and news dealers
+      "452": "455"      # general merchandise stores -> general merchandise retailers
+      "453": "459B"     # miscellaneous store retailers -> miscellaneous retailers
+      "446": "456"      # health and personal care
+      "447": "457"      # gasoline stations -> gasoline stations and fuel vendors
+      "448": "458"      # clothing and clothing accessories
+      "4481": "4581"
+      "4482": "4582"
+      "4483": "4583"
+      "44512": "44513"  # convenience stores -> convenience retailers and vending machine operators
+    # 442 and 443 were merged into 449 in the 2022 revision. A merge cannot be
+    # expressed as a one to one map, so those two are deliberately left out and
+    # 449 simply starts in 2017. Nothing in this project depends on them.
+  toys:
+    rebrickable_base_url: https://rebrickable.com/api/v3/lego
+    brickset_base_url: https://brickset.com/api/v3.asmx
+    theme_keyword: "harry potter"
+    year_from: 2001
+    year_to: 2026
+  reddit:
+    subreddits: [harrypotter, HPfanfiction, Fantasy, boxoffice]
+    post_limit_per_subreddit: 1000
+
+films:
+  # The eleven theatrical films that carry measurable performance data.
+  # Section 18: never fit a predictive model on these rows, description only.
+  titles:
+    - "Harry Potter and the Philosopher's Stone"
+    - "Harry Potter and the Chamber of Secrets"
+    - "Harry Potter and the Prisoner of Azkaban"
+    - "Harry Potter and the Goblet of Fire"
+    - "Harry Potter and the Order of the Phoenix"
+    - "Harry Potter and the Half-Blood Prince"
+    - "Harry Potter and the Deathly Hallows - Part 1"
+    - "Harry Potter and the Deathly Hallows - Part 2"
+    - "Fantastic Beasts and Where to Find Them"
+    - "Fantastic Beasts: The Crimes of Grindelwald"
+    - "Fantastic Beasts: The Secrets of Dumbledore"
+
+events:
+  # Dated events used as regressors in the forecast and as the validation check
+  # section 11 asks for. Only events that are both externally verifiable and
+  # visible in the collected data are listed; an event nobody can see in the
+  # series is not evidence of anything.
+  - name: first_teaser_trailer
+    date: 2026-03-25
+    description: >
+      First teaser trailer released and the 25 December 2026 premiere date
+      announced. Wikipedia views of the series article went from about 3,000 a
+      day to 135,314 on 26 March, a factor of forty four, decaying over roughly
+      a week to a new floor about four times the old one. This is the event the
+      forecast is validated against: a model that cannot reproduce a step of
+      this shape has no business predicting the premiere.
+    source: observed in data/cleaned/pageviews, confirmed by press coverage dated 25-26 March 2026
+    expected_effect: large transient spike plus a permanent level shift
+
+eras:
+  # Used by the dashboard slicers and by several charts.
+  original: [2001, 2011]
+  middle: [2012, 2022]
+  revival: [2023, 2027]
+
+modelling:
+  test_size_weeks: 52              # held out period for the interest forecast
+  # Five, not three. The smallest usable spell class holds ten examples, so at
+  # three folds each test fold sees about three of them and the per-class recall
+  # is mostly noise; five folds leave more in training, which matters more than
+  # test-fold size when classes are this thin. This was 3 in config while the
+  # classifier hardcoded 5, which is the silent disagreement config is supposed
+  # to prevent; the code now reads this value and this value is the considered one.
+  cv_folds: 5
+  scenarios: [low, central, high]
+  max_interest_to_sales_lag_months: 3
+  clustering:
+    k_range: [2, 3, 4, 5, 6, 7, 8]
+    silhouette_min: 0.15
+
+retail:
+  service_level: 0.95              # section 20 default, stated as an assumption
+  lead_time_days:
+    imported: 120                  # sea freight from Asia plus port and DC handling
+    domestic: 45
+    reprinted_books: 75
+  review_period_days: 30
+  gross_margin_rate: 0.42          # category gross margin on branded licensed product
+  markdown_rate: 0.40              # average markdown taken to clear unsold seasonal stock
+  holding_cost_rate_annual: 0.25   # capital, space and shrink as a share of unit cost
+  lost_sale_goodwill_multiplier: 1.15
+  january_reserve_proportions: [0.0, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70]
+  # The premiere falls on 25 December, which is inside a month, so a monthly
+  # demand profile cannot separate the gift window from the post-premiere
+  # period without splitting December. No daily Canadian category series is
+  # published, so this share is a stated assumption rather than a measurement.
+  # It is set high because December category sales are gift purchases and gift
+  # purchasing stops on Christmas Day: the measured category index peaks at 172
+  # in December and collapses to 86 in January, which is only consistent with
+  # most December volume landing before the 25th. The recommendation is tested
+  # against this value in the sensitivity table.
+  december_share_before_premiere: 0.85
+  store_count: 190                 # composite Canadian book and lifestyle chain
+  category_baseline_sales_cad: 4200000   # annual baseline wizarding category sales, assumption
+  average_unit_retail_cad: 34.0    # blended retail price across books, gift and toy lines
+  # How much of a rise in franchise attention shows up as a rise in category
+  # sales. This is an assumption, not a measurement, and it is the single number
+  # the whole recommendation is most sensitive to.
+  #
+  # Module 5.2 tried to measure it and could not: the elasticity of NAICS 459A
+  # sales to franchise attention was 0.05 with a confidence interval spanning
+  # zero (p = 0.07). That is not evidence of no effect, it is evidence that a
+  # national category containing every bookshop and hobby shop in Canada is too
+  # coarse an instrument to detect one franchise inside it. Rather than pretend
+  # a non-significant coefficient is a measurement, the conversion is declared
+  # here as an assumption and the recommendation is reported across the range.
+  attention_pass_through: 0.35
+  attention_pass_through_range: [0.15, 0.25, 0.35, 0.50, 0.70]
+
+bigdata:
+  corpus_sizes: [50000, 200000, 800000]
+  engines: [pandas, dask, pyspark]
+
+ethics:
+  hash_salt_env_var: REDDIT_HASH_SALT
+  drop_usernames: true
+  min_aggregate_group_size: 20

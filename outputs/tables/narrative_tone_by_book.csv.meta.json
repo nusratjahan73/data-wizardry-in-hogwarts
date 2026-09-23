@@ -1,0 +1,14 @@
+{
+  "file": "narrative_tone_by_book.csv",
+  "collected_at_utc": "2026-09-03T07:13:26+00:00",
+  "size_bytes": 123,
+  "rows": 1,
+  "columns": [
+    "book_position",
+    "book_label",
+    "chapters",
+    "mean_tone",
+    "sd_tone",
+    "darkest_chapter_tone"
+  ]
+}

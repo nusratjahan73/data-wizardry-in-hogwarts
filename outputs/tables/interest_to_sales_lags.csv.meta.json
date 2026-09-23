@@ -1,0 +1,20 @@
+{
+  "file": "interest_to_sales_lags.csv",
+  "collected_at_utc": "2026-09-03T07:14:50+00:00",
+  "size_bytes": 453,
+  "rows": 4,
+  "columns": [
+    "lag_months",
+    "observations",
+    "elasticity",
+    "ci_lower",
+    "ci_upper",
+    "p_value",
+    "significant_at_5pc",
+    "adj_r_squared",
+    "total_retail_elasticity",
+    "adj_r_squared_controls_only",
+    "improvement_over_controls"
+  ],
+  "note": "elasticity is the log-log coefficient on franchise attention, controlling for total Canadian retail and month of year"
+}

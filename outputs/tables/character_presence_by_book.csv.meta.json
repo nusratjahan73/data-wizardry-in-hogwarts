@@ -1,0 +1,17 @@
+{
+  "file": "character_presence_by_book.csv",
+  "collected_at_utc": "2026-09-03T07:13:26+00:00",
+  "size_bytes": 1348,
+  "rows": 16,
+  "columns": [
+    "character",
+    "article",
+    "book_position",
+    "book_label",
+    "chapters_mentioned",
+    "chapters_in_book",
+    "share_of_chapters",
+    "total_weekly_views"
+  ],
+  "note": "approximate: name matching against chapter summaries, a floor not a measurement"
+}

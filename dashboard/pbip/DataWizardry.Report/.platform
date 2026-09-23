@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "DataWizardry"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "58f6cabc-92f3-42cd-9bcc-72678d5806d0"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "file": "event_study_responses.csv",
+  "collected_at_utc": "2026-09-03T07:13:19+00:00",
+  "size_bytes": 686,
+  "rows": 4,
+  "columns": [
+    "event",
+    "article",
+    "event_date",
+    "baseline_daily_views",
+    "peak_daily_views",
+    "peak_multiple",
+    "window_multiple",
+    "residual_multiple",
+    "long_baseline_daily_views",
+    "step_multiple",
+    "days_to_settle",
+    "days_observed_after"
+  ],
+  "note": "multiples are against the median of the 28 days before the event"
+}

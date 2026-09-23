@@ -1,0 +1,16 @@
+{
+  "file": "forecast_scenarios_weekly.csv",
+  "collected_at_utc": "2026-09-03T07:14:47+00:00",
+  "size_bytes": 6395,
+  "rows": 69,
+  "columns": [
+    "week",
+    "counterfactual",
+    "low",
+    "central",
+    "high",
+    "is_after_premiere"
+  ],
+  "premiere": "2026-12-25",
+  "note": "counterfactual is the no-premiere forecast; scenarios add an imposed event response"
+}

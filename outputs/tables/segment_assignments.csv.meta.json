@@ -1,0 +1,18 @@
+{
+  "file": "segment_assignments.csv",
+  "collected_at_utc": "2026-09-03T07:13:37+00:00",
+  "size_bytes": 1024665,
+  "rows": 14950,
+  "columns": [
+    "set_num",
+    "name",
+    "year",
+    "theme_name",
+    "is_branded",
+    "segment",
+    "num_parts",
+    "minifig_count",
+    "distinct_parts",
+    "distinct_colours"
+  ]
+}

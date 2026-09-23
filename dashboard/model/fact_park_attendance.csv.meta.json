@@ -1,0 +1,19 @@
+{
+  "file": "fact_park_attendance.csv",
+  "collected_at_utc": "2026-09-03T07:13:24+00:00",
+  "size_bytes": 5993,
+  "table": "fact_park_attendance",
+  "grain": "park + year",
+  "rows": 66,
+  "columns": [
+    "park",
+    "country",
+    "year",
+    "attendance",
+    "wizarding_land_open_this_year",
+    "years_since_opening",
+    "attendance_index_vs_year_before_opening",
+    "is_pandemic_year",
+    "date_key"
+  ]
+}

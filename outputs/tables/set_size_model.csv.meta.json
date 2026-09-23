@@ -1,0 +1,18 @@
+{
+  "file": "set_size_model.csv",
+  "collected_at_utc": "2026-09-03T07:13:42+00:00",
+  "size_bytes": 346,
+  "rows": 5,
+  "columns": [
+    "term",
+    "coefficient",
+    "std_error",
+    "p_value",
+    "ci_lower",
+    "ci_upper",
+    "percent_effect"
+  ],
+  "r_squared": 0.7041,
+  "observations": 14950,
+  "note": "log piece count regressed on year, minifigures, colours and branded flag"
+}

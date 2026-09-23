@@ -1,0 +1,24 @@
+{
+  "file": "segment_profiles.csv",
+  "collected_at_utc": "2026-09-03T07:13:37+00:00",
+  "size_bytes": 688,
+  "rows": 4,
+  "columns": [
+    "segment",
+    "sets",
+    "median_parts",
+    "median_minifigs",
+    "median_distinct_parts",
+    "median_distinct_colours",
+    "median_repetition",
+    "median_year",
+    "share_of_catalogue",
+    "plain_name",
+    "branded_share",
+    "branded_sets",
+    "house_label"
+  ],
+  "k": 4,
+  "silhouette": 0.3923,
+  "note": "plain names derived from the profile; house labels are cosmetic and applied last"
+}

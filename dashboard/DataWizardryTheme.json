@@ -1,0 +1,77 @@
+{
+  "name": "Data Wizardry",
+  "dataColors": [
+    "#0E7C86",
+    "#14405C",
+    "#5F7A80",
+    "#C9932B",
+    "#93C9CF",
+    "#9FB4C4",
+    "#0A5C64",
+    "#1E5F86"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#10262B",
+  "tableAccent": "#0E7C86",
+  "good": "#0E7C86",
+  "neutral": "#5F7A80",
+  "bad": "#8A6412",
+  "maximum": "#0E7C86",
+  "center": "#93C9CF",
+  "minimum": "#F1F7F8",
+  "textClasses": {
+    "title": {
+      "color": "#10262B",
+      "fontSize": 14,
+      "fontFace": "Segoe UI Semibold"
+    },
+    "label": {
+      "color": "#10262B",
+      "fontSize": 10,
+      "fontFace": "Segoe UI"
+    },
+    "callout": {
+      "color": "#0E7C86",
+      "fontSize": 34,
+      "fontFace": "Segoe UI Semibold"
+    },
+    "header": {
+      "color": "#5F7A80",
+      "fontSize": 11,
+      "fontFace": "Segoe UI Semibold"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            }
+          }
+        ],
+        "border": [
+          {
+            "show": false
+          }
+        ],
+        "title": [
+          {
+            "show": true,
+            "fontColor": {
+              "solid": {
+                "color": "#10262B"
+              }
+            },
+            "fontSize": 11,
+            "alignment": "left"
+          }
+        ]
+      }
+    }
+  }
+}

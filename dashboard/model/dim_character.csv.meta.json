@@ -1,0 +1,21 @@
+{
+  "file": "dim_character.csv",
+  "collected_at_utc": "2026-09-03T07:13:23+00:00",
+  "size_bytes": 2218,
+  "table": "dim_character",
+  "grain": "character",
+  "rows": 16,
+  "columns": [
+    "character_key",
+    "character_name",
+    "house",
+    "house_source",
+    "species",
+    "gender",
+    "article",
+    "mean_correlation",
+    "eigenvector_centrality",
+    "attention_rank",
+    "coupling_rank"
+  ]
+}

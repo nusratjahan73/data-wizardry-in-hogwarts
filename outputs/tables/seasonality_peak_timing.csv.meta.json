@@ -1,0 +1,16 @@
+{
+  "file": "seasonality_peak_timing.csv",
+  "collected_at_utc": "2026-09-03T07:52:18+00:00",
+  "size_bytes": 281,
+  "rows": 3,
+  "columns": [
+    "series",
+    "peak_month",
+    "peak_index",
+    "december_index",
+    "january_index",
+    "trough_month",
+    "trough_index",
+    "months_observed"
+  ]
+}

@@ -1,0 +1,113 @@
+/* Layout: page structure, masthead, stat row, footer.
+ *
+ * Split from base.css because they answer different questions. base.css says
+ * what things look like; this says where they go. Keeping them apart means a
+ * palette change never risks moving anything.
+ */
+
+.page {
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: 0 var(--space-4) var(--space-6);
+}
+
+.masthead {
+  border-bottom: 1px solid var(--grid);
+  padding: var(--space-5) 0 var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.masthead__kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.74rem;
+  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+
+.masthead__meta {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: var(--space-3);
+}
+
+/* The headline number row. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--grid);
+  border-bottom: 1px solid var(--grid);
+}
+
+.stat__value {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  line-height: 1.1;
+  color: var(--accent);
+}
+
+.stat__label {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: var(--space-1);
+}
+
+.stat--secondary .stat__value {
+  color: var(--support);
+}
+
+/* Two-column blocks for a chart beside its explanation. */
+.split {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: var(--space-4);
+  align-items: start;
+  margin: var(--space-4) 0;
+}
+
+.split--reverse {
+  grid-template-columns: 1fr 1.35fr;
+}
+
+.split p {
+  max-width: none;
+}
+
+section {
+  scroll-margin-top: var(--space-4);
+}
+
+.footer {
+  border-top: 1px solid var(--grid);
+  margin-top: var(--space-6);
+  padding-top: var(--space-3);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.footer ul {
+  padding-left: 1.1rem;
+}
+
+/* Narrow screens: everything stacks. */
+@media (max-width: 46rem) {
+  html {
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 1.9rem;
+  }
+
+  .page {
+    padding: 0 var(--space-3) var(--space-5);
+  }
+
+  .split,
+  .split--reverse {
+    grid-template-columns: 1fr;
+  }
+}

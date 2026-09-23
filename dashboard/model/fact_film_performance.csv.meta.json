@@ -1,0 +1,27 @@
+{
+  "file": "fact_film_performance.csv",
+  "collected_at_utc": "2026-09-03T07:13:23+00:00",
+  "size_bytes": 2721,
+  "table": "fact_film_performance",
+  "grain": "film",
+  "rows": 11,
+  "columns": [
+    "film_key",
+    "budget_usd",
+    "domestic_gross_usd",
+    "international_gross_usd",
+    "worldwide_gross_usd",
+    "opening_weekend_domestic_usd",
+    "gross_profit_usd",
+    "gross_profit_margin",
+    "return_on_budget",
+    "opening_share_of_domestic",
+    "critic_audience_gap",
+    "budget_cad_real",
+    "domestic_gross_cad_real",
+    "international_gross_cad_real",
+    "worldwide_gross_cad_real",
+    "opening_weekend_domestic_cad_real",
+    "date_key"
+  ]
+}

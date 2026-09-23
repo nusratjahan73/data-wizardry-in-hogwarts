@@ -1,0 +1,12 @@
+film_key,title,series,release_date,release_date_na,rt_critic_score,rt_audience_score,metacritic_score,cinemascore,release_year,era,date_key
+1,Harry Potter and the Philosopher's Stone,Harry Potter,2001-11-15,2001-11-16,80,82,65,A,2001,original,200111
+2,Harry Potter and the Chamber of Secrets,Harry Potter,2002-11-15,2002-11-15,82,80,63,A+,2002,original,200211
+3,Harry Potter and the Prisoner of Azkaban,Harry Potter,2004-05-31,2004-06-04,90,86,82,A,2004,original,200406
+4,Harry Potter and the Goblet of Fire,Harry Potter,2005-11-18,2005-11-18,88,74,81,,2005,original,200511
+5,Harry Potter and the Order of the Phoenix,Harry Potter,2007-07-11,2007-07-11,78,81,71,A-,2007,original,200707
+6,Harry Potter and the Half-Blood Prince,Harry Potter,2009-07-15,2009-07-15,83,78,78,,2009,original,200907
+7,Harry Potter and the Deathly Hallows - Part 1,Harry Potter,2010-11-17,2010-11-19,77,85,65,A,2010,original,201011
+8,Harry Potter and the Deathly Hallows - Part 2,Harry Potter,2011-07-13,2011-07-15,96,89,85,,2011,original,201107
+9,Fantastic Beasts and Where to Find Them,Fantastic Beasts,2016-11-14,2016-11-18,74,79,66,A,2016,middle,201611
+10,Fantastic Beasts: The Crimes of Grindelwald,Fantastic Beasts,2018-11-14,2018-11-16,36,53,52,B+,2018,middle,201811
+11,Fantastic Beasts: The Secrets of Dumbledore,Fantastic Beasts,2022-04-06,2022-04-15,46,83,47,B+,2022,middle,202204

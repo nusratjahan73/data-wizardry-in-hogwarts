@@ -1,0 +1,13 @@
+{
+  "file": "retail_assumptions.csv",
+  "collected_at_utc": "2026-09-03T07:14:59+00:00",
+  "size_bytes": 1315,
+  "rows": 13,
+  "columns": [
+    "assumption",
+    "value",
+    "units",
+    "source",
+    "config_key"
+  ]
+}

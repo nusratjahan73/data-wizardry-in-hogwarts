@@ -1,0 +1,67 @@
+park,country,year,attendance,wizarding_land_open_this_year,years_since_opening,attendance_index_vs_year_before_opening,is_pandemic_year,date_key
+Universal Islands of Adventure,United States,2008,5290000,0,-2,114.32893883725956,False,200801
+Universal Islands of Adventure,United States,2009,4627000,0,-1,100.0,False,200901
+Universal Islands of Adventure,United States,2010,5949000,1,0,128.57142857142858,False,201001
+Universal Islands of Adventure,United States,2011,7674000,1,1,165.8526042792306,False,201101
+Universal Islands of Adventure,United States,2012,7981000,1,2,172.48757294143073,False,201201
+Universal Islands of Adventure,United States,2013,8141000,1,3,175.94553706505295,False,201301
+Universal Islands of Adventure,United States,2014,8141000,1,4,175.94553706505295,False,201401
+Universal Islands of Adventure,United States,2015,8792000,1,5,190.01512859304083,False,201501
+Universal Islands of Adventure,United States,2016,9362000,1,6,202.33412578344505,False,201601
+Universal Islands of Adventure,United States,2017,9549000,1,7,206.37562135292848,False,201701
+Universal Islands of Adventure,United States,2018,9788000,1,8,211.54095526258916,False,201801
+Universal Islands of Adventure,United States,2019,10375000,1,9,224.2273611411281,False,201901
+Universal Islands of Adventure,United States,2020,4005000,1,10,86.55716446941864,True,202001
+Universal Islands of Adventure,United States,2021,9077000,1,11,196.1746271882429,True,202101
+Universal Islands of Adventure,United States,2022,11025000,1,12,238.27534039334344,False,202201
+Universal Islands of Adventure,United States,2023,10000000,1,13,216.12275772638856,False,202301
+Universal Islands of Adventure,United States,2024,9450000,1,14,204.2360060514372,False,202401
+Universal Studios Florida,United States,2008,6231000,0,-6,88.23279524214104,False,200801
+Universal Studios Florida,United States,2009,5530000,0,-5,78.3064287737185,False,200901
+Universal Studios Florida,United States,2010,5925000,0,-4,83.89974511469839,False,201001
+Universal Studios Florida,United States,2011,6044000,0,-3,85.58482016425941,False,201101
+Universal Studios Florida,United States,2012,6195000,0,-2,87.72302463891249,False,201201
+Universal Studios Florida,United States,2013,7062000,0,-1,100.0,False,201301
+Universal Studios Florida,United States,2014,8263000,1,0,117.0065137354857,False,201401
+Universal Studios Florida,United States,2015,9585000,1,1,135.7264231096007,False,201501
+Universal Studios Florida,United States,2016,9998000,1,2,141.57462475219484,False,201601
+Universal Studios Florida,United States,2017,10198000,1,3,144.40668365902013,False,201701
+Universal Studios Florida,United States,2018,10708000,1,4,151.62843387142453,False,201801
+Universal Studios Florida,United States,2019,10922000,1,5,154.65873690172756,False,201901
+Universal Studios Florida,United States,2020,4096000,1,6,58.00056641178136,True,202001
+Universal Studios Florida,United States,2021,8987000,1,7,127.25856697819316,True,202101
+Universal Studios Florida,United States,2022,10750000,1,8,152.22316624185785,False,202201
+Universal Studios Florida,United States,2023,9750000,1,9,138.06287170773152,False,202301
+Universal Studios Florida,United States,2024,9500000,1,10,134.52279807419993,False,202401
+Universal Studios Hollywood,United States,2009,4308000,0,-7,60.70170494575172,False,200901
+Universal Studios Hollywood,United States,2010,5040000,0,-6,71.01592222065662,False,201001
+Universal Studios Hollywood,United States,2011,5141000,0,-5,72.43905875722136,False,201101
+Universal Studios Hollywood,United States,2012,5912000,0,-4,83.30280400169086,False,201201
+Universal Studios Hollywood,United States,2013,6148000,0,-3,86.62815274059462,False,201301
+Universal Studios Hollywood,United States,2014,6824000,0,-2,96.15330421304776,False,201401
+Universal Studios Hollywood,United States,2015,7097000,0,-1,100.0,False,201501
+Universal Studios Hollywood,United States,2016,8086000,1,0,113.93546568972806,False,201601
+Universal Studios Hollywood,United States,2017,9056000,1,1,127.60321262505283,False,201701
+Universal Studios Hollywood,United States,2018,9147000,1,2,128.88544455403692,False,201801
+Universal Studios Hollywood,United States,2019,9150000,1,3,128.9277159363111,False,201901
+Universal Studios Hollywood,United States,2020,1299000,1,4,18.30350852472876,True,202001
+Universal Studios Hollywood,United States,2021,5505000,1,5,77.56798647315767,True,202101
+Universal Studios Hollywood,United States,2022,8400000,1,6,118.35987036776103,False,202201
+Universal Studios Hollywood,United States,2023,9660000,1,7,136.1138509229252,False,202301
+Universal Studios Hollywood,United States,2024,8700000,1,8,122.58700859518106,False,202401
+Universal Studios Japan,Japan,2009,8000000,0,-5,79.20792079207921,False,200901
+Universal Studios Japan,Japan,2010,8160000,0,-4,80.79207920792079,False,201001
+Universal Studios Japan,Japan,2011,8500000,0,-3,84.15841584158416,False,201101
+Universal Studios Japan,Japan,2012,9700000,0,-2,96.03960396039604,False,201201
+Universal Studios Japan,Japan,2013,10100000,0,-1,100.0,False,201301
+Universal Studios Japan,Japan,2014,11800000,1,0,116.83168316831684,False,201401
+Universal Studios Japan,Japan,2015,13900000,1,1,137.6237623762376,False,201501
+Universal Studios Japan,Japan,2016,14500000,1,2,143.56435643564356,False,201601
+Universal Studios Japan,Japan,2017,14935000,1,3,147.87128712871288,False,201701
+Universal Studios Japan,Japan,2018,14300000,1,4,141.5841584158416,False,201801
+Universal Studios Japan,Japan,2019,14500000,1,5,143.56435643564356,False,201901
+Universal Studios Japan,Japan,2020,4901000,1,6,48.52475247524752,True,202001
+Universal Studios Japan,Japan,2021,5500000,1,7,54.45544554455446,True,202101
+Universal Studios Japan,Japan,2022,12350000,1,8,122.27722772277228,False,202201
+Universal Studios Japan,Japan,2023,16000000,1,9,158.4158415841584,False,202301
+Universal Studios Japan,Japan,2024,16000000,1,10,158.4158415841584,False,202401

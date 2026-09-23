@@ -1,0 +1,22 @@
+{
+  "file": "dim_date.csv",
+  "collected_at_utc": "2026-09-03T07:13:23+00:00",
+  "size_bytes": 33981,
+  "table": "dim_date",
+  "grain": "month",
+  "rows": 456,
+  "columns": [
+    "date_key",
+    "month_start",
+    "year",
+    "month_number",
+    "month_name",
+    "quarter",
+    "year_month",
+    "era",
+    "is_gift_season",
+    "is_after_premiere",
+    "months_from_premiere",
+    "is_pandemic"
+  ]
+}

@@ -1,0 +1,17 @@
+character_key,character_name,house,house_source,species,gender,article,mean_correlation,eigenvector_centrality,attention_rank,coupling_rank
+albus-dumbledore,Albus Percival Wulfric Brian Dumbledore,Gryffindor,potterdb,Human,Male,Albus_Dumbledore,0.6057307034532337,0.3404280889697053,1,9
+bellatrix-lestrange,Bellatrix Lestrange (née Black),Slytherin,potterdb,Human,Female,Bellatrix_Lestrange,0.6552796224679437,0.4304871912060746,11,1
+dobby,Dobby,,unknown,House-elf,Male,Dobby_(Harry_Potter),0.5219149184873896,7.166432471941567e-13,16,16
+draco-malfoy,Draco Lucius Malfoy,Slytherin,potterdb,"Human, Ferret (briefly)",Male,Draco_Malfoy,0.6062018129475463,0.2930001306797287,6,8
+ginevra-weasley,Ginevra Molly Potter (née Weasley),Gryffindor,potterdb,Human,Female,Ginny_Weasley,0.6407011376100255,0.3812882632765531,9,3
+harry-potter,Harry James Potter,Gryffindor,potterdb,Human,Male,Harry_Potter_(character),0.6177077207563471,0.1606786640430512,5,6
+hermione-granger,Hermione Jean Granger,Gryffindor,potterdb,Human,Female,Hermione_Granger,0.5509912287635105,0.0438448533250698,4,15
+luna-lovegood,Luna Scamander (née Lovegood),Ravenclaw,potterdb,Human,Female,Luna_Lovegood,0.5729496272055723,0.1435506574080064,10,14
+minerva-mcgonagall,Minerva McGonagall,Gryffindor,hp_api,Human,Female,Minerva_McGonagall,0.6274759323961348,0.2842219513717546,13,5
+neville-longbottom,Neville Longbottom,Gryffindor,hp_api,Human,Male,Neville_Longbottom,0.5929476126409744,0.0733471055100786,15,11
+remus-lupin,Remus John Lupin,Gryffindor,potterdb,Human (werewolf),Male,Remus_Lupin,0.5770554641424018,0.0128570575474181,14,13
+ronald-weasley,Ronald Bilius Weasley,Gryffindor,potterdb,Human,Male,Ron_Weasley,0.6073022079917917,0.0878217965355183,7,7
+rubeus-hagrid,Rubeus Hagrid,Gryffindor,hp_api,Half-human/half-giant,Male,Rubeus_Hagrid,0.5770724879513928,0.0580162704298682,8,12
+severus-snape,Severus Snape,Slytherin,hp_api,Human,Male,Severus_Snape,0.6456219961677564,0.4141630076661576,3,2
+sirius-black,Sirius Black III,Gryffindor,potterdb,Human,Male,Sirius_Black,0.594269067018413,0.0759886730601048,12,10
+tom-riddle,Tom Marvolo Riddle,Slytherin,potterdb,Human,Male,Lord_Voldemort,0.6279929564794664,0.3801339662306438,2,4

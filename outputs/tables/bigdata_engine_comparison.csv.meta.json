@@ -1,0 +1,18 @@
+{
+  "file": "bigdata_engine_comparison.csv",
+  "collected_at_utc": "2026-09-03T07:16:23+00:00",
+  "size_bytes": 413,
+  "rows": 8,
+  "columns": [
+    "engine",
+    "replication",
+    "rows",
+    "rows_millions",
+    "seconds",
+    "peak_tracked_mb",
+    "groups_out",
+    "failed"
+  ],
+  "base_corpus_rows": 1556894,
+  "note": "sizes above 1x are the real corpus replicated, not more real data"
+}

@@ -1,0 +1,129 @@
+/* Base: design tokens and typography for the whole page.
+ *
+ * Every colour, font and spacing value is declared once, here, and referenced
+ * everywhere else. Section 4 requires it, and there is a practical reason
+ * beyond tidiness: this palette has to match the matplotlib figures in
+ * images/figures and the Canva infographic exactly, so there can be only one
+ * place any of them is written down. These are the same values as
+ * src/utils/plotting.py, and the two must be changed together.
+ */
+
+:root {
+  /* Palette. Dark turquoise accent, one deep blue contrast, gold for the
+     premiere marker only. Identical to PALETTE in src/utils/plotting.py and to
+     the theme in dashboard/DataWizardryTheme.json; all three must move together. */
+  --ink: #10262b;
+  --ground: #ffffff;
+  --ground-alt: #f1f7f8;
+  --grid: #d9e4e7;
+  --muted: #5f7a80;
+  --accent: #0e7c86;
+  --accent-soft: #93c9cf;
+  --support: #14405c;
+  --support-soft: #9fb4c4;
+  --highlight: #c9932b;
+  --warn: #8a6412;
+
+  /* House colours, for the segmentation figure only, where colour carries
+     meaning. Never as a general chart palette: four saturated colours
+     competing on one page make charts hard to read. */
+  --gryffindor: #7b1e22;
+  --slytherin: #1e4d3a;
+  --ravenclaw: #22406b;
+  --hufflepuff: #b08a1e;
+
+  /* Spacing scale. */
+  --space-1: 0.35rem;
+  --space-2: 0.7rem;
+  --space-3: 1.2rem;
+  --space-4: 2rem;
+  --space-5: 3.5rem;
+  --space-6: 5rem;
+
+  /* Type. */
+  --font-body: "Segoe UI", Calibri, system-ui, -apple-system, sans-serif;
+  --font-display: "Segoe UI Semibold", "Segoe UI", Calibri, system-ui, sans-serif;
+  --font-mono: "Cascadia Mono", Consolas, monospace;
+
+  --measure: 34rem;
+  --radius: 4px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 17px;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  line-height: 1.22;
+  margin: 0 0 var(--space-2);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 2.6rem;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 1.65rem;
+  margin-top: var(--space-5);
+}
+
+h3 {
+  font-size: 1.1rem;
+  margin-top: var(--space-4);
+}
+
+p {
+  margin: 0 0 var(--space-3);
+  max-width: var(--measure);
+}
+
+a {
+  color: var(--accent);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--ground-alt);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius);
+}
+
+.lede {
+  font-size: 1.18rem;
+  color: var(--muted);
+  max-width: 40rem;
+}
+
+.caveat {
+  border-left: 3px solid var(--highlight);
+  padding-left: var(--space-3);
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: var(--measure);
+}
+
+.source-note {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: var(--space-2);
+  max-width: none;
+}

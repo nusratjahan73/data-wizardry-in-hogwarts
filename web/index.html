@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data Wizardry in Hogwarts — the Christmas Day problem</title>
+  <meta name="description" content="Forecasting a Canadian retail buy before the December 2026 wizarding revival.">
+
+  <!-- Styling lives in three files under css/, split by concern: tokens and
+       type, page layout, charts and tables. There is no style block and no
+       style attribute anywhere in this document. -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/chart.css">
+</head>
+<body>
+  <main class="page">
+
+    <header class="masthead">
+      <p class="masthead__kicker">Data Wizardry in Hogwarts</p>
+      <h1>The premiere lands on the day the buying stops</h1>
+      <p class="lede">
+        A Canadian book and lifestyle retailer has to commit its holiday wizarding
+        buy months before the new series airs. The premiere is on
+        <span id="meta-premiere">25 December 2026</span> — after the gift-buying
+        window has closed. This page sets out how large that buy should be, how it
+        should be split, and by when it has to be ordered.
+      </p>
+      <p class="masthead__meta">
+        Nusrat Jahan · Master of Business Analytics and AI, Ontario Tech University ·
+        Generated <span id="meta-generated">—</span> from the tables in
+        <code>outputs/tables</code>
+      </p>
+    </header>
+
+    <section class="stats" aria-label="Headline recommendation">
+      <div class="stat">
+        <div class="stat__value" id="stat-buy">—</div>
+        <div class="stat__label">recommended buy, at retail</div>
+      </div>
+      <div class="stat">
+        <div class="stat__value" id="stat-units">—</div>
+        <div class="stat__label">units, at a blended $34 retail</div>
+      </div>
+      <div class="stat stat--secondary">
+        <div class="stat__value" id="stat-january">—</div>
+        <div class="stat__label">held for the January position</div>
+      </div>
+      <div class="stat stat--secondary">
+        <div class="stat__value" id="stat-order-by">—</div>
+        <div class="stat__label">imported order-by date</div>
+      </div>
+    </section>
+
+    <section id="recommendation">
+      <h2>The recommendation</h2>
+      <p>
+        Commit <strong id="headline-buy">—</strong> at retail for the November 2026
+        to March 2027 season, and hold between
+        <strong id="headline-january-low">—</strong> and
+        <strong id="headline-january-high">—</strong> of it for a January position
+        rather than committing the buy to the pre-Christmas window as this category
+        normally would. The defensible range around that figure runs from
+        <span id="headline-range-low">—</span> to
+        <span id="headline-range-high">—</span>, depending on how large the premiere
+        response turns out to be.
+      </p>
+      <p class="caveat">
+        Imported product for the January position was due to be ordered by
+        <strong id="headline-order-by">—</strong>. That date has passed. Of the six
+        order-by dates in the schedule below,
+        <strong id="schedule-late-count">—</strong> are already behind, which is a
+        cost of starting this analysis in September rather than in spring.
+      </p>
+    </section>
+
+    <section id="timing">
+      <h2>Why January, and not December</h2>
+      <div class="split">
+        <div class="figure">
+          <p class="figure__title">The category is violently seasonal; attention is not</p>
+          <p class="figure__subtitle">
+            Monthly seasonal index from an STL decomposition, where 100 is an
+            average month. Pandemic years excluded.
+          </p>
+          <div id="chart-seasonality"></div>
+          <div id="legend-seasonality"></div>
+          <p class="source-note">
+            Wikipedia pageviews 2015–2026 and Statistics Canada tables 20-10-0056
+            and 20-10-0008, 1991–2026.
+          </p>
+        </div>
+        <div>
+          <p>
+            The book and hobby category peaks in December at
+            <strong id="seasonality-peak">—</strong> and collapses to
+            <strong id="seasonality-january">—</strong> in January. Franchise
+            attention barely moves all year: it spans only
+            <strong id="seasonality-swing">—</strong> index points.
+          </p>
+          <p>
+            That gap is the whole argument. December's peak is made by the gift
+            calendar, not by any surge of interest in the franchise. January is the
+            month when shelves are cleared while attention does not fall — and it
+            is the month the premiere pushes attention sharply up.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="demand">
+      <h2>What that does to demand</h2>
+      <div class="split split--reverse">
+        <div>
+          <p>
+            The dashed line is the category with no premiere: a December spike, then
+            a collapse. The bars are the three scenarios. They stay elevated through
+            January, February and March, which is exactly when the category normally
+            has nothing left to sell.
+          </p>
+          <p>
+            I impose the premiere response on the forecast rather than fitting it. No
+            model can learn the effect of an event that has never happened in this
+            series, so my multiples come from measured franchise events. These are
+            three readings of that evidence, not confidence intervals.
+          </p>
+        </div>
+        <div class="figure">
+          <p class="figure__title">Category sales, November 2026 to March 2027</p>
+          <p class="figure__subtitle">
+            Three scenarios against a no-premiere baseline.
+          </p>
+          <div id="chart-demand"></div>
+          <div id="legend-demand"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="events">
+      <h2>What a franchise event actually does</h2>
+      <p>
+        I measured four events against the 28 days before them and against the
+        year ending 90 days before them. The two baselines disagree, and the
+        disagreement is the point: against the short window every event decays to
+        nothing within a month, because the run-up has already lifted the
+        comparison.
+      </p>
+      <div class="table-scroll">
+        <table class="data-table">
+          <caption>Attention response to each dated franchise event.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Event</th>
+              <th scope="col" class="numeric">Peak</th>
+              <th scope="col" class="numeric">Days to settle</th>
+              <th scope="col" class="numeric">Lasting step</th>
+            </tr>
+          </thead>
+          <tbody id="table-events-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="forecast">
+      <h2>How much to trust the forecast</h2>
+      <p>
+        I compared five approaches on a held-out final year, split by time and
+        never at random. <strong id="forecast-best-model">—</strong> was the most
+        accurate at <strong id="forecast-best-mape">—</strong> mean absolute
+        percentage error, against a seasonal naive baseline of
+        <strong id="forecast-baseline-mape">—</strong>.
+      </p>
+      <table class="data-table">
+        <caption>Held-out accuracy, final 52 weeks. Lower is better.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Model</th>
+            <th scope="col" class="numeric">MAPE (%)</th>
+            <th scope="col" class="numeric">MAE</th>
+          </tr>
+        </thead>
+        <tbody id="table-forecast-body"></tbody>
+      </table>
+    </section>
+
+    <section id="split">
+      <h2>How much to hold back</h2>
+      <div class="split">
+        <div class="figure">
+          <p class="figure__title">Expected profit by January reserve</p>
+          <p class="figure__subtitle">
+            Averaged across the three demand scenarios.
+          </p>
+          <div id="chart-tradeoff"></div>
+        </div>
+        <div>
+          <p>
+            Expected profit peaks at <strong id="tradeoff-best">—</strong> held back.
+            The worst case peaks slightly lower, which is why the recommendation is
+            a range rather than a single figure: the last ten points of reserve buy
+            expected profit at the cost of downside protection.
+          </p>
+          <p>
+            Understocking also costs more than overstocking here. A lost sale costs
+            0.48 per retail dollar against 0.04 for a marked-down one, which implies
+            a 93% service level. The error worth avoiding is running out.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="schedule">
+      <h2>When it has to be ordered</h2>
+      <div class="table-scroll">
+        <table class="data-table">
+          <caption>
+            Order-by dates, worked backwards from the required in-store date.
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Position</th>
+              <th scope="col">Product type</th>
+              <th scope="col" class="numeric">Lead time (days)</th>
+              <th scope="col">Order by</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody id="table-schedule-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="uncertainty">
+      <h2>The number to argue with first</h2>
+      <p>
+        The largest uncertainty in this work is not statistical. It is the
+        assumption about how much of a rise in franchise attention shows up as a
+        rise in category sales, set at
+        <strong id="sensitivity-assumption">—</strong>.
+      </p>
+      <p>
+        It is an assumption because I could not measure it. The elasticity of
+        Canadian category sales to franchise attention came back at 0.05 with a
+        confidence interval spanning zero. That is not evidence of no effect: the
+        published category contains every bookshop and hobby shop in Canada, so one
+        franchise inside it sits below the noise floor.
+      </p>
+      <div class="split">
+        <div>
+          <table class="data-table">
+            <caption>Central season sales at each pass-through assumption.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Pass-through</th>
+                <th scope="col" class="numeric">Central season</th>
+              </tr>
+            </thead>
+            <tbody id="table-sensitivity-body"></tbody>
+          </table>
+        </div>
+        <div>
+          <p class="caveat">
+            Across the plausible range the central season runs from
+            <strong id="sensitivity-low">—</strong> to
+            <strong id="sensitivity-high">—</strong> — a spread wider than the gap
+            between the low and high demand scenarios. If you are reviewing this
+            work, start here.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>
+        Every number on this page traces to a file in <code>outputs/tables</code>
+        and is written in by <code>web/js/page.js</code> from data generated by
+        <code>src/analysis/24_web_export.py</code>. Nothing here is typed by hand.
+      </p>
+      <ul>
+        <li>Sources: PotterDB, HP API, Wikimedia pageviews, Google Trends,
+          Statistics Canada, Rebrickable, The Numbers, Box Office Mojo, Rotten
+          Tomatoes, TEA/AECOM Theme Index.</li>
+        <li>Full method and every assumption: <code>docs/word/methods.docx</code>.
+          Governance: <code>docs/word/ethics.docx</code>. Findings:
+          <code>docs/findings.md</code>.</li>
+        <li>Not collected: Brickset retail prices and the Reddit fan corpus, both
+          for want of a free API key. Four analyses are blocked as a result, and
+          I scraped around neither source.</li>
+      </ul>
+    </footer>
+
+  </main>
+
+  <!-- Behaviour lives in two files under js/, one per concern: chart.js turns
+       data into SVG, page.js puts it in the document. data.js is generated.
+       There is no inline script block anywhere in this file. -->
+  <script src="js/data.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/page.js"></script>
+</body>
+</html>

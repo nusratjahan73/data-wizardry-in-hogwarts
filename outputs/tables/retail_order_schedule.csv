@@ -1,0 +1,7 @@
+position,product_type,lead_time_days,required_in_store,order_by,days_from_today,already_late,review_period_days
+January position (26 Dec to 31 Jan),imported,120,2026-12-25,2026-08-27,-6,True,30
+January position (26 Dec to 31 Jan),reprinted books,75,2026-12-25,2026-10-11,39,False,30
+January position (26 Dec to 31 Jan),domestic,45,2026-12-25,2026-11-10,69,False,30
+gift window (Nov to 24 Dec),imported,120,2026-11-01,2026-07-04,-60,True,30
+gift window (Nov to 24 Dec),reprinted books,75,2026-11-01,2026-08-18,-15,True,30
+gift window (Nov to 24 Dec),domestic,45,2026-11-01,2026-09-17,15,False,30

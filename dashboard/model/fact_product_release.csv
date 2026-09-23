@@ -1,0 +1,266 @@
+set_key,set_name,theme_key,year,num_parts,minifig_count,is_promotional,retail_price_cad,price_per_piece_cad,date_key
+4701-1,Sorting Hat,246,2001,50,1,False,,,200101
+4702-1,The Final Challenge,246,2001,62,2,False,,,200101
+4704-1,The Chamber of the Winged Keys,246,2001,180,3,False,,,200101
+4705-1,Snape's Class,246,2001,167,3,False,,,200101
+4706-1,Forbidden Corridor,246,2001,228,3,False,,,200101
+4707-1,Hagrid's Hut,246,2001,298,2,False,,,200101
+4708-1,Hogwarts Express,246,2001,414,3,False,,,200101
+4709-1,Hogwarts Castle,246,2001,696,9,False,,,200101
+4721-1,Hogwarts Classroom,246,2001,76,1,False,,,200101
+4722-1,Gryffindor,246,2001,70,1,False,,,200101
+4723-1,Diagon Alley Shops,246,2001,85,1,False,,,200101
+4711-1,Flying Lesson,246,2002,24,2,False,,,200201
+4712-1,Troll on the Loose,246,2002,72,2,False,,,200201
+4714-1,Gringotts Bank,246,2002,263,4,False,,,200201
+4726-1,Quidditch Practice,246,2002,132,3,False,,,200201
+4727-1,Aragog in the Dark Forest,246,2002,183,2,False,,,200201
+4728-1,Escape from Privet Drive,246,2002,282,3,False,,,200201
+4729-1,Dumbledore's Office,246,2002,451,3,False,,,200201
+4730-1,Chamber of Secrets,246,2002,597,5,False,,,200201
+4731-1,Dobby's Release,246,2002,71,2,False,,,200201
+4733-1,The Dueling Club,246,2002,134,4,False,,,200201
+4735-1,Slytherin,246,2002,93,3,False,,,200201
+HPG01-1,Harry Potter Gallery 1,246,2002,20,4,False,,,200201
+HPG02-1,Harry Potter Gallery 2,246,2002,17,4,False,,,200201
+HPG03-1,Harry Potter Gallery 3,246,2002,23,4,False,,,200201
+HPG04-1,Harry Potter Gallery 4,246,2002,23,5,False,,,200201
+K4701-1,Chamber of Secrets Kit,246,2002,0,0,True,,,200201
+K4706-1,Sorcerers Stone Kit,246,2002,0,0,True,,,200201
+KCCHP-1,Coca Cola Harry Potter Gift Set,246,2002,0,0,True,,,200201
+TRU01-1,Harry Potter Quidditch Tower (TRU Event Exclusive),246,2002,38,0,False,,,200201
+4719-1,Quality Quidditch Supplies,246,2003,121,1,False,,,200301
+4720-1,Knockturn Alley,246,2003,211,2,False,,,200301
+K4729-1,Deluxe Hogwarts Kit,246,2003,0,0,True,,,200301
+10132-1,Motorized Hogwarts Express,246,2004,713,4,False,,,200401
+4695-1,Mini Knight Bus,246,2004,58,0,False,,,200401
+4750-1,Draco's Encounter with Buckbeak,246,2004,37,1,False,,,200401
+4751-1,Harry and the Marauder's Map,246,2004,109,3,False,,,200401
+4752-1,Professor Lupin's Classroom,246,2004,159,3,False,,,200401
+4753-1,Sirius Black's Escape,246,2004,192,3,False,,,200401
+4754-1,Hagrid's Hut,246,2004,304,2,False,,,200401
+4755-1,Knight Bus,246,2004,244,2,False,,,200401
+4756-1,Shrieking Shack,246,2004,449,4,False,,,200401
+4757-1,Hogwarts Castle,246,2004,938,9,False,,,200401
+4758-1,Hogwarts Express,246,2004,388,4,False,,,200401
+65524-1,Motorized Hogwarts Express Value-pack,246,2004,0,0,True,,,200401
+K4751-1,Marauder's Map Kit,246,2004,0,0,True,,,200401
+K4755-1,Knight Bus Collection,246,2004,0,0,True,,,200401
+4762-1,Rescue from the Merpeople,246,2005,177,5,False,,,200501
+4766-1,Graveyard Duel,246,2005,552,8,False,,,200501
+4767-1,Harry and the Hungarian Horntail,246,2005,265,3,False,,,200501
+4768-1,The Durmstrang Ship,246,2005,552,2,False,,,200501
+4768-2,The Durmstrang Ship (with Bonus Minifigures),246,2005,569,6,False,,,200501
+5378-1,Hogwarts Castle,246,2007,946,9,False,,,200701
+4736-1,Freeing Dobby,246,2010,73,3,False,,,201001
+4737-1,Quidditch Match,246,2010,153,5,False,,,201001
+4738-1,Hagrid's Hut,246,2010,443,4,False,,,201001
+4840-1,The Burrow,246,2010,573,6,False,,,201001
+4841-1,Hogwarts Express,246,2010,647,5,False,,,201001
+4842-1,Hogwarts Castle,246,2010,1291,11,False,,,201001
+10217-1,Diagon Alley,246,2011,2029,12,False,,,201101
+30110-1,Trolley,246,2011,22,1,False,,,201101
+30111-1,The Lab,246,2011,34,1,False,,,201101
+40028-1,Mini Hogwarts Express,246,2011,64,0,False,,,201101
+4865-1,The Forbidden Forest,246,2011,64,4,False,,,201101
+4866-1,The Knight Bus,246,2011,281,3,False,,,201101
+4867-1,Hogwarts,246,2011,466,7,False,,,201101
+5000068-1,Harry Potter Classic Kit,246,2011,0,0,True,,,201101
+30407-1,Harry's Journey to Hogwarts,246,2018,40,1,False,,,201801
+40289-1,Diagon Alley,246,2018,374,1,False,,,201801
+6213829-1,Wizarding World of Harry Potter Series 1 - Sealed Box,656,2018,0,0,True,,,201801
+6268521-1,Harry Potter Mosaic,246,2018,2305,0,False,,,201801
+6268522-1,Hermione Granger Mosaic,246,2018,2305,0,False,,,201801
+6385434-1,Golden Snitch,246,2018,35,0,False,,,201801
+6482525-1,Harry Potter Wand,246,2018,26,0,False,,,201801
+71022-0,Wizarding World of Harry Potter Series 1 - Random Bag,656,2018,0,0,True,,,201801
+71022-1,Harry Potter,656,2018,7,1,False,,,201801
+71022-10,Dobby,656,2018,7,1,False,,,201801
+71022-11,Sybill Trelawney,656,2018,8,1,False,,,201801
+71022-12,Cedric Diggory,656,2018,7,1,False,,,201801
+71022-13,Filius Flitwick,656,2018,9,1,False,,,201801
+71022-14,Alastor Mad-Eye Moody,656,2018,9,1,False,,,201801
+71022-15,Harry Potter (Invisibility Cloak),656,2018,7,1,False,,,201801
+71022-16,Albus Dumbledore,656,2018,8,1,False,,,201801
+71022-17,Newt Scamander,656,2018,9,1,False,,,201801
+71022-18,Tina Goldstein,656,2018,8,1,False,,,201801
+71022-19,Jacob Kowalski,656,2018,9,1,False,,,201801
+71022-2,Hermione Granger,656,2018,7,1,False,,,201801
+71022-20,Queenie Goldstein,656,2018,7,1,False,,,201801
+71022-21,Credence Barebone,656,2018,6,1,False,,,201801
+71022-22,Percival Graves / Gellert Grindelwald,656,2018,7,1,False,,,201801
+71022-23,Wizarding World of Harry Potter Series 1 - Complete - All Sets,656,2018,0,0,True,,,201801
+71022-3,Ron Weasley,656,2018,7,1,False,,,201801
+71022-4,Draco Malfoy (Quidditch),656,2018,9,1,False,,,201801
+71022-5,Luna Lovegood,656,2018,9,1,False,,,201801
+71022-6,Neville Longbottom,656,2018,9,1,False,,,201801
+71022-7,Cho Chang,656,2018,8,1,False,,,201801
+71022-8,Dean Thomas,656,2018,8,1,False,,,201801
+71022-9,Lord Voldemort,656,2018,6,1,False,,,201801
+71043-1,Hogwarts Castle,246,2018,6020,4,False,,,201801
+71247-2,Hogwarts Express,246,2018,43,0,False,,,201801
+75950-1,Aragog's Lair,246,2018,157,2,False,,,201801
+75951-1,Grindelwald's Escape,667,2018,132,2,False,,,201801
+75952-1,Newt's Case of Magical Creatures,667,2018,694,4,False,,,201801
+75953-1,Hogwarts Whomping Willow,246,2018,754,6,False,,,201801
+75954-1,Hogwarts Great Hall,246,2018,882,10,False,,,201801
+75955-1,Hogwarts Express,246,2018,806,6,False,,,201801
+75956-1,Quidditch Match,246,2018,500,6,False,,,201801
+HPANGLIA-1,Harry Potter Ford Anglia,246,2018,61,0,False,,,201801
+HPEXPRESS-1,Harry Potter Hogwarts Express,246,2018,46,0,False,,,201801
+HPMAGICWAND-1,Harry Potter Magic Wand,246,2018,18,0,False,,,201801
+TRUWEASLEYCAR-1,Mini Flying Ford Anglia,246,2018,36,0,False,,,201801
+75945-1,Expecto Patronum,246,2019,121,4,False,,,201901
+75946-1,Hungarian Horntail Triwizard Challenge,246,2019,265,4,False,,,201901
+75947-1,Hagrid's Hut: Buckbeak's Rescue,246,2019,496,6,False,,,201901
+75948-1,Hogwarts Clock Tower,246,2019,926,8,False,,,201901
+75957-1,The Knight Bus,246,2019,403,3,False,,,201901
+75958-1,Beauxbatons' Carriage: Arrival at Hogwarts,246,2019,431,4,False,,,201901
+75964-1,Harry Potter Advent Calendar 2019,710,2019,305,7,False,,,201901
+75965-1,The Rise of Voldemort,246,2019,185,5,False,,,201901
+KNIGHTBUS-1,Knight Bus,246,2019,36,0,False,,,201901
+30420-1,Harry Potter and Hedwig: Owl Delivery,246,2020,31,1,False,,,202001
+30628-1,The Monster Book of Monsters,246,2020,320,1,False,,,202001
+40419-1,Hogwarts Students,246,2020,55,4,False,,,202001
+66644-1,Wizarding World of Harry Potter Series 2 - Sealed Box,691,2020,0,0,True,,,202001
+71028-0,Wizarding World of Harry Potter Series 2 - Random Bag,691,2020,0,0,True,,,202001
+71028-1,Harry Potter,691,2020,9,1,False,,,202001
+71028-10,Fred Weasley,691,2020,10,1,False,,,202001
+71028-11,George Weasley,691,2020,7,1,False,,,202001
+71028-12,Bellatrix Lestrange,691,2020,8,1,False,,,202001
+71028-13,Kingsley Shacklebolt,691,2020,8,1,False,,,202001
+71028-14,Moaning Myrtle,691,2020,10,1,False,,,202001
+71028-15,Professor Pomona Sprout,691,2020,9,1,False,,,202001
+71028-16,Neville Longbottom,691,2020,9,1,False,,,202001
+71028-17,Wizarding World of Harry Potter Series 2 - Complete - All Sets,691,2020,0,0,True,,,202001
+71028-2,Albus Dumbledore,691,2020,8,1,False,,,202001
+71028-3,Hermione Granger,691,2020,7,1,False,,,202001
+71028-4,Ron Weasley,691,2020,7,1,False,,,202001
+71028-5,Luna Lovegood,691,2020,7,1,False,,,202001
+71028-6,Griphook,691,2020,7,1,False,,,202001
+71028-7,Lily Potter,691,2020,7,1,False,,,202001
+71028-8,James Potter,691,2020,8,1,False,,,202001
+71028-9,Ginny Weasley,691,2020,8,1,False,,,202001
+75966-1,Hogwarts Room of Requirement,246,2020,194,4,False,,,202001
+75967-1,Forbidden Forest: Umbridge's Encounter,246,2020,254,5,False,,,202001
+75968-1,4 Privet Drive,246,2020,797,6,False,,,202001
+75969-1,Hogwarts Astronomy Tower,246,2020,971,8,False,,,202001
+75978-1,Diagon Alley,246,2020,5548,17,False,,,202001
+75979-1,Hedwig,246,2020,630,1,False,,,202001
+75980-1,Attack on The Burrow,246,2020,1052,8,False,,,202001
+75981-1,Harry Potter Advent Calendar 2020,710,2020,335,6,False,,,202001
+30392-1,Hermione's Study Desk,246,2021,30,1,False,,,202101
+40452-1,Hogwarts Gryffindor Dorms,246,2021,144,2,False,,,202101
+40500-1,Wizarding World Minifigure Accessory Set,246,2021,33,4,False,,,202101
+76382-1,Hogwarts Moment: Transfiguration Class,246,2021,241,3,False,,,202101
+76383-1,Hogwarts Moment: Potions Class,246,2021,271,3,False,,,202101
+76384-1,Hogwarts Moment: Herbology Class,246,2021,233,3,False,,,202101
+76385-1,Hogwarts Moment: Charms Class,246,2021,256,3,False,,,202101
+76386-1,Hogwarts: Polyjuice Potion Mistake,246,2021,215,4,False,,,202101
+76387-1,Hogwarts: Fluffy Encounter,246,2021,395,4,False,,,202101
+76388-1,Hogsmeade Village Visit,246,2021,847,7,False,,,202101
+76389-1,Hogwarts Chamber Of Secrets,246,2021,1171,11,False,,,202101
+76390-1,Harry Potter Advent Calendar 2021,710,2021,272,6,False,,,202101
+76391-1,Hogwarts Icons Collectors' Edition,246,2021,3010,3,False,,,202101
+76392-1,Hogwarts Wizard's Chess,246,2021,873,4,False,,,202101
+76393-1,Harry Potter & Hermione Granger,246,2021,1673,0,False,,,202101
+76394-1,"Fawkes, Dumbledore's Phoenix",246,2021,597,1,False,,,202101
+76395-1,Hogwarts: First Flying Lesson,246,2021,262,5,False,,,202101
+30435-1,Build Your Own Hogwarts Castle,246,2022,66,1,False,,,202201
+40577-1,Hogwarts: Grand Staircase,246,2022,224,1,False,,,202201
+76396-1,Hogwarts Moment: Divination Class,246,2022,298,3,False,,,202201
+76397-1,Hogwarts Moment: Defence Against the Dark Arts Class,246,2022,257,3,False,,,202201
+76398-1,Hogwarts Hospital Wing,246,2022,509,4,False,,,202201
+76399-1,Hogwarts Magical Trunk,246,2022,602,1,False,,,202201
+76400-1,Hogwarts Carriage and Thestrals,246,2022,121,2,False,,,202201
+76401-1,Hogwarts Courtyard: Sirius's Rescue,246,2022,343,3,False,,,202201
+76402-1,Hogwarts: Dumbledore's Office,246,2022,651,6,False,,,202201
+76403-1,The Ministry of Magic,246,2022,990,10,False,,,202201
+76404-1,Harry Potter Advent Calendar 2022,710,2022,334,8,False,,,202201
+76405-1,Hogwarts Express - Collectors' Edition,246,2022,5139,20,False,,,202201
+76406-1,Hungarian Horntail Dragon,246,2022,671,1,False,,,202201
+76407-1,The Shrieking Shack & Whomping Willow,246,2022,773,7,False,,,202201
+76408-1,12 Grimmauld Place,246,2022,1086,9,False,,,202201
+30651-1,Quidditch Practice,246,2023,55,1,False,,,202301
+40598-1,Gringotts Vault,246,2023,215,1,False,,,202301
+5008136-1,Bravery & Wisdom Bundle,246,2023,0,0,True,,,202301
+5008138-1,Loyalty & Determination Bundle,246,2023,0,0,True,,,202301
+76409-1,Gryffindor House Banner,246,2023,285,3,False,,,202301
+76410-1,Slytherin House Banner,246,2023,349,3,False,,,202301
+76411-1,Ravenclaw House Banner,246,2023,305,3,False,,,202301
+76412-1,Hufflepuff House Banner,246,2023,313,3,False,,,202301
+76413-1,Hogwarts: Room of Requirement,246,2023,587,5,False,,,202301
+76414-1,Expecto Patronum,246,2023,754,2,False,,,202301
+76415-1,The Battle of Hogwarts,246,2023,740,6,False,,,202301
+76416-1,Quidditch Trunk,246,2023,599,0,False,,,202301
+76417-1,Gringotts Wizarding Bank – Collectors' Edition,246,2023,4809,13,False,,,202301
+76418-1,Harry Potter Advent Calendar 2023,710,2023,227,6,False,,,202301
+76419-1,Hogwarts Castle and Grounds,246,2023,2660,1,False,,,202301
+76420-1,Triwizard Tournament: The Black Lake,246,2023,349,5,False,,,202301
+76421-1,Dobby the House-Elf,246,2023,403,0,False,,,202301
+76422-1,Diagon Alley Weasleys' Wizard Wheezes,246,2023,835,7,False,,,202301
+76423-1,Hogwarts Express & Hogsmeade Station,246,2023,1080,8,False,,,202301
+EG00019-1,3x Harry Potter Wands,246,2023,78,0,False,,,202301
+30677-1,Draco in the Forbidden Forest,246,2024,33,1,False,,,202401
+40695-1,Borgin and Burkes: Floo Network,246,2024,190,1,False,,,202401
+6508942-1,Hagrid's Hut,246,2024,87,0,False,,,202401
+6541140-1,Platform 9 3/4,246,2024,103,0,False,,,202401
+6545695-1,Hogwarts Express,246,2024,42,0,False,,,202401
+76424-1,Flying Ford Anglia,246,2024,165,2,False,,,202401
+76425-1,Hedwig at 4 Privet Drive,246,2024,337,0,False,,,202401
+76426-1,Hogwarts Castle Boathouse,246,2024,350,5,False,,,202401
+76427-1,Buckbeak,246,2024,723,0,False,,,202401
+76428-1,Hagrid's Hut: An Unexpected Visit,246,2024,894,5,False,,,202401
+76429-1,Talking Sorting Hat,246,2024,561,1,False,,,202401
+76430-1,Hogwarts Castle Owlery,246,2024,365,3,False,,,202401
+76431-1,Hogwarts Castle: Potions Class,246,2024,396,4,False,,,202401
+76432-1,Forbidden Forest: Magical Creatures,246,2024,172,2,False,,,202401
+76433-1,Mandrake,246,2024,579,0,False,,,202401
+76434-1,Aragog in the Forbidden Forest,246,2024,195,2,False,,,202401
+76435-1,Hogwarts Castle: The Great Hall,246,2024,1727,11,False,,,202401
+76437-1,The Burrow – Collectors' Edition,246,2024,2403,10,False,,,202401
+76438-1,Harry Potter Advent Calendar 2024,710,2024,299,7,False,,,202401
+76439-1,Ollivanders & Madam Malkin’s Robes,246,2024,766,8,False,,,202401
+76440-1,Triwizard Tournament: The Arrival,246,2024,1229,5,False,,,202401
+30706-1,Quidditch Lesson,246,2025,27,2,False,,,202501
+40770-1,Hogwarts Castle: Room of Requirement,246,2025,203,1,False,,,202501
+6565158-1,Butterbeer Truck,246,2025,61,0,False,,,202501
+76441-1,Hogwarts Castle: Dueling Club,246,2025,157,4,False,,,202501
+76442-1,Hogwarts Castle: Charms Class,246,2025,203,3,False,,,202501
+76443-1,Hagrid & Harry's Motorcycle Ride,246,2025,617,0,False,,,202501
+76444-1,Diagon Alley Wizarding Shops,246,2025,2750,0,False,,,202501
+76445-1,Hogwarts Castle: Herbology Class,246,2025,390,3,False,,,202501
+76446-1,Knight Bus Adventure,246,2025,499,4,False,,,202501
+76447-1,Hogwarts Castle: Flying Lessons,246,2025,649,7,False,,,202501
+76448-1,Fawkes: Dumbledore's Phoenix,246,2025,299,0,False,,,202501
+76449-1,Chomping Monster Book of Monsters,246,2025,519,1,False,,,202501
+76450-1,Book Nook: Hogwarts Express,246,2025,832,2,False,,,202501
+76451-1,Privet Drive: Aunt Marge's Visit,246,2025,640,6,False,,,202501
+76452-1,Quality Quidditch Supplies & Ice Cream Parlour,246,2025,795,7,False,,,202501
+76453-1,Malfoy Manor,246,2025,1602,9,False,,,202501
+76454-1,Hogwarts Castle: The Main Tower,246,2025,2131,12,False,,,202501
+76456-1,Harry Potter Advent  Calendar 2025,710,2025,278,8,False,,,202501
+76457-1,Hogsmeade Village – Collectors' Edition,246,2025,3228,12,False,,,202501
+76458-1,Thestral Family,246,2025,548,0,False,,,202501
+30724-1,Dumbledore's Office with Harry Potter,246,2026,42,1,False,,,202601
+40901-1,Ministry Munchies & The Daily Prophet Stands,246,2026,150,3,False,,,202601
+40975-1,Mini Hogwarts Castle,246,2026,701,1,False,,,202601
+6644876-1,Micro Castle,246,2026,43,0,False,,,202601
+66820-1,Hogwarts Crest and Dobby Collector's Set,246,2026,0,0,True,,,202601
+76459-1,Hagrid & Harry's Privet Drive Escape,246,2026,124,4,False,,,202601
+76460-1,Hogwarts Castle: Sorting Hat Ceremony,246,2026,127,4,False,,,202601
+76461-1,Cornish Pixie,246,2026,320,0,False,,,202601
+76462-1,Hogwarts House Crest,246,2026,545,0,False,,,202601
+76463-1,Hogwarts Castle: Hospital Wing,246,2026,909,7,False,,,202601
+76464-1,Cauldron: Secret Potions Classroom,246,2026,661,2,False,,,202601
+76466-1,Sorcerer's Stone – Collectors' Edition,246,2026,1574,3,False,,,202601
+76467-1,Luna Lovegood's House,246,2026,764,5,False,,,202601
+76469-1,Dobby the Free Elf,246,2026,379,0,False,,,202601
+76470-1,Enchanted Flying Ford Anglia,246,2026,868,0,False,,,202601
+76471-1,Knockturn Alley Wizarding Shops,246,2026,788,8,False,,,202601
+76473-1,Hogwarts Castle: East Wing,246,2026,2164,14,False,,,202601
+76474-1,Hogwarts Herbology Plants,246,2026,817,0,False,,,202601
+76475-1,Forbidden Forest: Expecto Patronum,246,2026,245,4,False,,,202601
+76476-1,The Ministry of Magic – Collectors' Edition,246,2026,3545,15,False,,,202601
+76477-1,Norbert: Hagrid's Baby Dragon,246,2026,483,0,False,,,202601
+76478-1,Book Nook: Dumbledore's Office,246,2026,1182,2,False,,,202601

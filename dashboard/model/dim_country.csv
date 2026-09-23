@@ -1,0 +1,62 @@
+country_key,country_code,country_name,is_canada,search_interest,interest_rank
+1,FR,France,False,99,1.0
+2,VN,Vietnam,False,99,1.0
+3,GB,United Kingdom,False,98,3.0
+4,CH,Switzerland,False,98,3.0
+5,DE,Germany,False,98,3.0
+6,AT,Austria,False,98,3.0
+7,IT,Italy,False,98,3.0
+8,IN,India,False,98,3.0
+9,CA,Canada,True,97,9.0
+10,IE,Ireland,False,97,9.0
+11,NZ,New Zealand,False,97,9.0
+12,TR,Türkiye,False,97,9.0
+13,LK,Sri Lanka,False,97,9.0
+14,AE,United Arab Emirates,False,97,9.0
+15,ZA,South Africa,False,97,9.0
+16,IR,Iran,False,97,9.0
+17,EG,Egypt,False,97,9.0
+18,SG,Singapore,False,96,18.0
+19,PK,Pakistan,False,96,18.0
+20,ID,Indonesia,False,96,18.0
+21,SA,Saudi Arabia,False,96,18.0
+22,AU,Australia,False,96,18.0
+23,MA,Morocco,False,96,18.0
+24,RU,Russia,False,95,24.0
+25,GR,Greece,False,95,24.0
+26,MY,Malaysia,False,95,24.0
+27,BD,Bangladesh,False,95,24.0
+28,HK,Hong Kong,False,95,24.0
+29,BE,Belgium,False,95,24.0
+30,UA,Ukraine,False,94,30.0
+31,PH,Philippines,False,94,30.0
+32,IL,Israel,False,94,30.0
+33,TH,Thailand,False,94,30.0
+34,JP,Japan,False,92,34.0
+35,KR,South Korea,False,91,35.0
+36,CZ,Czechia,False,89,36.0
+37,ES,Spain,False,89,36.0
+38,SK,Slovakia,False,88,38.0
+39,PT,Portugal,False,87,39.0
+40,NL,Netherlands,False,86,40.0
+41,SE,Sweden,False,85,41.0
+42,NO,Norway,False,85,41.0
+43,PL,Poland,False,85,41.0
+44,DK,Denmark,False,84,44.0
+45,FI,Finland,False,83,45.0
+46,HR,Croatia,False,83,45.0
+47,HU,Hungary,False,82,47.0
+48,VE,Venezuela,False,81,48.0
+49,BR,Brazil,False,81,48.0
+50,RS,Serbia,False,80,50.0
+51,US,United States,False,79,51.0
+52,RO,Romania,False,79,51.0
+53,UY,Uruguay,False,78,53.0
+54,BG,Bulgaria,False,75,54.0
+55,EC,Ecuador,False,74,55.0
+56,MX,Mexico,False,74,55.0
+57,AR,Argentina,False,74,55.0
+58,CR,Costa Rica,False,73,58.0
+59,CL,Chile,False,73,58.0
+60,PE,Peru,False,70,60.0
+61,CO,Colombia,False,68,61.0

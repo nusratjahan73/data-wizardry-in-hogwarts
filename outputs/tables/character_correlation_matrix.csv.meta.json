@@ -1,0 +1,26 @@
+{
+  "file": "character_correlation_matrix.csv",
+  "collected_at_utc": "2026-09-03T07:13:21+00:00",
+  "size_bytes": 2019,
+  "rows": 16,
+  "columns": [
+    "article",
+    "Albus_Dumbledore",
+    "Bellatrix_Lestrange",
+    "Dobby_(Harry_Potter)",
+    "Draco_Malfoy",
+    "Ginny_Weasley",
+    "Harry_Potter_(character)",
+    "Hermione_Granger",
+    "Lord_Voldemort",
+    "Luna_Lovegood",
+    "Minerva_McGonagall",
+    "Neville_Longbottom",
+    "Remus_Lupin",
+    "Ron_Weasley",
+    "Rubeus_Hagrid",
+    "Severus_Snape",
+    "Sirius_Black"
+  ],
+  "note": "Spearman correlation of week-on-week log changes in pageviews"
+}

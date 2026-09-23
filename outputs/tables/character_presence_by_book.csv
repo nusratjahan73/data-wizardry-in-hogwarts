@@ -1,0 +1,17 @@
+character,article,book_position,book_label,chapters_mentioned,chapters_in_book,share_of_chapters,total_weekly_views
+Albus Dumbledore,Albus_Dumbledore,1,1. Philosopher's Stone,4,17,0.235,15594595.0
+Bellatrix Lestrange,Bellatrix_Lestrange,1,1. Philosopher's Stone,0,17,0.0,3305517.0
+Dobby,Dobby_(Harry_Potter),1,1. Philosopher's Stone,0,17,0.0,267538.0
+Draco Malfoy,Draco_Malfoy,1,1. Philosopher's Stone,3,17,0.176,7157432.0
+Ginny Weasley,Ginny_Weasley,1,1. Philosopher's Stone,3,17,0.176,3752345.0
+Harry Potter,Harry_Potter_(character),1,1. Philosopher's Stone,17,17,1.0,7585685.0
+Hermione Granger,Hermione_Granger,1,1. Philosopher's Stone,6,17,0.353,9543423.0
+Luna Lovegood,Luna_Lovegood,1,1. Philosopher's Stone,0,17,0.0,3484802.0
+Minerva McGonagall,Minerva_McGonagall,1,1. Philosopher's Stone,4,17,0.235,2771190.0
+Neville Longbottom,Neville_Longbottom,1,1. Philosopher's Stone,0,17,0.0,1709585.0
+Remus Lupin,Remus_Lupin,1,1. Philosopher's Stone,0,17,0.0,2221471.0
+Ron Weasley,Ron_Weasley,1,1. Philosopher's Stone,3,17,0.176,5167265.0
+Rubeus Hagrid,Rubeus_Hagrid,1,1. Philosopher's Stone,6,17,0.353,5152673.0
+Severus Snape,Severus_Snape,1,1. Philosopher's Stone,5,17,0.294,9878793.0
+Sirius Black,Sirius_Black,1,1. Philosopher's Stone,0,17,0.0,3212050.0
+Lord Voldemort,Lord_Voldemort,1,1. Philosopher's Stone,2,17,0.118,14491533.0

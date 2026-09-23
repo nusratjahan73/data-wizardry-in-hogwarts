@@ -1,0 +1,22 @@
+{
+  "file": "dim_film.csv",
+  "collected_at_utc": "2026-09-03T07:13:23+00:00",
+  "size_bytes": 1379,
+  "table": "dim_film",
+  "grain": "film",
+  "rows": 11,
+  "columns": [
+    "film_key",
+    "title",
+    "series",
+    "release_date",
+    "release_date_na",
+    "rt_critic_score",
+    "rt_audience_score",
+    "metacritic_score",
+    "cinemascore",
+    "release_year",
+    "era",
+    "date_key"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "file": "retail_order_schedule.csv",
+  "collected_at_utc": "2026-09-03T07:14:58+00:00",
+  "size_bytes": 602,
+  "rows": 6,
+  "columns": [
+    "position",
+    "product_type",
+    "lead_time_days",
+    "required_in_store",
+    "order_by",
+    "days_from_today",
+    "already_late",
+    "review_period_days"
+  ]
+}

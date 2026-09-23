@@ -1,0 +1,14 @@
+{
+  "file": "spell_classifier_metrics.csv",
+  "collected_at_utc": "2026-09-03T07:14:54+00:00",
+  "size_bytes": 276,
+  "rows": 2,
+  "columns": [
+    "model",
+    "accuracy",
+    "macro_f1",
+    "classes",
+    "observations",
+    "evaluation"
+  ]
+}

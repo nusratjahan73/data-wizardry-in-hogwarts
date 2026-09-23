@@ -1,0 +1,15 @@
+{
+  "file": "dim_product_theme.csv",
+  "collected_at_utc": "2026-09-03T07:13:23+00:00",
+  "size_bytes": 266,
+  "table": "dim_product_theme",
+  "grain": "theme",
+  "rows": 5,
+  "columns": [
+    "theme_key",
+    "theme_name",
+    "sets",
+    "first_year",
+    "last_year"
+  ]
+}

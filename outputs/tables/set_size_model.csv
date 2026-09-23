@@ -1,0 +1,6 @@
+term,coefficient,std_error,p_value,ci_lower,ci_upper,percent_effect
+const,0.1891,0.0326,0.0,0.1252,0.2529,20.82
+years_since_2001,-0.0118,0.0012,0.0,-0.0141,-0.0094,-1.17
+log_minifigs,0.2116,0.0123,0.0,0.1874,0.2358,23.57
+log_distinct_colours,1.8392,0.0122,0.0,1.8153,1.8631,529.15
+is_branded_flag,-0.0177,0.0508,0.7275,-0.1173,0.0819,-1.75

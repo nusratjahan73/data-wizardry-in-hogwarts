@@ -1,0 +1,196 @@
+/* Chart: the inline SVG figures and the data tables.
+ *
+ * Separate from layout.css because charts have their own vocabulary, axes,
+ * series and gridlines, that nothing else on the page uses.
+ */
+
+.figure {
+  margin: var(--space-3) 0;
+}
+
+.figure__title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  margin-bottom: var(--space-1);
+}
+
+.figure__subtitle {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: var(--space-2);
+}
+
+.chart {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.chart__grid,
+.chart__axis {
+  stroke: var(--grid);
+  stroke-width: 1;
+}
+
+.chart__label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  fill: var(--muted);
+}
+
+.chart__value-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  fill: var(--ink);
+}
+
+.chart__line {
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.chart__line--category {
+  stroke: var(--support);
+}
+
+.chart__line--attention {
+  stroke: var(--accent);
+}
+
+.chart__line--all-retail {
+  stroke: var(--muted);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 4;
+}
+
+.chart__dot--category {
+  fill: var(--support);
+}
+
+.chart__dot--attention {
+  fill: var(--accent);
+}
+
+.chart__bar--baseline {
+  fill: var(--muted);
+}
+
+.chart__bar--central {
+  fill: var(--accent);
+}
+
+.chart__band {
+  fill: var(--highlight);
+  opacity: 0.12;
+}
+
+.chart__marker {
+  stroke: var(--highlight);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 4;
+}
+
+.chart__marker-label {
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  fill: var(--warn);
+}
+
+/* Legend, built by js/chart.js so it cannot drift from the series it labels. */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: var(--space-2);
+}
+
+.legend__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.legend__swatch {
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+/* Tables. */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin: var(--space-3) 0;
+}
+
+.data-table caption {
+  text-align: left;
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding-bottom: var(--space-2);
+}
+
+.data-table th,
+.data-table td {
+  text-align: left;
+  padding: 0.45rem 0.7rem 0.45rem 0;
+  border-bottom: 1px solid var(--grid);
+}
+
+.data-table th {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.data-table td.numeric,
+.data-table th.numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  padding-right: 0;
+}
+
+.data-table tr.is-highlighted td {
+  background: var(--ground-alt);
+  font-weight: 600;
+}
+
+.flag--late {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* A wide table scrolls inside its own box rather than pushing the page sideways. */
+.table-scroll {
+  overflow-x: auto;
+}
+
+/* Legend swatch colours. Declared as classes so no element ever needs an
+   inline style attribute, which section 4 forbids. */
+.legend__swatch--category {
+  background: var(--support);
+}
+
+.legend__swatch--attention {
+  background: var(--accent);
+}
+
+.legend__swatch--all-retail {
+  background: var(--muted);
+}
+
+.legend__swatch--baseline {
+  background: var(--muted);
+}
+
+.legend__swatch--central {
+  background: var(--accent);
+}

@@ -1,0 +1,5 @@
+event,article,event_date,baseline_daily_views,peak_daily_views,peak_multiple,window_multiple,residual_multiple,long_baseline_daily_views,step_multiple,days_to_settle,days_observed_after
+First Teaser Trailer,Harry_Potter_(TV_series),2026-03-25,4070.0,135314.0,33.25,2.6,0.86,843.0,5.27,27,29
+Film release: Fantastic Beasts and Where to Find Them,Harry_Potter,2016-11-18,18664.0,46334.0,2.48,1.09,0.87,16690.5,1.13,11,29
+Film release: Fantastic Beasts: The Crimes of Grindelwald,Harry_Potter,2018-11-16,19798.0,32240.0,1.63,1.03,0.74,14909.5,1.28,4,29
+Film release: Fantastic Beasts: The Secrets of Dumbledore,Harry_Potter,2022-04-15,10482.5,13915.0,1.33,0.96,0.87,12427.0,0.73,0,29

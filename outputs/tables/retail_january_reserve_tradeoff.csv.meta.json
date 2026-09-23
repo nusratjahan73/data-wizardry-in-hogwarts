@@ -1,0 +1,16 @@
+{
+  "file": "retail_january_reserve_tradeoff.csv",
+  "collected_at_utc": "2026-09-03T07:14:58+00:00",
+  "size_bytes": 738,
+  "rows": 8,
+  "columns": [
+    "january_reserve_proportion",
+    "expected_profit_cad",
+    "profit_low_scenario_cad",
+    "profit_central_scenario_cad",
+    "profit_high_scenario_cad",
+    "worst_case_profit_cad",
+    "expected_lost_sales_cad",
+    "expected_unsold_cad"
+  ]
+}

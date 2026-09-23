@@ -1,0 +1,16 @@
+{
+  "file": "fact_attention_monthly.csv",
+  "collected_at_utc": "2026-09-03T07:13:24+00:00",
+  "size_bytes": 686568,
+  "table": "fact_attention_monthly",
+  "grain": "source + group + series + month",
+  "rows": 9624,
+  "columns": [
+    "source",
+    "group",
+    "series",
+    "mean_weekly_value",
+    "weeks",
+    "date_key"
+  ]
+}

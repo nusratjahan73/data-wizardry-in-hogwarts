@@ -1,0 +1,20 @@
+{
+  "file": "retail_demand_profile.csv",
+  "collected_at_utc": "2026-09-03T07:14:58+00:00",
+  "size_bytes": 1320,
+  "rows": 15,
+  "columns": [
+    "month",
+    "month_name",
+    "seasonal_share_of_year",
+    "baseline_sales_cad",
+    "attention_multiple_vs_counterfactual",
+    "sales_uplift_factor",
+    "forecast_sales_cad",
+    "incremental_sales_cad",
+    "scenario",
+    "pass_through"
+  ],
+  "pass_through": 0.35,
+  "note": "monthly category sales Nov 2026 to Mar 2027 for each scenario"
+}

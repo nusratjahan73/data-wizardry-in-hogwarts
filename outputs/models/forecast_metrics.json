@@ -1,0 +1,77 @@
+{
+  "holdout_weeks": 52,
+  "train_end": "2025-08-25",
+  "best_model": "Prophet",
+  "models_beating_baseline": [
+    "Prophet",
+    "SARIMA",
+    "Holt-Winters",
+    "drift naive"
+  ],
+  "metrics": [
+    {
+      "model": "Prophet",
+      "mae": 19246.675169488626,
+      "mape": 13.074190002809008,
+      "rmse": 28371.27679845268,
+      "mae_vs_baseline": 0.39463842108427544,
+      "beats_baseline": true
+    },
+    {
+      "model": "SARIMA",
+      "mae": 34119.28459267986,
+      "mape": 26.85783309338246,
+      "rmse": 38285.958120576295,
+      "mae_vs_baseline": 0.699589954192487,
+      "beats_baseline": true
+    },
+    {
+      "model": "Holt-Winters",
+      "mae": 42096.43505219207,
+      "mape": 36.564413025109396,
+      "rmse": 48212.42737812537,
+      "mae_vs_baseline": 0.863155351040053,
+      "beats_baseline": true
+    },
+    {
+      "model": "drift naive",
+      "mae": 43772.56738109219,
+      "mape": 38.3169563590755,
+      "rmse": 52568.78935072996,
+      "mae_vs_baseline": 0.8975231683373522,
+      "beats_baseline": true
+    },
+    {
+      "model": "seasonal naive",
+      "mae": 48770.403846153844,
+      "mape": 40.57669572712351,
+      "rmse": 57333.30620976177,
+      "mae_vs_baseline": 1.0,
+      "beats_baseline": null
+    }
+  ],
+  "scenario_specs": {
+    "low": {
+      "peak": 1.33,
+      "sustained": 1.15,
+      "decay_weeks": 8
+    },
+    "central": {
+      "peak": 2.07,
+      "sustained": 1.6,
+      "decay_weeks": 14
+    },
+    "high": {
+      "peak": 3.23,
+      "sustained": 2.4,
+      "decay_weeks": 22
+    }
+  },
+  "composite_articles": [
+    "Harry_Potter",
+    "Wizarding_World",
+    "Harry_Potter_(film_series)",
+    "Fantastic_Beasts"
+  ],
+  "random_seed": 42
+}

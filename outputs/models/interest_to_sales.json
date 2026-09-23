@@ -1,0 +1,16 @@
+{
+  "best_lag_months": 2,
+  "elasticity": 0.0507,
+  "ci": [
+    -0.0044,
+    0.1058
+  ],
+  "p_value": 0.0712,
+  "significant_at_5pc": false,
+  "adj_r_squared": 0.932,
+  "adj_r_squared_controls_only": 0.9291624910454194,
+  "observations": 107,
+  "specification": "log category sales ~ log attention (lagged) + log total retail + month dummies",
+  "standard_errors": "Newey-West, 6 lags",
+  "interpretation": "correlational, category level, not causal"
+}

@@ -1,0 +1,25 @@
+{
+  "file": "character_centrality.csv",
+  "collected_at_utc": "2026-09-03T07:13:21+00:00",
+  "size_bytes": 2450,
+  "rows": 16,
+  "columns": [
+    "character",
+    "article",
+    "house",
+    "connections",
+    "degree_centrality",
+    "betweenness_centrality",
+    "eigenvector_centrality",
+    "eigenvector_method",
+    "mean_correlation",
+    "total_views",
+    "attention_rank",
+    "centrality_rank",
+    "coupling_rank",
+    "rank_gap"
+  ],
+  "edge_threshold": 0.6481,
+  "edge_quantile": 0.75,
+  "note": "centrality in the attention co-movement network, against raw attention"
+}
