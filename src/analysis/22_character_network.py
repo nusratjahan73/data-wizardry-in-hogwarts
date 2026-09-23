@@ -455,7 +455,7 @@ def main() -> None:
             f"and {least_coupled['character']} the least at {least_coupled['mean_correlation']:.2f}. "
             f"The one commercially useful asymmetry in the table is "
             f"{independent['character']}, who is {int(independent['attention_rank'])} of "
-            f"{len(frame)} on traffic with {independent['total_views'] / 1e6:.1f} million weekly "
+            f"{len(frame)} on traffic with {independent['total_views'] / 1e6:.1f} million total "
             f"views but only {int(independent['coupling_rank'])} on coupling at "
             f"{independent['mean_correlation']:.2f}: a large following that does not need a "
             f"franchise moment to show up, and therefore the safest character to carry outside one."
