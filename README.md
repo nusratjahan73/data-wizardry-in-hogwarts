@@ -2,7 +2,7 @@
 
 **Forecasting a Canadian retail buy before the wizarding franchise comes back in December 2026.**
 
-This is a full data and AI project that I built in September 2026 from my own written plan. I used Python (pandas, statsmodels, Prophet, scikit-learn, VADER, NetworkX, Dask), Power BI and real public data from Wikipedia, Statistics Canada, Google Trends and Rebrickable.
+This is a full data and AI project that I built from my own written plan. I used Python (pandas, statsmodels, Prophet, scikit-learn, VADER, NetworkX, Dask), Power BI and real public data from Wikipedia, Statistics Canada, Google Trends and Rebrickable.
 
 ---
 
