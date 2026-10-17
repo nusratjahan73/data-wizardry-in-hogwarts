@@ -1,34 +1,29 @@
-"""Modules 3.4 and 5.3. How the branded line is scaled, and what predicts set size.
+"""Checking how the branded line grows over time and what predicts set size (modules 3.4 and 5.3).
 
-Reads  : outputs/tables/segment_assignments.csv, data/processed/films.csv
-Writes : images/figures/product_line_by_year.png
+Reading: outputs/tables/segment_assignments.csv, data/processed/films.csv
+Writing: images/figures/product_line_by_year.png
          outputs/tables/product_line_by_year.csv
          outputs/tables/set_size_model.csv
          docs/findings.md (one entry)
 Runtime: about twenty seconds.
 
-**What these modules were meant to be.** Module 3.4 tests whether the branded
-line carries a licensing premium, meaning a higher price per piece than
-comparable unbranded lines. Module 5.3 fits a regression predicting retail price
-from piece count, minifigure count, year and theme. Both need retail price, and
-the only source for it is Brickset, which needs an API key this project does not
-have. Rebrickable carries no price field at all.
+I first planned two things here. Module 3.4 was a test of a licensing premium,
+meaning a higher price per piece than similar lines with no brand. Module 5.3
+was a regression that predicts retail price from piece count, minifigure count,
+year and theme. Both need retail price. The only source is Brickset, which
+needs an API key I do not have, and Rebrickable has no price field at all.
 
-**What is here instead.** Two questions the same data can answer without price.
+So I ask two questions that need no price. First, does the licensor grow the
+product line before a release, and by how much? If the line always grows in the
+year before a film, the size of the 2026 line tells me what the licensor
+expects from the premiere, apart from anything I forecast myself.
 
-The first is a timing question, and it is the one that matters commercially: does
-the licensor scale the product line ahead of a release, and by how much? If the
-line reliably grows in the year before a film, then the size of the 2026 line is
-itself a signal about what the licensor expects from the premiere, independent of
-anything this project forecasts.
+Second, I fit the same regression with set size as the target in place of
+price. It tells me what drives how big a set is, not what it costs. That is a
+weaker question, so I label it as a substitute and not as module 5.3 done.
 
-The second is the same regression the brief asks for with size as the target
-instead of price. It answers what drives how big a set is rather than what drives
-what it costs. That is a weaker question, and it is labelled as a substitute
-rather than presented as module 5.3 delivered.
-
-Nothing here should be read as a statement about price or margin. The project has
-no price data, and a licensing premium remains untested.
+Nothing here says anything about price or margin. I have no price data, and the
+licensing premium is still untested.
 """
 
 from __future__ import annotations
@@ -53,7 +48,7 @@ logger = get_logger(SCRIPT)
 
 
 def load_sets() -> pd.DataFrame:
-    """Set-level features from module 4, which already joined the part inventory."""
+    """Loading the features for each set from module 4, which already joined the part inventory."""
     source = path("outputs_tables", "segment_assignments.csv")
     if not source.exists():
         raise FileNotFoundError(
@@ -63,7 +58,7 @@ def load_sets() -> pd.DataFrame:
 
 
 def line_by_year(sets: pd.DataFrame) -> pd.DataFrame:
-    """Branded line size and shape per year."""
+    """Working out the size and shape of the branded line for each year."""
     branded = sets[sets["is_branded"]]
     by_year = branded.groupby("year", as_index=False).agg(
         sets_released=("set_num", "count"),
@@ -74,9 +69,9 @@ def line_by_year(sets: pd.DataFrame) -> pd.DataFrame:
         median_distinct_colours=("distinct_colours", "median"),
     )
 
-    # The catalogue-wide count, so a rise in the branded line can be told apart
-    # from a rise in the whole catalogue. Without this control, "the line grew in
-    # 2001" would just be "the manufacturer grew in 2001".
+    # Adding the count for the whole catalogue, so I can tell a rise in the branded
+    # line apart from a rise in the whole catalogue. Without this control, "the line
+    # grew in 2001" would just be "the manufacturer grew in 2001".
     catalogue = sets.groupby("year", as_index=False)["set_num"].count().rename(
         columns={"set_num": "catalogue_sets"}
     )
@@ -91,12 +86,11 @@ def release_years() -> list[int]:
 
 
 def fit_size_model(sets: pd.DataFrame) -> tuple[pd.DataFrame, object]:
-    """Predict log set size from year, minifigures and whether it is branded.
+    """Predicting log set size from year, minifigures, colours and whether the set is branded.
 
-    Log target because piece counts span one to ten thousand and the residuals
-    of a linear model on the raw counts are badly skewed. The coefficients then
-    read as proportional effects, which is also the more natural way to talk
-    about set size.
+    I use a log target because piece counts run from one to ten thousand, and a
+    linear model on the raw counts has badly skewed residuals. The coefficients
+    then read as proportional effects, which is a natural way to talk about size.
     """
     frame = sets[(sets["num_parts"] > 0)].copy()
     frame["log_parts"] = np.log(frame["num_parts"])
@@ -177,7 +171,7 @@ def main() -> None:
             SCRIPT, "product_line",
             "no retail price data is available, so the licensing premium test (3.4) and the "
             "price model (5.3) cannot be run as specified",
-            "replaced with a line-scaling analysis and a set-size regression, both labelled as "
+            "replaced with a line scaling analysis and a set size regression, both labelled as "
             "substitutes. A Brickset API key would restore both.",
             severity="note",
         )
@@ -186,11 +180,11 @@ def main() -> None:
         releases = release_years()
         table = save_table(
             "product_line_by_year.csv", by_year,
-            note="branded line size per year, with the catalogue-wide count as a control",
+            note="branded line size per year, with the catalogue wide count as a control",
         )
         logger.info("branded line by year:\n%s", by_year.to_string(index=False))
 
-        # Does the line grow in the year before a release?
+        # Checking whether the line grows in the year before a release.
         by_year_indexed = by_year.set_index("year")
         pre_release_years = [y - 1 for y in releases if (y - 1) in by_year_indexed.index]
         other_years = [
@@ -223,11 +217,11 @@ def main() -> None:
 
         branded_row = coefficients[coefficients["term"] == "is_branded_flag"].iloc[0]
 
-        # The release-year comparison is confounded, and saying so is the result.
-        # Ten of the eleven films landed between 2001 and 2011, when the whole
-        # catalogue was a third of its current size, while most non-release years
-        # are recent. Comparing raw counts across those two eras measures the
-        # manufacturer growing, not the licensor responding to a film.
+        # Working out catalogue shares, because my release year comparison is confounded,
+        # and saying so is my result. Ten of the eleven films came out between 2001 and
+        # 2011, when the whole catalogue was a third of its size today, while most years
+        # with no release are recent. Comparing raw counts across those two eras measures
+        # the manufacturer growing, not the licensor reacting to a film.
         pre_share = float(by_year_indexed.loc[pre_release_years, "share_of_catalogue"].mean())
         release_share = float(
             by_year_indexed.loc[
@@ -253,10 +247,10 @@ def main() -> None:
         log_data_issue(
             SCRIPT, "product_line",
             f"release years average {release_mean:.1f} branded sets against {other_mean:.1f} in "
-            f"non-release years, which is the opposite of the expected ramp",
+            f"non release years, which is the opposite of the expected ramp",
             "the comparison is confounded: ten of eleven films fall in 2001-2011 when the "
             "catalogue was a third of its current size, so the raw counts compare two eras rather "
-            "than two conditions. No release-ramp claim is made in either direction.",
+            "than two conditions. No release ramp claim is made in either direction.",
             severity="note",
         )
 
@@ -299,16 +293,16 @@ def main() -> None:
             evidence=(
                 f"Branded set counts, catalogue shares and median piece counts per year from the "
                 f"Rebrickable "
-                f"catalogue, with the catalogue-wide set count as a control so that growth in the "
+                f"catalogue, with the catalogue wide set count as a control so that growth in the "
                 f"line can be told apart from growth in the manufacturer. Plus an OLS of log piece "
                 f"count on year, log minifigures, log distinct colours and a branded flag, with "
-                f"heteroskedasticity-robust standard errors, R squared {model.rsquared:.3f} over "
+                f"heteroskedasticity robust standard errors, R squared {model.rsquared:.3f} over "
                 f"{int(model.nobs):,} sets."
             ),
             sample=(
                 f"{int(sets['is_branded'].sum())} branded sets across "
                 f"{int(by_year['year'].min())} to {int(by_year['year'].max())}, within a catalogue "
-                f"of {len(sets):,} sets. Release years taken from the eleven-film table."
+                f"of {len(sets):,} sets. Release years taken from the eleven film table."
             ),
             uncertainty=(
                 "Neither module 3.4 nor module 5.3 is delivered as specified, and this does not "
@@ -316,9 +310,9 @@ def main() -> None:
                 "that needs an API key this project does not have; Rebrickable carries no price "
                 "field at all. So the licensing premium remains completely untested, and nothing "
                 "here says anything about price or margin. "
-                "The release-year comparison is a description of eleven films' worth of years, not "
+                "The release year comparison is a description of eleven films' worth of years, not "
                 "a model, and with that few release years the averages move materially if one year "
-                "is reclassified. The set-size regression answers a weaker question than the price "
+                "is reclassified. The set size regression answers a weaker question than the price "
                 "model would and nothing downstream consumes it. A season one line may also be "
                 "announced after this data was collected on 2 September 2026, which would raise "
                 "the 2026 count."
@@ -328,7 +322,7 @@ def main() -> None:
         )
 
         run.rows_out = len(by_year)
-        run.note = f"{latest_sets} sets in {latest_year}; release-year mean {release_mean:.0f}"
+        run.note = f"{latest_sets} sets in {latest_year}; release year mean {release_mean:.0f}"
 
     logger.info("product line analysis complete")
 

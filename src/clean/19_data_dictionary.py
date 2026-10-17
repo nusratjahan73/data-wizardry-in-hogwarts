@@ -1,19 +1,19 @@
-"""Generate docs/data_dictionary.md from the processed tables themselves.
+"""Generating docs/data_dictionary.md from my processed tables themselves.
 
-Reads  : data/processed/*.csv and their .meta.json sidecars.
-Writes : docs/data_dictionary.md
+Reading: data/processed/*.csv and their .meta.json sidecars.
+Writing: docs/data_dictionary.md
 Runtime: a few seconds.
 
-The dictionary is generated rather than written by hand, for one reason: a hand
-written dictionary drifts from the data the first time a column is added, and
-module 1's acceptance test requires that it cover every column with no blank
-entries. Generating it means it cannot drift and cannot be partially filled.
+I generate the dictionary and do not write it by hand, for one reason. A hand
+written dictionary goes out of date the first time I add a column. My check for
+module 1 needs every column covered with no blank entries. A generated
+dictionary cannot go out of date and cannot be half filled.
 
-Type, null count and range are measured from the data. Units, source and known
-gaps cannot be measured, so they come from the curated map below. Any column
-without an entry in that map is written into the dictionary with a loud TO
-DOCUMENT marker and reported at the end of the run, so a missing description is
-visible rather than absent.
+I measure the type, null count and range from the data. I cannot measure units,
+source and known gaps, so they come from my curated map below. If a column has
+no entry in that map, I write it into the dictionary with a loud TO DOCUMENT
+label and report it at the end of the run. This way a missing description is
+easy to see and not just absent.
 """
 
 from __future__ import annotations
@@ -59,9 +59,9 @@ TABLE_PURPOSE = {
     ),
 }
 
-# column name -> (units, source, known gaps or cautions)
+# Mapping each column name to (units, source, known gaps or cautions).
 COLUMNS: dict[str, tuple[str, str, str]] = {
-    # --- shared ---
+    # Listing the columns shared by several tables.
     "id": ("identifier", "PotterDB", "UUID assigned by PotterDB, stable across pulls"),
     "type": ("category", "PotterDB", "JSON:API record type, constant within a table"),
     "slug": ("identifier", "PotterDB", "URL safe name, ASCII and stable; preferred join key"),
@@ -69,7 +69,7 @@ COLUMNS: dict[str, tuple[str, str, str]] = {
     "name_key": ("text", "derived", "lower cased, punctuation stripped; join helper only"),
     "wiki": ("url", "PotterDB", "link to the fan wiki page"),
 
-    # --- films ---
+    # Listing the films columns.
     "film_id": ("identifier", "hand entered", "1 to 11 in release order"),
     "title": ("text", "hand entered", "as released in the United Kingdom"),
     "series": ("category", "hand entered", "Harry Potter or Fantastic Beasts"),
@@ -77,12 +77,12 @@ COLUMNS: dict[str, tuple[str, str, str]] = {
     "release_date_na": ("date", "Box Office Mojo", "North American release; the date the opening weekend belongs to"),
     "release_year": ("year", "derived", "from release_date"),
     "budget_usd": ("US dollars, nominal", "The Numbers", "production budget only, excludes marketing; the two Deathly Hallows budgets are a convention, not a measurement"),
-    "domestic_gross_usd": ("US dollars, nominal", "The Numbers", "North America, includes re-releases"),
+    "domestic_gross_usd": ("US dollars, nominal", "The Numbers", "North America, includes rereleases"),
     "international_gross_usd": ("US dollars, nominal", "The Numbers", "all territories outside North America"),
     "worldwide_gross_usd": ("US dollars, nominal", "The Numbers", "domestic plus international"),
     "opening_weekend_domestic_usd": ("US dollars, nominal", "Box Office Mojo", "three day North American opening"),
     "rt_critic_score": ("percent", "Rotten Tomatoes", "Tomatometer, read 2 September 2026"),
-    "rt_audience_score": ("percent", "Rotten Tomatoes", "Popcornmeter; gathered over decades, so not a release-time measure"),
+    "rt_audience_score": ("percent", "Rotten Tomatoes", "Popcornmeter; gathered over decades, so not a release time measure"),
     "metacritic_score": ("score 0 to 100", "Wikipedia", "critic aggregate"),
     "cinemascore": ("letter grade", "Wikipedia", "blank for three films where none was published"),
     "gross_profit_usd": ("US dollars, nominal", "derived", "worldwide gross minus budget; ignores marketing and the exhibitor's share, so it overstates profit"),
@@ -97,7 +97,7 @@ COLUMNS: dict[str, tuple[str, str, str]] = {
     "potterdb_box_office_usd": ("US dollars, nominal", "PotterDB", "parsed from free text; contains unit errors of 1000x on at least two films"),
     "potterdb_box_office_error_ratio": ("ratio", "derived", "PotterDB figure over the sourced figure; 1.0 means agreement"),
 
-    # --- characters ---
+    # Listing the characters columns.
     "house": ("category", "PotterDB", "populated on about 20 percent of characters"),
     "house_combined": ("category", "derived", "HP API house where known, otherwise PotterDB"),
     "house_source": ("category", "derived", "which source supplied house_combined"),
@@ -129,14 +129,14 @@ COLUMNS: dict[str, tuple[str, str, str]] = {
     "weeks_observed": ("count", "Wikipedia", "complete weeks contributing"),
     "article": ("text", "Wikipedia", "exact article title"),
 
-    # --- attention ---
+    # Listing the attention columns.
     "week": ("date", "derived", "Monday that starts the week"),
     "group": ("category", "derived", "what the series measures; Trends groups carry their geography"),
     "source": ("category", "derived", "wikipedia_pageviews or google_trends"),
     "unit": ("category", "derived", "views, or index_0_100"),
     "value": ("views or index", "Wikipedia or Google Trends", "not comparable across sources; see unit"),
 
-    # --- retail ---
+    # Listing the retail columns.
     "month": ("date", "Statistics Canada", "first day of the month"),
     "naics_code": ("code", "Statistics Canada", "NAICS 2022; historical rows were crosswalked from NAICS 2017"),
     "naics_code_original": ("code", "Statistics Canada", "the code as published, before the crosswalk"),
@@ -151,7 +151,7 @@ COLUMNS: dict[str, tuple[str, str, str]] = {
     "year": ("year", "derived", "calendar year"),
     "month_number": ("1 to 12", "derived", "calendar month"),
 
-    # --- products ---
+    # Listing the products columns.
     "set_num": ("identifier", "Rebrickable", "set number with variant suffix"),
     "set_name": ("text", "Rebrickable", ""),
     "theme_id": ("identifier", "Rebrickable", ""),
@@ -172,13 +172,13 @@ COLUMNS: dict[str, tuple[str, str, str]] = {
     "brickset_minifigs": ("count", "Brickset", "cross check against the derived minifig_count"),
 }
 
-# Prefixes handled in bulk, so adding one HP API field does not need a new line.
+# Handling prefixes in bulk, so I do not need a new line when I add one HP API field.
 PREFIX_RULES = [
     ("hpapi_", ("varies", "HP API", "curated set of 437 characters; blank for the other five thousand")),
     ("source_", ("text", "hand entered", "origin of the figure in the matching column")),
 ]
 
-# Suffixes handled in bulk, for the families of derived columns.
+# Handling suffixes in bulk, for my families of derived columns.
 SUFFIX_RULES = [
     (
         "_cad_real",
@@ -209,7 +209,7 @@ def describe_column(column: str) -> tuple[str, str, str] | None:
 
 
 def summarise(series: pd.Series) -> tuple[str, str]:
-    """Return the measured type and a range or example, from the data itself."""
+    """Returning the measured type and a range or example, taken from the data itself."""
     non_null = series.dropna()
     if non_null.empty:
         return str(series.dtype), "all values missing"
@@ -317,8 +317,8 @@ def main() -> None:
             log_data_issue(
                 SCRIPT, "data_dictionary",
                 f"{len(undocumented)} columns are marked TO DOCUMENT: {', '.join(undocumented)}",
-                "add them to the COLUMNS map in 19_data_dictionary.py; module 1's "
-                "acceptance test requires no blank entries",
+                "add them to the COLUMNS map in 19_data_dictionary.py; my check for module 1 "
+                "needs every column covered with no blank entries",
                 severity="error",
             )
         else:

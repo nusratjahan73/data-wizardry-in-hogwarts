@@ -1,33 +1,30 @@
-"""Module 3.3. When does franchise attention peak, and does it lead retail?
+"""Finding when franchise attention peaks in the year, and whether it leads retail (module 3.3).
 
-Reads  : data/processed/attention_weekly.csv, data/processed/retail_monthly.csv
-Writes : images/figures/seasonality_attention_vs_retail.png
+Reading: data/processed/attention_weekly.csv, data/processed/retail_monthly.csv
+Writing: images/figures/seasonality_attention_vs_retail.png
          images/figures/seasonality_decomposition.png
          outputs/tables/seasonality_monthly_index.csv
          outputs/tables/seasonality_peak_timing.csv
          docs/findings.md (one entry)
 Runtime: about twenty seconds.
 
-This is the analysis the whole timing argument rests on. Section 9 is explicit
-about what it has to answer: whether the franchise peak leads, lags or coincides
-with the general retail peak.
+My whole timing argument rests on this script. I want to know if the franchise
+peak comes before, after or in the same month as the general retail peak.
 
-Method. Both series are decomposed with STL, which handles a seasonal pattern
-that changes shape over twenty years better than a fixed classical
-decomposition does. From the seasonal component of each, a monthly index is
-built: each month's average against the annual average, so 100 means an average
-month and 130 means a month running thirty per cent above it.
+I split both series with STL, because it copes with a seasonal pattern that
+changes shape over twenty years better than a fixed classical decomposition.
+From each seasonal part I build a monthly index: each month's average against
+the yearly average. So 100 means an average month and 130 means a month running
+thirty per cent above it.
 
-Two decisions are worth stating.
+I measure attention with Wikipedia pageviews, not search interest. Pageviews are
+real counts with a stable definition. Search interest is a relative index that I
+had to stitch across windows. So my comparison chart and the number in my
+finding both come from pageviews.
 
-The attention series is measured in Wikipedia pageviews rather than search
-interest. Pageviews are actual counts on a stable definition; search interest is
-a relative index that had to be stitched across windows. Both are shown on the
-comparison chart, but the number quoted in the finding comes from pageviews.
-
-2020 and 2021 are excluded from the retail seasonal estimate. Lockdowns moved
-Canadian retail sales by more than any Christmas ever has, and leaving them in
-does not add information about a normal year, it adds a different question.
+I leave 2020 and 2021 out of the retail seasonal estimate. Lockdowns moved
+Canadian retail sales more than any Christmas ever has, so those years tell me
+nothing about a normal year.
 """
 
 from __future__ import annotations
@@ -52,16 +49,16 @@ logger = get_logger(SCRIPT)
 
 MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-# The franchise level article. Chosen because it is the broadest measure of
-# attention to the property rather than to one film or one character.
+# Using the franchise level article, because it is my broadest measure of
+# attention to the whole property and not to one film or one character.
 FRANCHISE_ARTICLE = "Harry_Potter"
 
-# Excluded from every seasonal estimate. See the module docstring.
+# Leaving these years out of every seasonal estimate. I explain why at the top of this file.
 PANDEMIC_YEARS = [2020, 2021]
 
 
 def monthly_attention() -> pd.Series:
-    """Franchise pageviews as a monthly series, pandemic years dropped."""
+    """Returning franchise pageviews as a monthly series, with the pandemic years dropped."""
     attention = read_processed("attention_weekly.csv")
     series = attention[
         (attention["source"] == "wikipedia_pageviews")
@@ -74,14 +71,14 @@ def monthly_attention() -> pd.Series:
     series["week"] = pd.to_datetime(series["week"])
     series = series.set_index("week").sort_index()
 
-    # Weekly to monthly by mean rather than sum, so a month with five reporting
-    # weeks is not automatically larger than one with four.
+    # Turning weekly into monthly with the mean and not the sum, so a month with
+    # five reporting weeks is not bigger than one with four just for that reason.
     monthly = series["value"].resample("MS").mean()
     return monthly[~monthly.index.year.isin(PANDEMIC_YEARS)].dropna()
 
 
 def monthly_retail(naics_code: str) -> pd.Series:
-    """One NAICS category as a monthly series, pandemic years dropped."""
+    """Returning one NAICS category as a monthly series, with the pandemic years dropped."""
     retail = read_processed("retail_monthly.csv")
     series = retail[retail["naics_code"] == naics_code].copy()
     if series.empty:
@@ -90,8 +87,8 @@ def monthly_retail(naics_code: str) -> pd.Series:
     series["month"] = pd.to_datetime(series["month"])
     series = series.set_index("month").sort_index()
 
-    # Real dollars where available: a nominal series confuses inflation with
-    # seasonality, and thirty five years of inflation is a lot to confuse.
+    # Using real dollars when I have them. A nominal series mixes inflation up with
+    # seasonality, and thirty five years of inflation is a lot to mix up.
     column = "sales_thousands_cad_real"
     if column not in series.columns or series[column].isna().all():
         column = "sales_thousands_cad"
@@ -107,12 +104,12 @@ def monthly_retail(naics_code: str) -> pd.Series:
 
 
 def seasonal_index(series: pd.Series, period: int, label: str) -> tuple[pd.Series, pd.DataFrame]:
-    """Decompose and return a monthly index where 100 is an average month.
+    """Decomposing a series and returning a monthly index where 100 is an average month.
 
-    STL needs a regular series with no gaps. Dropping the pandemic years leaves a
-    hole, so the decomposition runs on the full series and the pandemic months
-    are removed from the index afterwards. That way the seasonal component is
-    estimated on unbroken data but the abnormal years do not set the average.
+    STL needs a regular series with no gaps, and dropping the pandemic years leaves
+    a hole. So I run STL on the full series and take the pandemic months out of the
+    index afterwards. The seasonal part is then estimated on unbroken data, but the
+    abnormal years do not set the average.
     """
     regular = series.asfreq("MS")
     missing = int(regular.isna().sum())
@@ -124,7 +121,7 @@ def seasonal_index(series: pd.Series, period: int, label: str) -> tuple[pd.Serie
 
     seasonal = stl.seasonal
     trend = stl.trend
-    # Index each month against its own trend, so a rising series does not make
+    # Indexing each month against its own trend, so a rising series does not make
     # later Decembers look more seasonal than earlier ones.
     ratio = (regular / trend).dropna()
     ratio = ratio[~ratio.index.year.isin(PANDEMIC_YEARS)]
@@ -172,8 +169,8 @@ def plot_comparison(indices: dict[str, pd.Series], headline: str, subtitle: str)
     ax.axhline(100, color=PALETTE["grid"], linewidth=1, zorder=0)
     ax.axvspan(10.5, 12.5, color=PALETTE["highlight"], alpha=0.10, zorder=0)
 
-    # Anchor the shading label inside the axes rather than at the top edge, where
-    # it would sit under the title block.
+    # Placing the shading label inside the axes and not at the top edge, where
+    # it would sit under my title block.
     bottom, top = ax.get_ylim()
     ax.text(11.5, bottom + (top - bottom) * 0.94, "gift buying\nwindow",
             ha="center", va="top", fontsize=8.5, color=PALETTE["warn"])
@@ -184,8 +181,8 @@ def plot_comparison(indices: dict[str, pd.Series], headline: str, subtitle: str)
     ax.set_xlabel("")
     ax.legend(loc="upper left")
 
-    # The title states the finding and is built from the measured numbers, so it
-    # cannot drift away from the chart underneath it when the data is refreshed.
+    # Building the title from my measured numbers. It states the finding, and it
+    # cannot drift away from the chart under it when I refresh the data.
     title_block(ax, headline, subtitle)
     return save_figure(
         fig, "seasonality_attention_vs_retail.png",
@@ -241,7 +238,7 @@ def main() -> None:
             "All Canadian retail (44-45)": control_index,
         }
 
-        # --- the numbers the finding quotes ---
+        # Working out the numbers that my finding quotes.
         attention_peak, attention_peak_value = peak_month(attention_index)
         focus_peak, focus_peak_value = peak_month(focus_index)
         control_peak, control_peak_value = peak_month(control_index)
@@ -306,7 +303,7 @@ def main() -> None:
         save_table("seasonality_peak_timing.csv", timing)
         logger.info("peak timing table:\n%s", timing.to_string(index=False))
 
-        # --- the finding ---
+        # Writing the finding in words.
         def months(count: int) -> str:
             return "1 month" if abs(count) == 1 else f"{abs(count)} months"
 

@@ -1,41 +1,29 @@
-"""Module 5.4. A text classifier, trained and evaluated on labelled spell data.
+"""Training and testing a text classifier on labelled spell data. This is my module 5.4.
 
-Reads  : data/cleaned/potterdb/spells.csv
-Writes : images/figures/spell_classifier_confusion.png
+Reading: data/cleaned/potterdb/spells.csv
+Writing: images/figures/spell_classifier_confusion.png
          outputs/tables/spell_classifier_metrics.csv
          outputs/tables/spell_classifier_per_class.csv
          outputs/models/spell_classifier.json
          docs/findings.md (one entry)
-Runtime: about twenty seconds.
+Running time: about twenty seconds.
 
-The brief's module 5.4 asks for a sentiment classifier trained on labelled
-review text, compared against a lexicon baseline. That corpus was never
-collected, because it needs Reddit credentials this project does not have, and
-inventing labels for text that does not exist is not an option.
+The plan for this module was a sentiment classifier trained on labelled review text, compared
+with a lexicon baseline. I never collected that text, because it needs Reddit credentials I do
+not have, and I will not make up labels for text that does not exist. So I do the same
+exercise on data I own: predicting a spell's category from the free text of its effect. It is
+real supervised text classification with real labels, but it is not a sentiment model.
 
-What is here instead is the same exercise on data the project does own: predict
-a spell's category from the free-text description of its effect. It is a genuine
-supervised text classification problem with real labels that nobody in this
-project chose, it is evaluated exactly as the brief requires with accuracy,
-precision, recall and a confusion matrix, and it is compared against a baseline.
-What it is not is a sentiment model, and it is not described as one anywhere.
+I compare two models: character n-grams into logistic regression, and a baseline that always
+says Charm. Charm is over half of my data, about 59 per cent, so accuracy alone is a poor
+score. I also report macro F1, precision and recall per class, and a confusion matrix.
 
-Three things about this data shape the method.
+I do not use one test split. I use stratified cross validation with the fold count from
+config.yaml, because my smallest class is too small for a single held out split.
 
-The labels are messy. PotterDB records categories as free text and some spells
-carry several, such as "Transfiguration, Jinx". Only the first is kept, and
-casing is normalised, because "Transfiguration, jinx" and "Transfiguration,
-Jinx" are the same label typed twice.
-
-The classes are very unbalanced. Charm is over half the usable set. That makes
-accuracy a poor headline number, so macro-averaged precision and recall are
-reported alongside it, and the baseline is a classifier that always says Charm.
-Beating 59 per cent accuracy is not an achievement if 59 per cent of the answers
-are Charm.
-
-The texts are short, a median of about five words. That rules out anything
-sophisticated and makes character n-grams a better bet than words, since a five
-word description gives a word model almost nothing to work with.
+The labels are messy free text and some spells have several, like "Transfiguration, Jinx". I
+keep only the first one and fix the casing. The texts are short, a median of about five words,
+so character n-grams work better than words.
 """
 
 from __future__ import annotations
@@ -69,17 +57,17 @@ from src.utils.plotting import PALETTE, apply_style, save_figure, title_block
 SCRIPT = "32_spell_classifier"
 logger = get_logger(SCRIPT)
 
-# A class needs enough examples to appear in every cross-validation fold.
+# Setting a minimum class size, so each class has enough examples to appear in every
+# cross validation fold.
 MIN_CLASS_SIZE = 10
 FOLDS = int(get("modelling.cv_folds"))
 
 
 def primary_category(value: object) -> str | None:
-    """First category only, normalised.
+    """Keeping only the first category and making the casing the same.
 
-    'Transfiguration, Jinx' and 'Transfiguration, jinx' are the same label typed
-    two ways, and treating them as different classes would invent a distinction
-    the source does not make.
+    'Transfiguration, Jinx' and 'Transfiguration, jinx' are the same label typed two
+    ways. Treating them as two classes would make up a difference the source does not have.
     """
     if not isinstance(value, str) or not value.strip():
         return None
@@ -91,8 +79,8 @@ def load_spells() -> pd.DataFrame:
     spells = pd.read_csv(path("data_cleaned", "potterdb", "spells.csv"))
     spells["label"] = spells["category"].map(primary_category)
 
-    # The effect text is the feature. A spell with no description cannot be
-    # classified from its description.
+    # Using the effect text as my feature. I cannot classify a spell from its
+    # description when it has no description, so I drop those spells.
     spells = spells.dropna(subset=["label", "effect"])
     spells = spells[spells["effect"].str.strip().str.len() > 0]
 
@@ -113,11 +101,11 @@ def load_spells() -> pd.DataFrame:
 
 
 def build_pipeline() -> Pipeline:
-    """Character n-grams into logistic regression.
+    """Building my model: character n-grams into logistic regression.
 
-    Character n-grams rather than words because the descriptions are a handful
-    of words each; word features on five-word documents are mostly zeros.
-    Balanced class weights because Charm would otherwise swamp everything.
+    I use character n-grams and not words, because each description is only a few
+    words, and word features on five word texts are mostly zeros. I use balanced class
+    weights, because otherwise Charm would swamp everything.
     """
     return Pipeline([
         ("tfidf", TfidfVectorizer(
@@ -138,8 +126,8 @@ def plot_confusion(matrix: np.ndarray, labels: list[str], headline: str, subtitl
     apply_style()
     fig, ax = plt.subplots(figsize=(8.5, 7))
 
-    # Row-normalised: with classes this unbalanced, raw counts would show one
-    # bright square for Charm and nothing legible anywhere else.
+    # Normalising each row, because my classes are very unbalanced. Raw counts would
+    # show one bright square for Charm and nothing readable anywhere else.
     with np.errstate(invalid="ignore", divide="ignore"):
         normalised = matrix / matrix.sum(axis=1, keepdims=True)
     normalised = np.nan_to_num(normalised)
@@ -189,9 +177,9 @@ def main() -> None:
 
         splitter = StratifiedKFold(n_splits=FOLDS, shuffle=True, random_state=random_seed())
 
-        # Cross-validated predictions rather than a single split: with 23 examples
-        # in the smallest class, one held-out split would put four or five of them
-        # in the test set and the score would be mostly luck.
+        # Using cross validated predictions and not a single split. My smallest class
+        # has 23 examples, so one held out split would put four or five of them in the
+        # test set and the score would be mostly luck.
         predicted = cross_val_predict(build_pipeline(), texts, labels, cv=splitter)
 
         baseline_predicted = cross_val_predict(
@@ -256,7 +244,7 @@ def main() -> None:
                 f"({accuracy:.0%} against {baseline_accuracy:.0%}) and wins on macro F1"
             )
         subtitle = (
-            f"Row-normalised confusion matrix, {FOLDS}-fold cross validation over "
+            f"Row normalised confusion matrix, {FOLDS}-fold cross validation over "
             f"{len(spells)} spells in {len(class_names)} classes. Counts shown in each cell. "
             f"Macro F1 {macro_f1:.2f} against {baseline_macro_f1:.2f}, which is the fairer "
             f"comparison when one class holds half the data."
@@ -267,7 +255,7 @@ def main() -> None:
         models_dir.mkdir(parents=True, exist_ok=True)
         (models_dir / "spell_classifier.json").write_text(
             json.dumps({
-                "task": "predict spell category from its free-text effect description",
+                "task": "predict spell category from its free text effect description",
                 "not_a_sentiment_model": True,
                 "features": "char_wb TF-IDF, 2-5 grams, min_df=2, sublinear",
                 "model": "logistic regression, balanced class weights",
@@ -288,8 +276,8 @@ def main() -> None:
         worst_class = per_class.loc[per_class["f1-score"].idxmin()]
 
         finding = (
-            f"The classifier does not beat its baseline on accuracy, and section 11 requires that "
-            f"be said plainly: it scores {accuracy:.0%} against {baseline_accuracy:.0%} for a "
+            f"The classifier does not beat its baseline on accuracy, and I want to say that "
+            f"plainly: it scores {accuracy:.0%} against {baseline_accuracy:.0%} for a "
             f"model that always guesses Charm. That is not the whole story, because Charm is "
             f"{labels.value_counts().iloc[0] / len(labels):.0%} of the data and a model that only "
             f"ever says Charm is useless whatever its accuracy. On macro F1, which weights every "
@@ -308,16 +296,16 @@ def main() -> None:
             evidence=(
                 f"TF-IDF over character n-grams into logistic regression with balanced class "
                 f"weights, evaluated by {FOLDS}-fold stratified cross validation against a "
-                f"majority-class baseline. Accuracy, macro F1, per-class precision and recall, and "
-                f"a confusion matrix all reported, per section 11."
+                f"majority class baseline. Accuracy, macro F1, per class precision and recall, and "
+                f"a confusion matrix all reported, as I planned."
             ),
             sample=(
-                f"{len(spells)} spells across {len(class_names)} categories, each with a non-empty "
+                f"{len(spells)} spells across {len(class_names)} categories, each with a nonempty "
                 f"effect description, median {median_words} words. Classes with fewer than "
                 f"{MIN_CLASS_SIZE} examples were dropped as unevaluable."
             ),
             uncertainty=(
-                "This is not the model the brief asked for. Module 5.4 specifies a sentiment "
+                "This is not the model I first planned. Module 5.4 specifies a sentiment "
                 "classifier trained on fan review text, and that corpus was never collected "
                 "because it needs Reddit credentials this project does not have. Rather than "
                 "invent labels for text that does not exist, the same evaluation was run on a "

@@ -86,7 +86,7 @@
             "mode": "import",
             "source": {
               "type": "m",
-              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_character.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"character_key\", type text}, {\"character_name\", type text}, {\"house\", type text}, {\"house_source\", type text}, {\"species\", type text}, {\"gender\", type text}, {\"article\", type text}, {\"mean_correlation\", type number}, {\"eigenvector_centrality\", type number}, {\"attention_rank\", Int64.Type}, {\"coupling_rank\", Int64.Type}})\nin\n    Typed"
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"E:\\\\ProjectsUploadedToGit\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_character.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"character_key\", type text}, {\"character_name\", type text}, {\"house\", type text}, {\"house_source\", type text}, {\"species\", type text}, {\"gender\", type text}, {\"article\", type text}, {\"mean_correlation\", type number}, {\"eigenvector_centrality\", type number}, {\"attention_rank\", Int64.Type}, {\"coupling_rank\", Int64.Type}})\nin\n    Typed"
             }
           }
         ]
@@ -137,7 +137,7 @@
             "mode": "import",
             "source": {
               "type": "m",
-              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_country.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"country_key\", Int64.Type}, {\"country_code\", type text}, {\"country_name\", type text}, {\"is_canada\", type logical}, {\"search_interest\", Int64.Type}, {\"interest_rank\", type number}})\nin\n    Typed"
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"E:\\\\ProjectsUploadedToGit\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_country.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"country_key\", Int64.Type}, {\"country_code\", type text}, {\"country_name\", type text}, {\"is_canada\", type logical}, {\"search_interest\", Int64.Type}, {\"interest_rank\", type number}})\nin\n    Typed"
             }
           }
         ]
@@ -224,7 +224,7 @@
             "mode": "import",
             "source": {
               "type": "m",
-              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_date.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"date_key\", Int64.Type}, {\"month_start\", type date}, {\"year\", Int64.Type}, {\"month_number\", Int64.Type}, {\"month_name\", type text}, {\"quarter\", type text}, {\"year_month\", type text}, {\"era\", type text}, {\"is_gift_season\", type logical}, {\"is_after_premiere\", type logical}, {\"months_from_premiere\", Int64.Type}, {\"is_pandemic\", type logical}})\nin\n    Typed"
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"E:\\\\ProjectsUploadedToGit\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_date.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"date_key\", Int64.Type}, {\"month_start\", type date}, {\"year\", Int64.Type}, {\"month_number\", Int64.Type}, {\"month_name\", type text}, {\"quarter\", type text}, {\"year_month\", type text}, {\"era\", type text}, {\"is_gift_season\", type logical}, {\"is_after_premiere\", type logical}, {\"months_from_premiere\", Int64.Type}, {\"is_pandemic\", type logical}})\nin\n    Typed"
             }
           }
         ]
@@ -311,7 +311,7 @@
             "mode": "import",
             "source": {
               "type": "m",
-              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_film.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"film_key\", Int64.Type}, {\"title\", type text}, {\"series\", type text}, {\"release_date\", type date}, {\"release_date_na\", type date}, {\"rt_critic_score\", Int64.Type}, {\"rt_audience_score\", Int64.Type}, {\"metacritic_score\", Int64.Type}, {\"cinemascore\", type text}, {\"release_year\", Int64.Type}, {\"era\", type text}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"E:\\\\ProjectsUploadedToGit\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_film.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"film_key\", Int64.Type}, {\"title\", type text}, {\"series\", type text}, {\"release_date\", type date}, {\"release_date_na\", type date}, {\"rt_critic_score\", Int64.Type}, {\"rt_audience_score\", Int64.Type}, {\"metacritic_score\", Int64.Type}, {\"cinemascore\", type text}, {\"release_year\", Int64.Type}, {\"era\", type text}, {\"date_key\", Int64.Type}})\nin\n    Typed"
             }
           }
         ]
@@ -356,7 +356,7 @@
             "mode": "import",
             "source": {
               "type": "m",
-              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_product_theme.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"theme_key\", Int64.Type}, {\"theme_name\", type text}, {\"sets\", Int64.Type}, {\"first_year\", Int64.Type}, {\"last_year\", Int64.Type}})\nin\n    Typed"
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"E:\\\\ProjectsUploadedToGit\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\dim_product_theme.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"theme_key\", Int64.Type}, {\"theme_name\", type text}, {\"sets\", Int64.Type}, {\"first_year\", Int64.Type}, {\"last_year\", Int64.Type}})\nin\n    Typed"
             }
           }
         ]
@@ -407,7 +407,7 @@
             "mode": "import",
             "source": {
               "type": "m",
-              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_attention_monthly.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"source\", type text}, {\"group\", type text}, {\"series\", type text}, {\"mean_weekly_value\", type number}, {\"weeks\", Int64.Type}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"E:\\\\ProjectsUploadedToGit\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_attention_monthly.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"source\", type text}, {\"group\", type text}, {\"series\", type text}, {\"mean_weekly_value\", type number}, {\"weeks\", Int64.Type}, {\"date_key\", Int64.Type}})\nin\n    Typed"
             }
           }
         ]
@@ -524,7 +524,7 @@
             "mode": "import",
             "source": {
               "type": "m",
-              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_film_performance.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"film_key\", Int64.Type}, {\"budget_usd\", Int64.Type}, {\"domestic_gross_usd\", Int64.Type}, {\"international_gross_usd\", Int64.Type}, {\"worldwide_gross_usd\", Int64.Type}, {\"opening_weekend_domestic_usd\", Int64.Type}, {\"gross_profit_usd\", Int64.Type}, {\"gross_profit_margin\", type number}, {\"return_on_budget\", type number}, {\"opening_share_of_domestic\", type number}, {\"critic_audience_gap\", Int64.Type}, {\"budget_cad_real\", type number}, {\"domestic_gross_cad_real\", type number}, {\"international_gross_cad_real\", type number}, {\"worldwide_gross_cad_real\", type number}, {\"opening_weekend_domestic_cad_real\", type number}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"E:\\\\ProjectsUploadedToGit\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_film_performance.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"film_key\", Int64.Type}, {\"budget_usd\", Int64.Type}, {\"domestic_gross_usd\", Int64.Type}, {\"international_gross_usd\", Int64.Type}, {\"worldwide_gross_usd\", Int64.Type}, {\"opening_weekend_domestic_usd\", Int64.Type}, {\"gross_profit_usd\", Int64.Type}, {\"gross_profit_margin\", type number}, {\"return_on_budget\", type number}, {\"opening_share_of_domestic\", type number}, {\"critic_audience_gap\", Int64.Type}, {\"budget_cad_real\", type number}, {\"domestic_gross_cad_real\", type number}, {\"international_gross_cad_real\", type number}, {\"worldwide_gross_cad_real\", type number}, {\"opening_weekend_domestic_cad_real\", type number}, {\"date_key\", Int64.Type}})\nin\n    Typed"
             }
           }
         ]
@@ -593,7 +593,7 @@
             "mode": "import",
             "source": {
               "type": "m",
-              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_park_attendance.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"park\", type text}, {\"country\", type text}, {\"year\", Int64.Type}, {\"attendance\", Int64.Type}, {\"wizarding_land_open_this_year\", Int64.Type}, {\"years_since_opening\", Int64.Type}, {\"attendance_index_vs_year_before_opening\", type number}, {\"is_pandemic_year\", type logical}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"E:\\\\ProjectsUploadedToGit\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_park_attendance.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"park\", type text}, {\"country\", type text}, {\"year\", Int64.Type}, {\"attendance\", Int64.Type}, {\"wizarding_land_open_this_year\", Int64.Type}, {\"years_since_opening\", Int64.Type}, {\"attendance_index_vs_year_before_opening\", type number}, {\"is_pandemic_year\", type logical}, {\"date_key\", Int64.Type}})\nin\n    Typed"
             }
           }
         ]
@@ -668,7 +668,7 @@
             "mode": "import",
             "source": {
               "type": "m",
-              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_product_release.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"set_key\", type text}, {\"set_name\", type text}, {\"theme_key\", Int64.Type}, {\"year\", Int64.Type}, {\"num_parts\", Int64.Type}, {\"minifig_count\", Int64.Type}, {\"is_promotional\", type logical}, {\"retail_price_cad\", type number}, {\"price_per_piece_cad\", type number}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"E:\\\\ProjectsUploadedToGit\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_product_release.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"set_key\", type text}, {\"set_name\", type text}, {\"theme_key\", Int64.Type}, {\"year\", Int64.Type}, {\"num_parts\", Int64.Type}, {\"minifig_count\", Int64.Type}, {\"is_promotional\", type logical}, {\"retail_price_cad\", type number}, {\"price_per_piece_cad\", type number}, {\"date_key\", Int64.Type}})\nin\n    Typed"
             }
           }
         ]
@@ -725,7 +725,7 @@
             "mode": "import",
             "source": {
               "type": "m",
-              "expression": "let\n    Source = Csv.Document(File.Contents(\"C:\\\\Users\\\\User\\\\ANJSCreation\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_retail_monthly.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"naics_code\", type text}, {\"naics_name\", type text}, {\"sales_thousands_cad\", type number}, {\"sales_thousands_cad_real\", type number}, {\"is_focus_category\", type logical}, {\"is_total_retail\", type logical}, {\"date_key\", Int64.Type}})\nin\n    Typed"
+              "expression": "let\n    Source = Csv.Document(File.Contents(\"E:\\\\ProjectsUploadedToGit\\\\data-wizardry-in-hogwarts\\\\dashboard\\\\model\\\\fact_retail_monthly.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Promoted,{{\"naics_code\", type text}, {\"naics_name\", type text}, {\"sales_thousands_cad\", type number}, {\"sales_thousands_cad_real\", type number}, {\"is_focus_category\", type logical}, {\"is_total_retail\", type logical}, {\"date_key\", Int64.Type}})\nin\n    Typed"
             }
           }
         ]

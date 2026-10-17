@@ -1,39 +1,29 @@
-"""Module 4. The Houses. Segmenting the product catalogue into archetypes.
+"""Grouping the product catalogue into types of set, which I call the Houses (module 4).
 
-Reads  : data/raw/toys/rebrickable_*.csv, outputs/tables/theme_part_profile.csv
-Writes : images/figures/segmentation_k_selection.png
+Reading: data/raw/toys/rebrickable_*.csv
+Writing: images/figures/segmentation_k_selection.png
          images/figures/segmentation_profiles.png
          outputs/tables/segment_profiles.csv
          outputs/tables/segment_assignments.csv
          docs/findings.md (one entry)
 Runtime: about a minute.
 
-**What this segments, and what it does not.** The brief's module 4 segments fan
-audiences from posting behaviour. That needs the Reddit corpus, which this
-project has no credentials for, and there is no way to segment people without
-data about people. Rather than skip the module, the same method is applied to
-the thing the project can see: the product catalogue. Clustering sets by their
-construction profile gives product archetypes, and knowing which archetype the
-branded line sits in is a stocking decision, which is what module 4 was for.
+I first wanted to group fan audiences by how they post. That needs Reddit data,
+and I have no credentials for it. I cannot group people without data about
+people, so I also do not try to compare generations. I use the same method on
+the product catalogue instead. I cluster sets by how they are built, and then I
+look at which group the branded line sits in, which helps me decide what to
+stock. This groups products, not audiences, and I call it that everywhere.
 
-It is a segmentation of products, not of audiences, and it is called that
-throughout. The generation comparison the brief asks for cannot be done at all,
-and is not attempted.
+The clusters come from the data. I add the house names afterwards, only to make
+the groups easy to talk about. I never sort a set into a house first. In main()
+I fit and profile the clusters, and only then add the house label column.
 
-**The rule from section 10 that is not broken.** Clusters come from the data.
-House names are applied afterwards, for communication only. Nothing is sorted
-into a house first and then analysed. That ordering is enforced by the structure
-of this script: `fit_clusters` never sees a house name, and `name_segments` runs
-after the profiles exist and only adds a label column.
-
-**Choosing k.** Section 10 requires two independent measures, so both the
-silhouette score and the elbow are computed across a range of k and both are
-plotted. They disagree here, and the tie-break rule is written down in the code
-before the result rather than chosen after seeing it: silhouette peaks at k=2,
-which is the cleanest possible split of anything and a useless segmentation, so
-where the elbow's k scores within 5 per cent of the best silhouette the elbow
-wins. Both curves are plotted so a reader can argue with the rule and not only
-with the outcome.
+I pick k with two separate measures, the silhouette score and the elbow, and I
+plot both so anyone can argue with my rule. They disagree here. Silhouette
+peaks at k=2, which is the cleanest split of anything but a useless grouping.
+So I wrote my rule into the code before I saw the result: if the elbow's k
+scores within 5 per cent of the best silhouette, the elbow wins.
 """
 
 from __future__ import annotations
@@ -68,13 +58,13 @@ FEATURES = [
     "colour_variety",
 ]
 
-# Applied only after the clusters are profiled. Section 10 is explicit that the
-# labels are cosmetic, and the order of operations in main() is what enforces it.
+# Adding these house names only after I profile the clusters. They are just for
+# show, and the order of the steps in main() keeps it that way.
 HOUSE_LABELS = ["gryffindor", "slytherin", "ravenclaw", "hufflepuff"]
 
 
 def build_set_features() -> pd.DataFrame:
-    """One row per set, describing how it is built rather than what it depicts."""
+    """Building one row per set that describes how it is built, not what it shows."""
     raw = path("data_raw", "toys")
     inventory_parts = pd.read_csv(raw / "rebrickable_inventory_parts.csv")
     inventories = pd.read_csv(raw / "rebrickable_inventories.csv")
@@ -110,13 +100,13 @@ def build_set_features() -> pd.DataFrame:
     )
     frame["minifig_count"] = frame["minifig_count"].fillna(0)
 
-    # Two derived ratios. Piece count alone conflates a big simple set with a
-    # small intricate one, and it is the ratio that separates the two.
+    # Adding two ratios. Piece count alone mixes up a big simple set with a small
+    # detailed one, and the ratio is what tells the two apart.
     frame["parts_per_distinct_part"] = frame["num_parts"] / frame["distinct_parts"].clip(lower=1)
     frame["colour_variety"] = frame["distinct_colours"] / frame["distinct_parts"].clip(lower=1)
 
-    # A set with no pieces is a promotional item, not a construction set, and it
-    # would form a cluster of its own that says nothing about product design.
+    # Dropping sets with no pieces. They are promotional items, not building sets, and
+    # they would form a cluster of their own that says nothing about product design.
     before = len(frame)
     frame = frame[(frame["num_parts"] > 0) & (frame["distinct_parts"] > 0)]
     frame = frame[frame["year"] >= int(get("sources.toys.year_from"))]
@@ -127,13 +117,13 @@ def build_set_features() -> pd.DataFrame:
 
 
 def choose_k(scaled: np.ndarray, k_range: list[int], seed: int) -> pd.DataFrame:
-    """Silhouette and inertia across k. Two independent measures, as required."""
+    """Working out silhouette and inertia for each k, so I have two separate measures."""
     rows = []
     for k in k_range:
         model = KMeans(n_clusters=k, random_state=seed, n_init=10)
         labels = model.fit_predict(scaled)
 
-        # Silhouette on a sample: it is O(n squared) and this is 20,000 sets.
+        # Scoring silhouette on a sample, because it is O(n squared) and I have 20,000 sets.
         sample = min(5000, len(scaled))
         score = silhouette_score(scaled, labels, sample_size=sample, random_state=seed)
 
@@ -142,10 +132,9 @@ def choose_k(scaled: np.ndarray, k_range: list[int], seed: int) -> pd.DataFrame:
 
     frame = pd.DataFrame(rows)
 
-    # The elbow, found numerically rather than by eye: the k whose point is
-    # furthest from the straight line joining the first and last points of the
-    # inertia curve. Reading an elbow by eye is where a k gets chosen to suit
-    # the answer somebody wanted.
+    # Finding the elbow with numbers, not by eye. It is the k whose point is furthest
+    # from the straight line joining the first and last points of the inertia curve.
+    # Reading an elbow by eye makes it too easy to pick the k that gives the answer I wanted.
     x = frame["k"].to_numpy(dtype=float)
     y = frame["inertia"].to_numpy(dtype=float)
     x_norm = (x - x.min()) / (x.max() - x.min())
@@ -162,7 +151,7 @@ def choose_k(scaled: np.ndarray, k_range: list[int], seed: int) -> pd.DataFrame:
 
 
 def profile_segments(frame: pd.DataFrame, labels: np.ndarray) -> pd.DataFrame:
-    """Describe each cluster on its features, before any label is applied."""
+    """Describing each cluster by its features, before I add any label."""
     working = frame.copy()
     working["segment"] = labels
 
@@ -180,20 +169,20 @@ def profile_segments(frame: pd.DataFrame, labels: np.ndarray) -> pd.DataFrame:
 
 
 def describe_segment(row: pd.Series, overall_parts: float) -> str:
-    """A plain descriptive name, derived from the profile numbers.
+    """Making a plain name for a segment from its profile numbers.
 
-    Named from the data rather than chosen by hand, so the names cannot drift
-    away from what the clusters actually contain when the data is refreshed.
+    I build the name from the data and do not choose it by hand, so the names
+    still match what the clusters contain when I refresh the data.
     """
     size = "large" if row["median_parts"] > overall_parts * 2 else (
-        "small" if row["median_parts"] < overall_parts * 0.5 else "mid-size"
+        "small" if row["median_parts"] < overall_parts * 0.5 else "midsize"
     )
     if row["median_minifigs"] >= 4:
-        character = "character-heavy"
+        character = "character heavy"
     elif row["median_minifigs"] >= 1:
-        character = "character-led"
+        character = "character led"
     else:
-        character = "no-minifigure"
+        character = "no minifigure"
 
     if row["median_repetition"] >= 3.5:
         build = "repetitive build"
@@ -221,7 +210,7 @@ def plot_k_selection(scores: pd.DataFrame, chosen_k: int, headline: str, subtitl
     elbow_k = int(scores.loc[scores["elbow_distance"].idxmax(), "k"])
     ax_elbow.axvline(elbow_k, color=PALETTE["highlight"], linestyle="--", linewidth=1.6)
     ax_elbow.set_xlabel("number of clusters, k")
-    ax_elbow.set_ylabel("within-cluster inertia, thousands")
+    ax_elbow.set_ylabel("within cluster inertia, thousands")
     ax_elbow.set_title(f"Elbow (numerically at k={elbow_k})", loc="left", fontsize=11)
 
     ax_sil.set_xticks(scores["k"])
@@ -235,8 +224,8 @@ def plot_profiles(frame: pd.DataFrame, labels: np.ndarray, scaled: np.ndarray,
     apply_style()
     fig, (ax_scatter, ax_bar) = plt.subplots(1, 2, figsize=(12.5, 5.8))
 
-    # PCA only to make a 2D picture. The clustering itself runs on the full
-    # feature space; this is a projection for the eye, not the model.
+    # Using PCA only to draw a 2D picture. The clustering itself runs on all the
+    # features. This is a view for the eye, not the model.
     coords = PCA(n_components=2, random_state=random_seed()).fit_transform(scaled)
 
     colours = [HOUSE_COLOURS[HOUSE_LABELS[i % len(HOUSE_LABELS)]] for i in range(len(profile))]
@@ -249,8 +238,8 @@ def plot_profiles(frame: pd.DataFrame, labels: np.ndarray, scaled: np.ndarray,
             color=colours[segment], linewidths=0,
         )
 
-    # The branded line drawn on top, so its position among the archetypes is
-    # the thing the eye goes to.
+    # Drawing the branded line on top, so its place among the groups is the first
+    # thing the eye goes to.
     ax_scatter.scatter(
         coords[branded, 0], coords[branded, 1], s=26, color=PALETTE["ink"],
         edgecolors=PALETTE["ground"], linewidths=0.5, label="wizarding line", zorder=5,
@@ -287,8 +276,8 @@ def main() -> None:
         frame = build_set_features()
         run.rows_in = len(frame)
 
-        # Which sets are the wizarding line, for locating it afterwards. This is
-        # not a clustering feature: the model must not know which sets are
+        # Marking which sets are the wizarding line, so I can find them afterwards.
+        # This is not a clustering feature. The model must not know which sets are
         # branded, or it could simply learn to separate them.
         branded_themes = {"Harry Potter", "Fantastic Beasts",
                           "Harry Potter and Fantastic Beasts Series 1",
@@ -296,9 +285,9 @@ def main() -> None:
         frame["is_branded"] = frame["theme_name"].isin(branded_themes)
         logger.info("%d of %d sets are the wizarding line", int(frame["is_branded"].sum()), len(frame))
 
-        # Log-scale the heavy-tailed size features: piece counts run from 1 to
-        # 10,000 and without this the clustering would only ever find "big" and
-        # "small".
+        # Taking logs of the size features, because they have long tails. Piece counts
+        # run from 1 to 10,000, and without this the clustering would only ever find
+        # "big" and "small".
         features = frame[FEATURES].copy()
         for column in ["num_parts", "distinct_parts", "distinct_colours", "minifig_count"]:
             features[column] = np.log1p(features[column])
@@ -313,15 +302,14 @@ def main() -> None:
         best_silhouette = float(scores["silhouette"].max())
         elbow_silhouette = float(scores.loc[scores["k"] == elbow_k, "silhouette"].iloc[0])
 
-        # The tie-break rule, stated before the result rather than after it.
-        #
+        # Setting my tie break rule here, before I see the result.
         # Silhouette almost always peaks at k=2 on data like this, because the
-        # cleanest possible split of anything is into two halves. That is a real
-        # measurement and a useless segmentation: "big sets and small sets" is
-        # not an archetype, it is a sort. So where the elbow's k scores within
-        # this tolerance of the silhouette's best, the elbow wins, on the
-        # grounds that the extra structure costs almost nothing in separation.
-        # The tolerance is fixed here, not tuned until it gave a nice answer.
+        # cleanest split of anything is into two halves. That is a real measurement
+        # but a useless grouping: "big sets and small sets" is a sort, not a type of
+        # set. So if the elbow's k scores within this tolerance of the best
+        # silhouette, the elbow wins, because the extra groups cost almost nothing
+        # in separation. I fixed the tolerance here and did not tune it to get a
+        # nice answer.
         SILHOUETTE_TOLERANCE = 0.95
 
         if elbow_silhouette >= best_silhouette * SILHOUETTE_TOLERANCE:
@@ -365,7 +353,7 @@ def main() -> None:
         model = KMeans(n_clusters=chosen_k, random_state=seed, n_init=20)
         labels = model.fit_predict(scaled)
 
-        # --- profile first, name second, house label last ---
+        # Profiling first, naming second, and adding the house label last.
         profile = profile_segments(frame, labels)
         overall_parts = float(frame["num_parts"].median())
         profile["plain_name"] = profile.apply(lambda r: describe_segment(r, overall_parts), axis=1)
@@ -381,8 +369,8 @@ def main() -> None:
             .reindex(profile["segment"]).fillna(0).astype(int).to_numpy()
         )
 
-        # Only now, after the clusters exist and are profiled, does a house name
-        # get attached. Section 10 forbids doing this in the other order.
+        # Adding the house names only now, after the clusters exist and are profiled.
+        # Doing it the other way round would sort sets into houses before the data had a say.
         profile["house_label"] = [
             HOUSE_LABELS[i % len(HOUSE_LABELS)].capitalize() for i in range(len(profile))
         ]
@@ -446,8 +434,8 @@ def main() -> None:
             f"{branded_home['share_of_catalogue']:.0%} of the catalogue overall. Its median set has "
             f"{branded_home['median_parts']:.0f} pieces and "
             f"{branded_home['median_minifigs']:.0f} minifigures against a catalogue median of "
-            f"{overall_parts:.0f} pieces, so the line is a character-led, mid-size proposition "
-            f"rather than a large-build one, and a season one range should be bought as gift-priced "
+            f"{overall_parts:.0f} pieces, so the line is a character led, midsize proposition "
+            f"rather than a large build one, and a season one range should be bought as gift priced "
             f"character product rather than as centrepiece models."
         )
 
@@ -463,7 +451,7 @@ def main() -> None:
             ),
             sample=(
                 f"{len(frame):,} sets from {int(frame['year'].min())} to "
-                f"{int(frame['year'].max())} with a non-zero piece count, of which "
+                f"{int(frame['year'].max())} with a nonzero piece count, of which "
                 f"{int(frame['is_branded'].sum())} are the wizarding line. Features derived from "
                 f"the 1.56 million row part inventory."
             ),
@@ -471,7 +459,7 @@ def main() -> None:
                 "This is a segmentation of products, not of audiences, and module 4 asks for "
                 "audiences. That analysis needs the Reddit corpus, which this project has no "
                 "credentials for, and there is no way to segment people without data about people; "
-                "the generation comparison the brief also asks for is therefore not attempted at "
+                "the generation comparison I also planned is therefore not attempted at "
                 f"all. A silhouette of {best_score:.3f} is modest, which means the archetypes are "
                 "real but not sharply separated, and sets near a boundary could reasonably belong "
                 "to either side. The features describe how a set is built, not how it sells: "

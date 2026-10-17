@@ -1,17 +1,17 @@
-"""Clean the HP API character and spell tables.
+"""Cleaning the HP API character and spell tables.
 
-Reads  : data/raw/hpapi/*.json
-Writes : data/cleaned/hpapi/{characters,spells}.csv
-Runtime: instant.
+Reading: data/raw/hpapi/*.json
+Writing: data/cleaned/hpapi/{characters,spells}.csv
+Running time: instant.
 
-The value of this source is attribute completeness on the characters people
-actually know, where PotterDB is broad but sparse. The wand is a nested object
-and is flattened into three plain columns here so that nothing downstream has to
-parse a dictionary out of a CSV cell.
+I use this source because it has full details for the characters people really
+know. PotterDB is broad but has many empty fields. The wand arrives as a nested
+object, so I flatten it into three plain columns here. That way no later script
+has to parse a dictionary out of a CSV cell.
 
-A `name_key` column is added: the name lower cased with punctuation stripped.
-That is the key module 1 joins on, and building it in both cleaning scripts the
-same way is what makes the join reproducible.
+I add a `name_key` column, which is the name in lower case with the punctuation
+removed. Module 1 joins on this key. I build it the same way in both cleaning
+scripts, so the join gives the same result every time.
 """
 
 from __future__ import annotations
@@ -34,12 +34,12 @@ logger = get_logger(SCRIPT)
 
 
 def name_key(name: object) -> str:
-    """Normalise a character name into a join key.
+    """Turning a character name into a join key.
 
-    Lower cased, punctuation removed, whitespace collapsed. Deliberately simple:
-    a fuzzy match would join 'Harry Potter' to 'Harry Potter (character)' and
-    also to 'James Potter' on a bad day, and a silent wrong join is worse than a
-    missed one.
+    I make it lower case, remove the punctuation and squeeze the spaces. I keep
+    it simple on purpose. A fuzzy match would join 'Harry Potter' to 'Harry Potter
+    (character)' and, on a bad day, also to 'James Potter'. A quiet wrong join is
+    worse than a missed one.
     """
     if not isinstance(name, str):
         return ""
@@ -50,7 +50,7 @@ def name_key(name: object) -> str:
 def clean_characters(records: list[dict]) -> pd.DataFrame:
     frame = pd.DataFrame(records)
 
-    # The wand arrives as {'wood': ..., 'core': ..., 'length': ...}.
+    # Splitting the wand, which arrives as {'wood': ..., 'core': ..., 'length': ...}.
     if "wand" in frame.columns:
         wand = frame["wand"].apply(lambda w: w if isinstance(w, dict) else {})
         frame["wand_wood"] = wand.map(lambda w: w.get("wood") or None)
@@ -77,8 +77,8 @@ def clean_characters(records: list[dict]) -> pd.DataFrame:
         ).dt.date
         frame = frame.drop(columns=["dateOfBirth"])
 
-    # Blank strings are missing values wearing a disguise, and they would count
-    # as populated in any completeness check.
+    # Turning blank strings into missing values. A blank string is really a missing
+    # value, but it would count as filled in any completeness check.
     frame = frame.replace({"": None})
 
     if "name" in frame.columns:

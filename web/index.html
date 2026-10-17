@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Data Wizardry in Hogwarts — the Christmas Day problem</title>
+  <title>Data Wizardry in Hogwarts: the Christmas Day problem</title>
   <meta name="description" content="Forecasting a Canadian retail buy before the December 2026 wizarding revival.">
 
   <!-- Styling lives in three files under css/, split by concern: tokens and
@@ -22,7 +22,7 @@
       <p class="lede">
         A Canadian book and lifestyle retailer has to commit its holiday wizarding
         buy months before the new series airs. The premiere is on
-        <span id="meta-premiere">25 December 2026</span> — after the gift-buying
+        <span id="meta-premiere">25 December 2026</span>, after the gift buying
         window has closed. This page sets out how large that buy should be, how it
         should be split, and by when it has to be ordered.
       </p>
@@ -48,7 +48,7 @@
       </div>
       <div class="stat stat--secondary">
         <div class="stat__value" id="stat-order-by">—</div>
-        <div class="stat__label">imported order-by date</div>
+        <div class="stat__label">imported order by date</div>
       </div>
     </section>
 
@@ -59,7 +59,7 @@
         to March 2027 season, and hold between
         <strong id="headline-january-low">—</strong> and
         <strong id="headline-january-high">—</strong> of it for a January position
-        rather than committing the buy to the pre-Christmas window as this category
+        rather than committing the buy to the pre Christmas window as this category
         normally would. The defensible range around that figure runs from
         <span id="headline-range-low">—</span> to
         <span id="headline-range-high">—</span>, depending on how large the premiere
@@ -68,7 +68,7 @@
       <p class="caveat">
         Imported product for the January position was due to be ordered by
         <strong id="headline-order-by">—</strong>. That date has passed. Of the six
-        order-by dates in the schedule below,
+        order by dates in the schedule below,
         <strong id="schedule-late-count">—</strong> are already behind, which is a
         cost of starting this analysis in September rather than in spring.
       </p>
@@ -86,8 +86,8 @@
           <div id="chart-seasonality"></div>
           <div id="legend-seasonality"></div>
           <p class="source-note">
-            Wikipedia pageviews 2015–2026 and Statistics Canada tables 20-10-0056
-            and 20-10-0008, 1991–2026.
+            Wikipedia pageviews 2015 to 2026 and Statistics Canada tables 20-10-0056
+            and 20-10-0008, 1991 to 2026.
           </p>
         </div>
         <div>
@@ -101,7 +101,7 @@
           <p>
             That gap is the whole argument. December's peak is made by the gift
             calendar, not by any surge of interest in the franchise. January is the
-            month when shelves are cleared while attention does not fall — and it
+            month when shelves are cleared while attention does not fall, and it
             is the month the premiere pushes attention sharply up.
           </p>
         </div>
@@ -128,7 +128,7 @@
         <div class="figure">
           <p class="figure__title">Category sales, November 2026 to March 2027</p>
           <p class="figure__subtitle">
-            Three scenarios against a no-premiere baseline.
+            Three scenarios against a no premiere baseline.
           </p>
           <div id="chart-demand"></div>
           <div id="legend-demand"></div>
@@ -142,7 +142,7 @@
         I measured four events against the 28 days before them and against the
         year ending 90 days before them. The two baselines disagree, and the
         disagreement is the point: against the short window every event decays to
-        nothing within a month, because the run-up has already lifted the
+        nothing within a month, because the run up has already lifted the
         comparison.
       </p>
       <div class="table-scroll">
@@ -164,14 +164,14 @@
     <section id="forecast">
       <h2>How much to trust the forecast</h2>
       <p>
-        I compared five approaches on a held-out final year, split by time and
+        I compared five approaches on a held out final year, split by time and
         never at random. <strong id="forecast-best-model">—</strong> was the most
         accurate at <strong id="forecast-best-mape">—</strong> mean absolute
         percentage error, against a seasonal naive baseline of
         <strong id="forecast-baseline-mape">—</strong>.
       </p>
       <table class="data-table">
-        <caption>Held-out accuracy, final 52 weeks. Lower is better.</caption>
+        <caption>Held out accuracy, final 52 weeks. Lower is better.</caption>
         <thead>
           <tr>
             <th scope="col">Model</th>
@@ -202,7 +202,7 @@
           </p>
           <p>
             Understocking also costs more than overstocking here. A lost sale costs
-            0.48 per retail dollar against 0.04 for a marked-down one, which implies
+            0.48 per retail dollar against 0.04 for a marked down one, which implies
             a 93% service level. The error worth avoiding is running out.
           </p>
         </div>
@@ -214,7 +214,7 @@
       <div class="table-scroll">
         <table class="data-table">
           <caption>
-            Order-by dates, worked backwards from the required in-store date.
+            Order by dates, worked backwards from the required in store date.
           </caption>
           <thead>
             <tr>
@@ -248,10 +248,10 @@
       <div class="split">
         <div>
           <table class="data-table">
-            <caption>Central season sales at each pass-through assumption.</caption>
+            <caption>Central season sales at each pass through assumption.</caption>
             <thead>
               <tr>
-                <th scope="col">Pass-through</th>
+                <th scope="col">Pass through</th>
                 <th scope="col" class="numeric">Central season</th>
               </tr>
             </thead>
@@ -262,7 +262,7 @@
           <p class="caveat">
             Across the plausible range the central season runs from
             <strong id="sensitivity-low">—</strong> to
-            <strong id="sensitivity-high">—</strong> — a spread wider than the gap
+            <strong id="sensitivity-high">—</strong>. That spread is close to the gap
             between the low and high demand scenarios. If you are reviewing this
             work, start here.
           </p>
@@ -291,7 +291,7 @@
 
   </main>
 
-  <!-- Behaviour lives in two files under js/, one per concern: chart.js turns
+  <!-- Keeping the behaviour in two files under js/, one per concern: chart.js turns
        data into SVG, page.js puts it in the document. data.js is generated.
        There is no inline script block anywhere in this file. -->
   <script src="js/data.js"></script>

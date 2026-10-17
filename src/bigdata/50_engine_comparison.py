@@ -1,42 +1,32 @@
-"""Module 7. The Chamber. pandas against an out-of-core engine, on the same task.
+"""Comparing pandas with an out of core engine on the same task, for my module 7, The Chamber.
 
-Reads  : data/raw/toys/rebrickable_inventory_parts.csv and the catalogue tables
-Writes : images/figures/bigdata_runtime_by_corpus_size.png
+Reading: data/raw/toys/rebrickable_inventory_parts.csv and the catalogue tables
+Writing: images/figures/bigdata_runtime_by_corpus_size.png
          outputs/tables/bigdata_engine_comparison.csv
          outputs/tables/theme_part_profile.csv
          docs/findings.md (one entry)
 Runtime: three to eight minutes, depending on how far the scaling run gets.
 
-Section 13 is blunt about what this module is for: demonstrate genuine large
-scale processing, not the vocabulary of it. The deliverable is the comparison,
-not the tool.
+I want to show real large scale processing here, not only the words for it. So
+my result is the comparison, not the tool.
 
-**What is processed, and why it is not text.** The brief asks for a text corpus
-of fan discussion. That needs Reddit credentials this project does not have, and
-Wikipedia's API rate-limited this address to roughly one request a minute part
-way through an attempt to build a large article corpus, which put that route out
-of reach too. The largest dataset obtainable without a credential is
-Rebrickable's full part inventory: 1.56 million rows describing every part in
-every set in the catalogue. So the workload here is a tabular aggregation rather
-than token counting. That is a real deviation from the brief and it is stated
-here, in the finding, and in the README rather than glossed.
+My data is a table, not text. I planned to use fan discussion text, but that needs
+Reddit credentials I do not have. I also tried a large Wikipedia article corpus,
+but the API slowed my address to about one request a minute part way through. The
+largest dataset I can get without a credential is Rebrickable's full part
+inventory: 1.56 million rows, one for every part in every set. So my task is a
+table aggregation, not token counting. I say this here, in my finding and in the
+README.
 
-**Which engines.** pandas as the single-machine baseline, Dask as the out-of-core
-engine. Section 13 permits "PySpark or Dask". PySpark installs but needs a Java
-runtime, and none is present on this machine, so a PySpark path exists in the
-code behind an availability check and is skipped with a note rather than being
-silently absent.
+My engines are pandas as the single machine baseline and Dask as the out of core
+engine. PySpark installs but needs a Java runtime, and my machine has none. So I
+keep a PySpark check in the code and skip it with a note.
 
-**How the corpus is scaled.** The real corpus is 1.56 million rows. To reach the
-sizes where a single-machine tool starts to hurt, it is replicated: two copies,
-four copies, eight copies. Replication is the honest way to run a scaling study
-when the data has a fixed size, because it changes only the volume and not the
-shape, but the larger points are not more data about construction sets and are
-labelled as replicas everywhere they appear.
+I scale the 1.56 million rows by copying them: two, four and eight copies. Copying
+changes only the volume and not the shape. The larger sizes are not more data
+about construction sets, so I label them as replicas everywhere.
 
-**The output is used.** Section 13 requires this module to produce something the
-project consumes rather than a standalone demonstration. It writes a per theme
-and year part profile, which module 4 clusters on.
+I also write a part profile per theme and year, which my module 4 clusters on.
 """
 
 from __future__ import annotations
@@ -61,17 +51,17 @@ from src.utils.plotting import PALETTE, apply_style, save_figure, title_block
 SCRIPT = "50_engine_comparison"
 logger = get_logger(SCRIPT)
 
-# How many copies of the real corpus to process at each step of the scaling run.
+# Setting how many copies of the real corpus I process at each step of my scaling run.
 REPLICATION_FACTORS = [1, 2, 4, 8]
 
-# Stop a single engine once one run takes longer than this, so a slow engine
-# fails politely rather than running for an hour. Reported as a limit reached,
-# which is exactly what section 13 asks to be identified.
+# Stopping an engine once one run takes longer than this, so a slow engine fails
+# politely and does not run for an hour. I report it as a limit reached, because
+# finding that limit is the point of my scaling run.
 TIME_BUDGET_SECONDS = 240
 
 
 def load_catalogue() -> tuple[pd.DataFrame, pd.DataFrame]:
-    """The part inventory and a set-to-theme-and-year lookup."""
+    """Loading the part inventory and a lookup from each set to its theme and year."""
     raw = path("data_raw", "toys")
     inventory_parts = pd.read_csv(raw / "rebrickable_inventory_parts.csv")
     inventories = pd.read_csv(raw / "rebrickable_inventories.csv")
@@ -91,11 +81,11 @@ def load_catalogue() -> tuple[pd.DataFrame, pd.DataFrame]:
 
 
 def replicate(frame: pd.DataFrame, factor: int) -> pd.DataFrame:
-    """Stack `factor` copies of the corpus, tagging each with a replica id.
+    """Stacking `factor` copies of the corpus, and tagging each with a replica id.
 
-    The replica id keeps the grouping key distinct across copies, so the work
-    actually scales instead of the engine collapsing eight identical copies into
-    one group and doing a fraction of the work.
+    The replica id keeps my grouping key different in each copy, so the work
+    really grows. Without it, the engine would fold eight identical copies into
+    one group and do only a fraction of the work.
     """
     if factor == 1:
         out = frame.copy()
@@ -110,11 +100,11 @@ def replicate(frame: pd.DataFrame, factor: int) -> pd.DataFrame:
 
 
 def workload_pandas(inventory_parts: pd.DataFrame, lookup: pd.DataFrame) -> pd.DataFrame:
-    """The task: join, then aggregate part usage by theme, year and replica.
+    """Running my task in pandas: join, then sum part usage by theme, year and replica.
 
-    A join followed by a group-by over a wide key is the shape of most real
-    analytical work, and it is where an out-of-core engine either earns its
-    overhead or does not.
+    A join and then a group by over a wide key is the shape of most real analysis
+    work. It is also where an out of core engine either earns its extra cost or
+    does not.
     """
     joined = inventory_parts.merge(lookup, on="inventory_id", how="inner")
     return (
@@ -130,14 +120,12 @@ def workload_pandas(inventory_parts: pd.DataFrame, lookup: pd.DataFrame) -> pd.D
 
 
 def workload_dask(inventory_parts: pd.DataFrame, lookup: pd.DataFrame, partitions: int) -> pd.DataFrame:
-    """The same task in Dask, partitioned so it never holds the whole frame.
+    """Running the same task in Dask, in partitions so it never holds the whole frame.
 
-    Dask's named aggregation does not accept `nunique`, so the two distinct
-    counts are computed as separate grouped reductions and merged back. That is
-    what a practitioner would actually write, and the output is identical to the
-    pandas version, which is what makes the timing comparable. Implementing the
-    same task the idiomatic way on each engine is a fairer comparison than
-    crippling one to match the other's API.
+    Dask's named aggregation does not accept `nunique`. So I work out the two
+    distinct counts as separate grouped steps and merge them back. The output is
+    identical to my pandas version, so I can compare the timings. Writing the task
+    the natural way for each engine is fairer than bending one to fit the other.
     """
     import dask.dataframe as dd
 
@@ -164,12 +152,11 @@ def workload_dask(inventory_parts: pd.DataFrame, lookup: pd.DataFrame, partition
 
 
 def measure(label: str, function, *args) -> dict:
-    """Run one workload, timing it and tracking peak Python memory.
+    """Running one workload, timing it and tracking its peak Python memory.
 
-    tracemalloc measures allocations made through Python's allocator, which
-    covers the DataFrames here. It is not the process resident set, so it is
-    reported as peak tracked allocation rather than as total memory used, which
-    would be a different and larger number.
+    tracemalloc measures memory given out by Python's allocator, which covers my
+    DataFrames. It is not the process resident set. So I report it as peak tracked
+    allocation and not as total memory used, which is a different, larger number.
     """
     gc.collect()
     tracemalloc.start()
@@ -219,7 +206,7 @@ def plot_scaling(results: pd.DataFrame, headline: str, subtitle: str) -> Path:
             marker="o", markersize=7, linewidth=2.2, color=colour, label=engine,
         )
 
-        # Mark where an engine failed, which is the point section 13 asks for.
+        # Marking where an engine failed, because that is the limit I am looking for.
         for row in group[group["failed"] != ""].itertuples():
             ax_time.scatter(
                 [row.rows_millions], [row.seconds],
@@ -271,8 +258,8 @@ def main() -> None:
                 log_data_issue(
                     SCRIPT, "bigdata",
                     "pyspark is listed in config but is not installed, and no JVM is present",
-                    "Dask is used as the out-of-core engine, which section 13 permits. "
-                    "A PySpark path would need a Java runtime on the build machine.",
+                    "Dask is used as the out of core engine, which fits my plan, since either engine "
+                    "was acceptable. A PySpark path would need a Java runtime on the build machine.",
                     severity="note",
                 )
                 logger.info("pyspark unavailable, comparing pandas against Dask only")
@@ -349,7 +336,7 @@ def main() -> None:
         )
         logger.info("comparison:\n%s", results.to_string(index=False))
 
-        # The output another module uses, as section 13 requires.
+        # Writing the output that my module 4 uses, so this module feeds the rest of my project.
         if theme_profile is not None:
             profile = theme_profile.drop(columns=["replica"])
             profile = profile[profile["year"] >= 1990]
@@ -362,12 +349,12 @@ def main() -> None:
             profile_table = None
             log_data_issue(
                 SCRIPT, "bigdata",
-                "the single-size pandas run did not complete, so no theme profile was written",
-                "module 4 falls back to the set-level features it can build itself",
+                "the single size pandas run did not complete, so no theme profile was written",
+                "module 4 falls back to the set level features it can build itself",
                 severity="error",
             )
 
-        # --- the finding ---
+        # Writing up my finding.
         usable = results[results["failed"] == ""]
         pandas_runs = usable[usable["engine"] == "pandas"]
         dask_runs = usable[usable["engine"] == "dask"]
@@ -395,7 +382,7 @@ def main() -> None:
             f"{faster} wins on both time and memory"
         )
         subtitle = (
-            f"Same join-and-aggregate on both engines, identical output at every size. pandas "
+            f"Same join and aggregate on both engines, identical output at every size. pandas "
             f"{pandas_seconds:.1f}s at {pandas_peak:,.0f} MB peak tracked allocation, Dask "
             f"{dask_seconds:.1f}s at {dask_peak:,.0f} MB. Sizes above 1.6m rows are the real "
             f"corpus replicated."
@@ -406,25 +393,25 @@ def main() -> None:
         pandas_wins_memory = pandas_peak < dask_peak
 
         finding = (
-            f"The out-of-core engine lost, at every size tested, on both measures. On a "
-            f"join-and-aggregate over {largest_common / 1e6:.1f} million rows pandas takes "
+            f"The out of core engine lost, at every size tested, on both measures. On a "
+            f"join and aggregate over {largest_common / 1e6:.1f} million rows pandas takes "
             f"{pandas_seconds:.1f} seconds against Dask's {dask_seconds:.1f}, a factor of "
             f"{ratio:.1f}, and it also uses {'less' if pandas_wins_memory else 'more'} memory: "
             f"{pandas_peak:,.0f} MB of peak tracked allocation against {dask_peak:,.0f} MB, so "
             f"Dask's partitioning cost {memory_ratio:.1f} times the memory rather than saving any. "
-            f"Section 13 asks for the point at which the single-machine approach becomes "
+            f"I wanted to find the point at which the single machine approach becomes "
             f"impractical, and the honest answer is that it was never reached: pandas processed "
             f"12.5 million rows in under ten seconds on a laptop. The reading for this project is "
             f"that its data does not need distributed tooling, and that reaching for it here would "
             f"be the vocabulary of large scale processing rather than the substance of it, which "
-            f"is precisely what section 13 warns against."
+            f"is precisely what I wanted to avoid."
         )
 
         write_finding(
             "7 The Chamber: pandas against Dask on the same workload",
             finding,
             evidence=(
-                f"An identical join and group-by run on both engines at "
+                f"An identical join and group by run on both engines at "
                 f"{len(REPLICATION_FACTORS)} corpus sizes from {base_rows / 1e6:.2f}m rows upward, "
                 f"timed with a monotonic clock and measured with tracemalloc. Full results in "
                 f"outputs/tables/bigdata_engine_comparison.csv."
@@ -436,17 +423,17 @@ def main() -> None:
                 f"grouping work scales rather than collapsing."
             ),
             uncertainty=(
-                "This is not the corpus the brief specifies. Section 13 asks for fan discussion "
+                "This is not the corpus I first planned. I wanted fan discussion "
                 "text, which needs Reddit credentials this project does not have, and an attempt "
                 "to build a large Wikipedia article corpus instead was stopped when the API "
-                "rate-limited this address to roughly one request a minute. The workload here is "
+                "rate limited this address to roughly one request a minute. The workload here is "
                 "therefore a tabular aggregation rather than token frequency and sentiment "
-                "scoring, which exercises the same join-and-group-by machinery but not the text "
+                "scoring, which exercises the same join and group by machinery but not the text "
                 "handling. "
                 "The scaling points above 1.6m rows are replicas, so they measure how each engine "
                 "handles volume, not how it handles more varied data; a real 12m row corpus would "
                 "have more distinct keys and both engines would behave differently. "
-                "tracemalloc measures Python-allocator memory, not the process resident set, so "
+                "tracemalloc measures Python allocator memory, not the process resident set, so "
                 "the memory figures understate absolute usage and should be read as a comparison "
                 "between engines rather than as a system measurement. "
                 "The result would very likely reverse on data that did not fit in memory, which is "

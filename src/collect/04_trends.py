@@ -1,37 +1,28 @@
-"""Collect Google search interest for four keyword groups, worldwide and Canada.
+"""Collecting Google search interest for four keyword groups, worldwide and in Canada.
 
-Reads  : config.yaml (sources.trends, dates).
-Writes : data/raw/trends/interest_<granularity>__<group>__<geo>__<window>.csv
+Reading: config.yaml (sources.trends, dates).
+Writing: data/raw/trends/interest_<granularity>__<group>__<geo>__<window>.csv
          data/raw/trends/related__<group>__<geo>.json
          data/raw/trends/region__<group>__<geo>.csv
-Runtime: fifteen to twenty five minutes, almost all of it deliberate waiting.
+Runtime: fifteen to twenty five minutes, and almost all of it is waiting on purpose.
 
-Three things about this source shape the code.
+The library. pytrends was archived in April 2025 and fails on a first call from a clean address, so
+I use trendspy, which replaced it and is still maintained. I checked that it worked on 2 September
+2026.
 
-First, the library. The brief is explicit that pytrends was archived in April
-2025 and fails on a first call from a clean address, so this uses trendspy, its
-maintained successor. Verified working on 2 September 2026.
+The fragility. Google throttles this endpoint hard and it is not a documented public API, so any
+group can fail at any time. I pull and save every group on its own, log a failure to
+logs/data_issues.md and keep going. If every group fails my project still runs, because Wikipedia
+pageviews answer the same question from 2015 onward. My module 5 records that switch if it happens.
 
-Second, the fragility. Google throttles this endpoint aggressively and it is not
-a documented public API, so any group can fail at any time. Every group is
-therefore pulled and saved independently: one failure is logged to
-logs/data_issues.md and the run continues. If every group fails, the project does
-not stop, because Wikipedia pageviews is an independent attention series that
-covers the same question from 2015 onward. Section 6 sets out that substitution
-and module 5 records it if it happens.
+The granularity. Google picks it from the width of the window. Asking for 2004 to 2026 in one
+request gave me 273 monthly values on 2 September 2026, not the weekly ones I need. So I collect
+twice: one full range monthly pull, and overlapping four year windows for weekly detail. The windows
+overlap by a year, so my cleaning step can put them on one scale. I cannot assume that 100 means the
+same thing in two windows.
 
-Third, the granularity. Google picks it from the width of the requested window
-and gives the caller no say. Asking for 2004 to 2026 in one request returns
-monthly points, not the weekly ones section 6 asks for. Verified on 2 September
-2026: that request returned 273 monthly values. So the series is collected twice,
-as a full range monthly pull for the long history and as a set of overlapping
-four year windows for weekly detail. The window files overlap by a year each so
-that the cleaning step can put them on one scale using the overlap, rather than
-assuming that 100 in one window means what 100 means in the next.
-
-Search interest values are relative within a single request and capped at 100,
-never absolute search counts. Nothing downstream may treat them as volumes, and
-no two files may be compared before they have been rescaled.
+The values are relative within one request and capped at 100. They are never search counts, and I
+cannot compare two files before rescaling them.
 """
 
 from __future__ import annotations
@@ -54,17 +45,16 @@ logger = get_logger(SCRIPT)
 
 
 def geo_label(geo: str) -> str:
-    """Filename friendly label. An empty geo means worldwide."""
+    """Making a label I can use in a filename. An empty geo means worldwide."""
     return geo.lower() if geo else "worldwide"
 
 
 def detect_granularity(dates: pd.Series) -> str:
-    """Infer whether a returned series is daily, weekly or monthly.
+    """Working out whether a returned series is daily, weekly or monthly.
 
-    Google decides the granularity from the width of the window and does not
-    announce it. Measuring the median gap between points is the only honest way
-    to label the file, and a mislabelled file here would quietly become a wrong
-    axis in module 3.
+    Google picks the granularity from the width of the window and does not say
+    which one it used. So I measure the median gap between points to label the
+    file. A wrong label here would turn into a wrong axis in my module 3.
     """
     if len(dates) < 3:
         return "unknown"
@@ -86,16 +76,15 @@ def collect_interest(
     group: str,
     window_tag: str = "full",
 ) -> int:
-    """Pull interest over time for one group, geography and time window.
+    """Pulling interest over time for one group, geography and time window.
 
-    Returns the number of rows saved, or 0 if the pull failed. The filename
-    records the granularity that actually came back rather than the one that was
-    hoped for.
+    I return the number of rows saved, or 0 if the pull failed. The filename
+    records the granularity that really came back, not the one I hoped for.
     """
     label = geo_label(geo)
     try:
         frame = client.interest_over_time(terms, timeframe=timeframe, geo=geo)
-    except Exception as exc:  # the library raises a variety of network errors
+    except Exception as exc:  # Catching everything, as the library raises many kinds of network errors
         log_data_issue(
             SCRIPT,
             f"{SOURCE}.{group}.{label}",
@@ -115,8 +104,8 @@ def collect_interest(
         )
         return 0
 
-    # The index is the period start date. Reset it so the CSV is self describing
-    # rather than depending on an index being read back correctly.
+    # Resetting the index, which is the period start date. This way my CSV has the
+    # date as a normal column and does not depend on an index being read back right.
     frame = frame.reset_index()
     granularity = detect_granularity(frame.iloc[:, 0])
 
@@ -146,11 +135,11 @@ def collect_interest(
 
 
 def collect_related(client, terms: list[str], timeframe: str, geo: str, group: str) -> None:
-    """Pull related queries for the anchor term only.
+    """Pulling related queries for the anchor term only.
 
-    Related queries are per term, and pulling five terms for four groups in two
+    Related queries come per term. Pulling five terms for four groups in two
     geographies would be forty extra throttled calls for very little extra
-    signal. The anchor term is the one that matters for the product intent read.
+    signal. The anchor term is the one I need to read product intent.
     """
     label = geo_label(geo)
     anchor = terms[0]
@@ -185,7 +174,7 @@ def collect_related(client, terms: list[str], timeframe: str, geo: str, group: s
 
 
 def collect_region(client, terms: list[str], timeframe: str, geo: str, group: str) -> None:
-    """Pull the regional breakdown, which feeds the dashboard geography page."""
+    """Pulling the regional breakdown, which feeds the geography page of my dashboard."""
     label = geo_label(geo)
     try:
         frame = client.interest_by_region(terms, timeframe=timeframe, geo=geo)
@@ -215,12 +204,12 @@ def collect_region(client, terms: list[str], timeframe: str, geo: str, group: st
 
 
 def weekly_windows(timeframe: str, window_years: int, step_years: int) -> list[tuple[str, str]]:
-    """Split the full range into overlapping windows short enough to return weeks.
+    """Splitting the full range into overlapping windows that are short enough to return weeks.
 
-    Returns a list of (timeframe string, window tag) pairs. Each window is
-    `window_years` long and starts `step_years` after the previous one, so
-    consecutive windows share `window_years - step_years` of history. That shared
-    stretch is what the cleaning step uses to put every window on one scale.
+    I return a list of (timeframe string, window tag) pairs. Each window is
+    `window_years` long and starts `step_years` after the one before, so two
+    windows in a row share `window_years - step_years` of history. My cleaning
+    step uses that shared part to put every window on one scale.
     """
     start_text, end_text = timeframe.split()
     start = pd.Timestamp(start_text)
@@ -270,7 +259,7 @@ def main() -> None:
         successes = 0
         attempts = 0
 
-        # Pass one: the full range, for the long history. This comes back monthly.
+        # Running pass one: the full range, for the long history. This comes back monthly.
         for group, terms in groups.items():
             if len(terms) > max_terms:
                 log_data_issue(
@@ -296,12 +285,13 @@ def main() -> None:
                     total_rows += rows
                     collect_related(client, terms, timeframe, geo, group)
                     collect_region(client, terms, timeframe, geo, group)
-                # Space out groups beyond the library's own delay. This endpoint
-                # punishes bursts, and a slow complete pull beats a fast partial one.
+                # Waiting between groups, on top of the delay the library already adds.
+                # This endpoint punishes bursts, and I prefer a slow complete pull to a
+                # fast partial one.
                 time.sleep(delay)
 
-        # Pass two: overlapping short windows, for weekly granularity. Only the
-        # groups the timing argument actually needs, because this multiplies the
+        # Running pass two: overlapping short windows, for weekly granularity. I only
+        # do this for the groups my timing argument needs, because it multiplies the
         # request count by the number of windows.
         windows = weekly_windows(timeframe, window_years, step_years)
         logger.info("weekly pass: %d windows per group and geography", len(windows))
@@ -335,7 +325,7 @@ def main() -> None:
                 SOURCE,
                 "every search interest pull failed",
                 "pageviews becomes the primary attention series and the analysis "
-                "start date moves from 2004 to 2015, as section 6 provides for",
+                "start date moves from 2004 to 2015, which is the fallback I planned",
                 severity="error",
             )
 

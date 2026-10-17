@@ -1,51 +1,29 @@
-"""Module 5.1. Forecast franchise attention through to a year past the premiere.
+"""Forecasting franchise attention up to a year past the premiere. This is my module 5.1.
 
-Reads  : data/processed/attention_weekly.csv
+Reading: data/processed/attention_weekly.csv
          outputs/tables/event_study_responses.csv
-Writes : images/figures/forecast_model_comparison.png
+Writing: images/figures/forecast_model_comparison.png
          images/figures/forecast_scenarios.png
          outputs/tables/forecast_model_metrics.csv
          outputs/tables/forecast_scenarios_weekly.csv
          outputs/tables/demand_scenarios.csv
-         outputs/models/forecast_<model>.json
+         outputs/models/forecast_metrics.json
          docs/findings.md (one entry)
-Runtime: two to four minutes, mostly Prophet.
+Running time: two to four minutes, mostly Prophet.
 
-What is being forecast. A composite weekly attention index: total Wikipedia
-pageviews across the four articles that describe the property itself rather than
-one film, one character or the streaming service. A composite is steadier than
-any single article, and it is what a category buyer cares about, since nobody
-stocks merchandise for one Wikipedia page.
+I forecast one weekly attention index: the total Wikipedia pageviews of four articles about
+the franchise itself. I leave the new show's own article out, because it only has about three
+years of real history, and that is too little to learn a yearly pattern. I report it on its own.
 
-The new show's own article is deliberately not in the composite, and the reason
-is worth reading before the numbers are used. That article carried about forty
-views a day through 2024 and only became substantial in mid 2025, so requiring
-it to be present shortens the usable history from eleven years to three, which
-is too little to estimate a yearly seasonal pattern from. It is measured and
-reported separately instead: it now runs about a hundred times its 2024 level,
-which is the clearest single piece of evidence that the new series is generating
-attention of its own.
+I compare five models, so I have a simple baseline and four real models to beat it: seasonal
+naive (last year's same week, my baseline), drift naive, Holt-Winters, SARIMA (1,1,1)(1,1,1,52)
+on a log scale, and Prophet with the trailer as a known event. I test them on the last 52
+weeks, split by time and never at random, and I score with MAE and MAPE.
 
-Five models, per section 11's requirement of at least three plus a baseline:
-
-  seasonal naive    last year's same week. The baseline every other model must beat.
-  drift naive       last value plus average weekly change. Catches trend without seasonality.
-  Holt-Winters      exponential smoothing with additive trend and yearly seasonality.
-  SARIMA            (1,1,1)(1,1,1,52), fitted on a log scale.
-  Prophet           yearly seasonality plus the trailer as a known event.
-
-Evaluation is on a held out final 52 weeks, split by time and never at random,
-scored on mean absolute error and mean absolute percentage error.
-
-The premiere is the hard part, and it is worth being clear about what can and
-cannot be claimed. No model can learn the effect of an event that has never
-happened in this series, so the premiere uplift is not fitted: it is imposed,
-using multiples measured from real events in 21_event_study.py, and the three
-scenarios are three defensible readings of that evidence rather than three
-confidence bands from one model. The statistical forecast supplies the
-counterfactual, meaning where attention goes if nothing happens; the scenarios
-add the event on top of it. Presenting the result any other way would dress an
-assumption up as a measurement.
+No model can learn the effect of a premiere that has never happened in this series. So I do
+not fit the premiere uplift. I add it on top of the forecast, using multiples measured from
+real events in 21_event_study.py. My three scenarios are three readings of that evidence,
+not confidence bands.
 """
 
 from __future__ import annotations
@@ -72,15 +50,12 @@ warnings.filterwarnings("ignore", category=UserWarning)
 SCRIPT = "30_interest_forecast"
 logger = get_logger(SCRIPT)
 
-# The articles that together describe attention to the property itself.
-#
-# Two exclusions, both deliberate. HBO_Max is a general streaming service whose
-# traffic is driven by everything else on the platform. The new show's own
-# article is excluded for a subtler reason: it barely existed before 2021 and
-# carried about forty views a day until mid 2025, so requiring it to be present
-# cuts the usable history from eleven years to three, which is not enough to
-# estimate a yearly seasonal pattern from. It is tracked separately below as
-# evidence of the new show's own pull.
+# Listing the articles that together show attention to the franchise itself.
+# I leave out two articles on purpose. HBO_Max is a general streaming service, so its
+# traffic follows everything else on the platform. The new show's own article hardly
+# existed before 2021 and had about forty views a day until mid 2025. Needing it would
+# cut my history from eleven years to three, which is not enough to learn a yearly
+# pattern. I track it on its own below as evidence of the new show's own pull.
 COMPOSITE_ARTICLES = [
     "Harry_Potter",
     "Wizarding_World",
@@ -90,22 +65,19 @@ COMPOSITE_ARTICLES = [
 
 SHOW_ARTICLE = "Harry_Potter_(TV_series)"
 
-# Read from config rather than fixed here. Section 5 puts every threshold in
-# config.yaml, and a value that sits in config while the code uses its own
-# constant is worse than either, because the two can disagree silently.
+# Reading this from config.yaml, where I keep every threshold. If the code had its own
+# copy of the number, the two could disagree without me noticing.
 HOLDOUT_WEEKS = int(get("modelling.test_size_weeks"))
 
 
-# --------------------------------------------------------------------------- #
-# data
-# --------------------------------------------------------------------------- #
+# Loading and building my data series.
 
 def build_composite() -> pd.Series:
-    """Weekly total views across the composite articles.
+    """Adding up the weekly views across my composite articles.
 
-    Only weeks where every article reported are kept. A week missing one article
-    would be a smaller total that looks like falling attention, which is the same
-    partial-period trap the cleaning step guards against at the daily level.
+    I keep only the weeks where every article has a value. A week with one article
+    missing would give a smaller total that looks like falling attention. My cleaning
+    step guards against the same trap for daily data.
     """
     attention = read_processed("attention_weekly.csv")
     subset = attention[
@@ -136,9 +108,9 @@ def build_composite() -> pd.Series:
     series = complete.sum(axis=1).sort_index()
     series.name = "attention"
 
-    # statsmodels needs an index with an explicit frequency, or Holt-Winters
-    # refuses to forecast past the end of the data. The weeks are already Mondays
-    # and contiguous, so stamping the frequency asserts what is already true.
+    # Giving the index a weekly frequency, because without it Holt-Winters in statsmodels
+    # will not forecast past the end of my data. My weeks are already Mondays with no
+    # gaps, so this only states what is already true.
     series = series.asfreq("W-MON")
     if series.isna().any():
         gaps = int(series.isna().sum())
@@ -152,7 +124,7 @@ def build_composite() -> pd.Series:
 
 
 def show_article_series() -> pd.Series | None:
-    """The new show's own article, tracked separately from the composite."""
+    """Loading the new show's own article, which I track apart from the composite."""
     attention = read_processed("attention_weekly.csv")
     subset = attention[
         (attention["source"] == "wikipedia_pageviews") & (attention["series"] == SHOW_ARTICLE)
@@ -163,15 +135,13 @@ def show_article_series() -> pd.Series | None:
     return subset.set_index("week")["value"].sort_index()
 
 
-# --------------------------------------------------------------------------- #
-# models
-# --------------------------------------------------------------------------- #
+# Defining my forecast models.
 
 def seasonal_naive(train: pd.Series, horizon: int, period: int = 52) -> np.ndarray:
-    """Repeat the value from `period` weeks ago. The baseline to beat.
+    """Repeating the value from `period` weeks ago. This is the baseline to beat.
 
-    The step wraps with a modulo so a horizon longer than one seasonal period
-    recycles the last observed year rather than running off the end of the array.
+    I wrap the step with a modulo. So when the horizon is longer than one seasonal
+    period, I reuse the last observed year and do not run off the end of the array.
     """
     history = train.values
     out = []
@@ -182,7 +152,7 @@ def seasonal_naive(train: pd.Series, horizon: int, period: int = 52) -> np.ndarr
 
 
 def drift_naive(train: pd.Series, horizon: int) -> np.ndarray:
-    """Last value plus the average change per week over the whole history."""
+    """Taking the last value and adding the average weekly change over the whole history."""
     values = train.values.astype(float)
     slope = (values[-1] - values[0]) / max(len(values) - 1, 1)
     return values[-1] + slope * np.arange(1, horizon + 1)
@@ -192,8 +162,8 @@ def holt_winters(train: pd.Series, horizon: int) -> np.ndarray | None:
     from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
     try:
-        # Fitted on logs so the seasonal swing scales with the level, which is
-        # how attention actually behaves: a busy year has bigger Decembers.
+        # Fitting on logs so the seasonal swing grows with the level. That is how
+        # attention really behaves: a busy year has bigger Decembers.
         model = ExponentialSmoothing(
             np.log(train.clip(lower=1)),
             trend="add",
@@ -254,29 +224,27 @@ def prophet_forecast(
 
 
 def event_frame() -> pd.DataFrame:
-    """Known events, in the shape Prophet wants for a holiday regressor."""
+    """Building the known events in the shape Prophet wants for a holiday regressor."""
     rows = []
     for event in get("events"):
         rows.append({
             "holiday": event["name"],
             "ds": pd.Timestamp(str(event["date"])),
             "lower_window": 0,
-            "upper_window": 28,  # the response decays over about four weeks
+            "upper_window": 28,  # Giving the response about four weeks to fade
         })
     return pd.DataFrame(rows)
 
 
-# --------------------------------------------------------------------------- #
-# evaluation
-# --------------------------------------------------------------------------- #
+# Scoring the models on the held out weeks.
 
 def score(actual: np.ndarray, predicted: np.ndarray) -> dict[str, float]:
     actual = np.asarray(actual, dtype=float)
     predicted = np.asarray(predicted, dtype=float)
     error = actual - predicted
     mae = float(np.mean(np.abs(error)))
-    # MAPE is undefined where actual is zero; those weeks are excluded rather
-    # than allowed to produce an infinity that quietly wins the comparison.
+    # Leaving out weeks where the actual value is zero, because MAPE cannot be worked
+    # out there. Otherwise I would get an infinity that quietly wins the comparison.
     usable = actual != 0
     mape = float(np.mean(np.abs(error[usable] / actual[usable])) * 100) if usable.any() else np.nan
     rmse = float(np.sqrt(np.mean(error**2)))
@@ -284,7 +252,7 @@ def score(actual: np.ndarray, predicted: np.ndarray) -> dict[str, float]:
 
 
 def evaluate_all(series: pd.Series) -> tuple[pd.DataFrame, dict[str, np.ndarray], pd.Series, pd.Series]:
-    """Fit every model on a time based split and score it on the held out tail."""
+    """Fitting every model on a split by time and scoring it on the held out last weeks."""
     train = series.iloc[:-HOLDOUT_WEEKS]
     test = series.iloc[-HOLDOUT_WEEKS:]
     horizon = len(test)
@@ -332,16 +300,14 @@ def evaluate_all(series: pd.Series) -> tuple[pd.DataFrame, dict[str, np.ndarray]
     return results, predictions, train, test
 
 
-# --------------------------------------------------------------------------- #
-# scenarios
-# --------------------------------------------------------------------------- #
+# Building the premiere scenarios.
 
 def largest_observed_spike(series: pd.Series) -> float:
-    """The biggest weekly spike this composite has ever shown, against its own year.
+    """Finding the biggest weekly spike my composite has ever had, against its own year.
 
-    Used as the high scenario. Anchoring the top of the range on something the
-    series has actually done is more defensible than picking a round number, and
-    it keeps the scenario inside the realm of observed franchise behaviour.
+    I use it as the high scenario. A top value the series has really reached is easier
+    to defend than a round number I picked, and it keeps the scenario inside what the
+    franchise has really done.
     """
     rolling_year = series.rolling(52, min_periods=26).median()
     ratio = (series / rolling_year).dropna()
@@ -349,22 +315,14 @@ def largest_observed_spike(series: pd.Series) -> float:
 
 
 def premiere_multipliers(series: pd.Series) -> dict[str, dict[str, float]]:
-    """Scenario definitions, justified from events measured on this same series.
+    """Setting the three scenarios from events measured on this same series.
 
-    The multiples must come from the series being forecast. An earlier version of
-    this function took the trailer's 33x peak, which was measured on the show's
-    own article against a baseline of about four thousand views a day, and applied
-    it to this composite, whose baseline is nearer two hundred thousand a week.
-    That produced a high scenario fifty times the last observed year, which is not
-    a forecast, it is a unit error. Every multiple below is measured on the
-    composite itself.
-
-      low      the weakest cinema release response observed, the most cautious
-               reading available
-      high     the largest weekly spike this composite has ever produced
-      central  the geometric mean of the two, which sits nearer the low end than
-               an arithmetic mean would and reflects that most franchise events
-               are ordinary rather than exceptional
+    My first version used the trailer's 33x peak from the show's own article (about four
+    thousand views a day) on this composite (nearer two hundred thousand a week). That
+    gave a high scenario fifty times the last observed year, which was a unit error. Now
+    every multiple is measured on the composite itself. Low is the weakest cinema release
+    response, high is the largest weekly spike ever, and central is the geometric mean of
+    the two. It sits nearer the low end, because most franchise events are ordinary.
     """
     observed_high = largest_observed_spike(series)
 
@@ -394,12 +352,11 @@ def premiere_multipliers(series: pd.Series) -> dict[str, dict[str, float]]:
 def apply_premiere_effect(
     baseline: pd.Series, premiere: pd.Timestamp, spec: dict[str, float]
 ) -> pd.Series:
-    """Add an event response on top of a counterfactual forecast.
+    """Adding an event response on top of the forecast with no premiere.
 
-    The shape is a spike at the premiere week decaying exponentially towards a
-    sustained level, which is the shape every measured event in this project
-    actually had. An eight episode weekly run means the decay is slower than a
-    film's, which is what the longer decay constants encode.
+    The shape is a spike in the premiere week that fades exponentially to a sustained
+    level. Every event I measured in this project had this shape. A show with eight
+    weekly episodes fades more slowly than a film, so I use longer decay values.
     """
     weeks_from = (baseline.index - premiere).days / 7.0
     multiplier = np.ones(len(baseline), dtype=float)
@@ -408,8 +365,8 @@ def apply_premiere_effect(
     decay = np.exp(-weeks_from[after] / spec["decay_weeks"])
     multiplier[after] = spec["sustained"] + (spec["peak"] - spec["sustained"]) * decay
 
-    # A short run up: interest builds in the four weeks before a release, which
-    # the film events show clearly.
+    # Adding a short run up, because interest builds in the four weeks before a release.
+    # My film events show this clearly.
     ramp = (weeks_from >= -4) & (weeks_from < 0)
     multiplier[ramp] = 1 + (spec["peak"] - 1) * 0.15 * (weeks_from[ramp] + 4) / 4
 
@@ -417,11 +374,11 @@ def apply_premiere_effect(
 
 
 def forecast_forward(series: pd.Series, weeks_ahead: int) -> pd.Series:
-    """The counterfactual: where attention goes with no premiere.
+    """Forecasting where attention goes with no premiere.
 
-    Holt-Winters on logs, refitted on the full series. If it fails, the seasonal
-    naive stands in, and the failure is recorded rather than hidden behind a
-    line that looks just as confident.
+    I refit Holt-Winters on logs on the full series. If it fails, I use the seasonal
+    naive in its place and I record the failure, so it is not hidden behind a line
+    that looks just as sure.
     """
     values = holt_winters(series, weeks_ahead)
     if values is None:
@@ -439,9 +396,7 @@ def forecast_forward(series: pd.Series, weeks_ahead: int) -> pd.Series:
     return pd.Series(values, index=index, name="counterfactual")
 
 
-# --------------------------------------------------------------------------- #
-# plots
-# --------------------------------------------------------------------------- #
+# Drawing the figures.
 
 def plot_model_comparison(train: pd.Series, test: pd.Series, predictions: dict, metrics: pd.DataFrame) -> Path:
     apply_style()
@@ -502,13 +457,11 @@ def plot_scenarios(history: pd.Series, scenarios: dict[str, pd.Series], premiere
     title_block(
         ax,
         f"Central scenario peaks at {peak_central:,.0f} weekly views in the weeks after the premiere",
-        "The statistical forecast supplies the no-premiere counterfactual; the premiere "
+        "The statistical forecast supplies the no premiere counterfactual; the premiere "
         "response is imposed from multiples measured on real franchise events, not fitted.",
     )
     return save_figure(fig, "forecast_scenarios.png", "Wikipedia pageviews and outputs/tables/event_study_responses.csv")
 
-
-# --------------------------------------------------------------------------- #
 
 def main() -> None:
     np.random.seed(random_seed())
@@ -523,9 +476,9 @@ def main() -> None:
             len(series), series.index.min().date(), series.index.max().date(), series.mean(),
         )
 
-        # The show's own article is not in the composite, but its recent level is
-        # the clearest evidence that the new series is generating attention of its
-        # own, so it is measured and reported rather than left out of the story.
+        # Measuring the show's own article even though it is not in my composite. Its
+        # recent level is the clearest evidence that the new series brings attention of
+        # its own, so I report it and do not leave it out of the story.
         show = show_article_series()
         if show is not None:
             recent = show.iloc[-13:].mean()
@@ -535,7 +488,7 @@ def main() -> None:
                 recent, baseline_2024, recent / baseline_2024 if baseline_2024 else np.nan,
             )
 
-        # --- model comparison on a held out year ---
+        # Comparing the models on a held out year.
         metrics, predictions, train, test = evaluate_all(series)
         logger.info("model comparison:\n%s", metrics.to_string(index=False))
 
@@ -559,11 +512,11 @@ def main() -> None:
                 SCRIPT, "forecast",
                 "no fitted model beat the seasonal naive baseline on the held out year",
                 "report the baseline as the forecast and say plainly that the fitted models "
-                "added nothing, as section 11 requires",
+                "added nothing, because I want to be honest about that",
                 severity="note",
             )
 
-        # --- scenarios forward ---
+        # Carrying the scenarios forward.
         weeks_ahead = int(
             ((premiere - series.index.max()).days + horizon_months * 30.44) / 7
         )
@@ -588,10 +541,10 @@ def main() -> None:
         save_table(
             "forecast_scenarios_weekly.csv", weekly,
             premiere=str(premiere.date()),
-            note="counterfactual is the no-premiere forecast; scenarios add an imposed event response",
+            note="counterfactual is the no premiere forecast; scenarios add an imposed event response",
         )
 
-        # --- the summary the retail module reads ---
+        # Building the summary that my retail module reads.
         season_start = pd.Timestamp(as_date("dates.gift_season_start"))
         january_end = pd.Timestamp(as_date("dates.january_position_end"))
 
@@ -628,7 +581,7 @@ def main() -> None:
         )
         logger.info("demand scenarios:\n%s", demand.to_string(index=False))
 
-        # --- saved model artefacts ---
+        # Saving the model results.
         models_dir = path("outputs_models", create=True)
         models_dir.mkdir(parents=True, exist_ok=True)
         (models_dir / "forecast_metrics.json").write_text(
@@ -648,7 +601,7 @@ def main() -> None:
             encoding="utf-8",
         )
 
-        # --- the finding ---
+        # Writing the finding.
         central = demand[demand["scenario"] == "central"].iloc[0]
         best_mape = float(metrics.iloc[0]["mape"])
         baseline_mape = float(metrics.loc[metrics["model"] == "seasonal naive", "mape"].iloc[0])
@@ -657,7 +610,7 @@ def main() -> None:
             f"On a held out final year, {best_model} was the most accurate of the five "
             f"approaches at {best_mape:.0f} per cent mean absolute percentage error against the "
             f"seasonal naive baseline's {baseline_mape:.0f} per cent"
-            f"{', and ' + str(len(beat_baseline)) + ' of the four fitted models beat that baseline' if beat_baseline else ', and no fitted model beat that baseline'}. "
+            f"{', and ' + ('all four' if len(beat_baseline) == 4 else str(len(beat_baseline)) + ' of the four') + ' fitted models beat that baseline' if beat_baseline else ', and no fitted model beat that baseline'}. "
             f"Carrying the counterfactual forward and imposing an event response measured from "
             f"real franchise events gives a central scenario peaking at "
             f"{central['premiere_peak_weekly_attention']:,.0f} weekly views, "

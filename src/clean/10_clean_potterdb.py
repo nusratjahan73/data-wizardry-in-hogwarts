@@ -1,25 +1,25 @@
-"""Clean the PotterDB catalogue into flat tables.
+"""Cleaning the PotterDB catalogue into flat tables.
 
-Reads  : data/raw/potterdb/*.json
-Writes : data/cleaned/potterdb/{characters,books,chapters,movies,spells,potions}.csv
-Runtime: a few seconds.
+Reading: data/raw/potterdb/*.json
+Writing: data/cleaned/potterdb/{characters,books,chapters,movies,spells,potions}.csv
+Running time: a few seconds.
 
-JSON:API nests every field under `attributes`, so the main job is flattening
-that, standardising column names to lower case with underscores, parsing dates
-to ISO and turning list valued fields into a countable form.
+JSON:API puts every field under `attributes`, so my main job is to flatten that.
+I also make the column names lower case with underscores, turn dates into ISO
+format, and turn list fields into something I can count.
 
-Two choices worth explaining.
+I made two choices here.
 
-List fields are kept twice. `family_members` arrives as a JSON list. It is
-stored as a pipe joined string for reading and as a count for analysis, because
-a count is what any model would use and re-parsing a string later invites a
-subtly different split each time.
+I keep list fields twice. `family_members` arrives as a JSON list. I store it as
+a pipe joined string for reading and as a count for analysis. A model would use
+the count, and splitting the string again later could give a slightly different
+result each time.
 
-Film money is cleaned but flagged. PotterDB's budget and box office fields are
-free text with real errors in them, documented in data/external/films_notes.md.
-They are parsed here so the error can be measured against the sourced table in
-data/external, and the resulting columns are named with a `potterdb_` prefix so
-that nothing downstream can mistake them for the authoritative figures.
+I clean the film money but I flag it. PotterDB's budget and box office fields are
+free text with real errors in them, which I wrote down in
+data/external/films_notes.md. I parse them here so I can measure the error against
+my sourced table in data/external. The new columns start with `potterdb_`, so no
+later script can mix them up with the trusted figures.
 """
 
 from __future__ import annotations
@@ -40,7 +40,7 @@ SCRIPT = "10_clean_potterdb"
 SOURCE = "potterdb"
 logger = get_logger(SCRIPT)
 
-# Fields that arrive as JSON lists and become a joined string plus a count.
+# Listing the fields that arrive as JSON lists. Each one becomes a joined string plus a count.
 LIST_FIELDS = {
     "characters": ["alias_names", "family_members", "jobs", "romances", "titles", "wands"],
     "movies": ["cinematographers", "directors", "distributors", "editors",
@@ -50,12 +50,12 @@ LIST_FIELDS = {
 
 
 def flatten(records: list[dict]) -> pd.DataFrame:
-    """Turn JSON:API records into a flat frame with id and type preserved."""
+    """Turning JSON:API records into a flat table, keeping the id and type."""
     rows = []
     for record in records:
         row = {"id": record.get("id"), "type": record.get("type")}
         row.update(record.get("attributes", {}) or {})
-        # chapters carry the parent book stamped on during collection
+        # Copying over the parent book that I stamped on each chapter during collection.
         for extra in ("book_slug", "book_title"):
             if extra in record:
                 row[extra] = record[extra]
@@ -71,7 +71,7 @@ def standardise_columns(frame: pd.DataFrame) -> pd.DataFrame:
 
 
 def split_list_columns(frame: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
-    """Store each list column as a joined string and a count."""
+    """Storing each list column as a joined string and a count."""
     for column in columns:
         if column not in frame.columns:
             continue
@@ -84,13 +84,13 @@ def split_list_columns(frame: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
 
 
 def parse_money_text(text: object) -> float | None:
-    """Parse PotterDB's free text money fields into a number of dollars.
+    """Parsing PotterDB's free text money fields into a number of dollars.
 
-    Handles '$125 million', '$150-200 million' (takes the midpoint), '$1.342
-    billion' and '$250 million (shared with part 1)'. Returns None when the text
-    cannot be read at all. It deliberately does not try to repair the known
-    errors in this source, because silently correcting a source hides that it
-    was wrong; the comparison against data/external/films.csv is what surfaces it.
+    I handle '$125 million', '$150-200 million' (I take the midpoint), '$1.342
+    billion' and '$250 million (shared with part 1)'. I return None when I cannot
+    read the text at all. I do not fix the known errors in this source, because
+    fixing them quietly would hide that the source was wrong. My comparison
+    against data/external/films.csv is what shows them.
     """
     if not isinstance(text, str) or not text.strip():
         return None
@@ -106,8 +106,8 @@ def parse_money_text(text: object) -> float | None:
     if not numbers:
         return None
 
-    # A range such as '150-200 million' becomes its midpoint, which is the only
-    # defensible single number to take from it.
+    # Turning a range such as '150-200 million' into its midpoint, because that is
+    # the only fair single number I can take from it.
     if re.search(r"\d+\s*[-–]\s*\d+", lowered) and len(numbers) >= 2:
         value = (float(numbers[0]) + float(numbers[1])) / 2
     else:
@@ -124,7 +124,7 @@ def parse_running_time(text: object) -> float | None:
 
 
 def clean_endpoint(name: str) -> int:
-    """Clean one saved endpoint. Returns the row count written."""
+    """Cleaning one saved endpoint and returning the number of rows I wrote."""
     source_file = path("data_raw", SOURCE, f"{name}.json")
     if not source_file.exists():
         log_data_issue(
@@ -150,7 +150,7 @@ def clean_endpoint(name: str) -> int:
         frame["release_date"] = pd.to_datetime(frame["release_date"], errors="coerce").dt.date
 
     if name == "movies":
-        # Prefixed so no later script can mistake these for the sourced figures.
+        # Adding a prefix so no later script can mix these up with my sourced figures.
         frame["potterdb_budget_usd"] = frame.get("budget", pd.Series(dtype=object)).map(parse_money_text)
         frame["potterdb_box_office_usd"] = frame.get("box_office", pd.Series(dtype=object)).map(parse_money_text)
         frame["running_time_minutes"] = frame.get("running_time", pd.Series(dtype=object)).map(parse_running_time)
@@ -161,8 +161,8 @@ def clean_endpoint(name: str) -> int:
     if name == "books" and "pages" in frame.columns:
         frame["pages"] = pd.to_numeric(frame["pages"], errors="coerce").astype("Int64")
 
-    # Drop the columns that only hold a picture URL. They are not analysis
-    # inputs, and section 4 says images belong under images/, not in a table.
+    # Dropping the columns that only hold a picture URL. I do not use them in my
+    # analysis, and pictures belong under images/, not in a table.
     for column in ["image", "cover", "poster", "trailer"]:
         if column in frame.columns:
             frame = frame.drop(columns=[column])
@@ -181,8 +181,8 @@ def main() -> None:
             total += clean_endpoint(name)
         run.rows_out = total
 
-        # The house field is the one the segmentation work would most like to
-        # use, and it is mostly empty. Measure it rather than discover it later.
+        # Measuring the house field now, so I do not find the gap later. It is the
+        # field I most want for my segmentation work, and it is mostly empty.
         characters_file = path("data_cleaned", SOURCE, "characters.csv")
         if characters_file.exists():
             characters = pd.read_csv(characters_file)

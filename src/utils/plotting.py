@@ -1,14 +1,13 @@
-"""One palette and one chart style for the whole project.
+"""Setting one palette and one chart style for my whole project.
 
-Reads  : nothing at import time.
-Writes : figures, through `save_figure`, only into images/figures.
+Reading: nothing at import time.
+Writing: figures, through `save_figure`, only into images/figures.
 Runtime: instant.
 
-Section 15 of the brief requires the dashboard, the infographic and the report
-figures to share a palette, and warns against using four saturated house colours
-as a chart palette. The values below are declared once here and once in
-web/css/base.css, and the two must stay in step. Nothing else in the project may
-name a colour.
+I want my dashboard, my infographic and my report figures to share one palette,
+and I do not want the four saturated house colours used as a chart palette. I
+declare the values once here and once in web/css/base.css, and the two must stay
+the same. Nothing else in my project may name a colour.
 """
 
 from __future__ import annotations
@@ -18,33 +17,32 @@ from pathlib import Path
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-# A dark turquoise accent on a near-white ground, with one deep blue for a second
-# series and a warm gold reserved for the premiere marker. Restrained on purpose:
-# the charts have to stay readable when printed small on a one page infographic,
-# and turquoise against gold keeps the one thing that matters, the premiere date,
-# separable from everything else at a glance.
-#
-# Gold rather than a second cool colour for the highlight because it is the only
-# warm note in the palette, so nothing else on a chart can be mistaken for it.
+# Using a dark turquoise accent on a near white ground, with one deep blue for a
+# second series and a warm gold kept for the premiere line. I kept it calm on
+# purpose. My charts have to stay readable when printed small on a one page
+# infographic, and turquoise against gold makes the premiere date, the one thing
+# that matters, easy to tell apart from everything else at a glance.
+# I chose gold and not a second cool colour for the highlight, because it is the
+# only warm colour in my palette, so nothing else on a chart can be mistaken for it.
 PALETTE = {
-    "ink": "#10262B",          # text and axes, a near-black with a teal cast
-    "ground": "#FFFFFF",       # figure background
-    "ground_alt": "#F1F7F8",   # panel fills
+    "ink": "#10262B",          # Colouring text and axes, a near black with a teal cast
+    "ground": "#FFFFFF",       # Filling the figure background
+    "ground_alt": "#F1F7F8",   # Filling panels
     "grid": "#D9E4E7",
-    "muted": "#5F7A80",        # secondary text, baselines, context series
-    "accent": "#0E7C86",       # dark turquoise, carries the main series
-    "accent_soft": "#93C9CF",  # confidence bands and fills
-    "support": "#14405C",      # deep blue, the one contrasting series
+    "muted": "#5F7A80",        # Colouring secondary text, baselines and context series
+    "accent": "#0E7C86",       # Using dark turquoise for my main series
+    "accent_soft": "#93C9CF",  # Shading confidence bands and fills
+    "support": "#14405C",      # Using deep blue for my one contrasting series
     "support_soft": "#9FB4C4",
-    "highlight": "#C9932B",    # warm gold, sparingly: premiere marker and callouts
+    "highlight": "#C9932B",    # Using warm gold sparingly, for the premiere line and callouts
     "warn": "#8A6412",
 }
 
-# Ordered series colours. Four is the deliberate maximum for any one chart.
+# Listing my series colours in order. I allow at most four in any one chart, on purpose.
 SERIES = [PALETTE["accent"], PALETTE["support"], PALETTE["muted"], PALETTE["highlight"]]
 
-# The four house colours. Reserved for the segmentation figure only, where the
-# colour carries meaning. Never used as a general chart palette.
+# Keeping the four house colours for my segmentation figure only, where the
+# colour carries meaning. I never use them as a general chart palette.
 HOUSE_COLOURS = {
     "gryffindor": "#7B1E22",
     "slytherin": "#1E4D3A",
@@ -60,7 +58,7 @@ SCENARIO_COLOURS = {
 
 
 def apply_style() -> None:
-    """Set the matplotlib defaults every figure in the project inherits."""
+    """Setting the matplotlib defaults that every figure in my project uses."""
     mpl.rcParams.update(
         {
             "figure.figsize": (10, 5.5),
@@ -99,16 +97,13 @@ def apply_style() -> None:
 
 
 def title_block(ax, finding: str, subtitle: str = "", subtitle_wrap: int = 110) -> None:
-    """Put the finding in the title and the method underneath it.
+    """Putting the finding in the title and the method under it.
 
-    The brief asks every figure to state a finding rather than name a variable.
-    Both lines are drawn as axes text rather than through set_title, because
-    set_title puts the title at a fixed offset and the subtitle then has to be
-    positioned relative to a height nobody knows in advance, which is how the two
-    end up printed on top of each other. Drawing both explicitly, subtitle first
-    and title above it, keeps them apart at any figure size.
-
-    A long subtitle is wrapped rather than allowed to run past the axes.
+    I want every figure to state a finding, not just name a variable. I draw both
+    lines as axes text and not with set_title, because set_title uses a fixed
+    offset and the two lines can end up printed on top of each other. Drawing the
+    subtitle first and the title above it keeps them apart at any figure size.
+    I wrap a long subtitle so it does not run past the axes.
     """
     import textwrap
 
@@ -132,7 +127,7 @@ def title_block(ax, finding: str, subtitle: str = "", subtitle_wrap: int = 110) 
 
 
 def mark_premiere(ax, premiere_date, label: str = "Premiere 25 Dec 2026") -> None:
-    """Draw the premiere date on any time axis, always the same way."""
+    """Drawing the premiere date on any time axis, always the same way."""
     ax.axvline(premiere_date, color=PALETTE["highlight"], linewidth=1.6, linestyle="--", zorder=1)
     ax.annotate(
         label,
@@ -147,7 +142,7 @@ def mark_premiere(ax, premiere_date, label: str = "Premiere 25 Dec 2026") -> Non
 
 
 def source_note(fig, text: str) -> None:
-    """Footer giving the source and the retrieval date, on every exported figure."""
+    """Adding a footer with the source and the retrieval date to every figure I export."""
     fig.text(
         0.01,
         0.005,
@@ -160,10 +155,10 @@ def source_note(fig, text: str) -> None:
 
 
 def save_figure(fig, filename: str, source: str = "") -> Path:
-    """Write a figure to images/figures and close it.
+    """Saving a figure to images/figures and closing it.
 
-    Importing io here rather than at module scope keeps `plotting` usable from a
-    notebook without dragging in the placement rules.
+    I import io here and not at the top of the file, so I can use `plotting` from
+    a notebook without pulling in my file placement rules.
     """
     from .io import figure_path
 

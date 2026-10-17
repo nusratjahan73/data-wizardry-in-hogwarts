@@ -1,40 +1,31 @@
-"""Clean search interest, stitching the overlapping weekly windows into one series.
+"""Cleaning search interest and stitching the overlapping weekly windows into one series.
 
-Reads  : data/raw/trends/interest_{monthly,weekly}__*.csv
-Writes : data/cleaned/trends/interest_monthly.csv
+Reading: data/raw/trends/interest_{monthly,weekly}__*.csv
+Writing: data/cleaned/trends/interest_monthly.csv
          data/cleaned/trends/interest_weekly.csv
          data/cleaned/trends/weekly_stitch_check.csv
-Runtime: a few seconds.
+Running time: a few seconds.
 
-The stitch is the whole point of this script.
+The stitch is the main job of this script. Google scales every request so that
+its highest value is 100. So a 60 in the 2004 to 2008 window and a 60 in the 2019
+to 2023 window mean very different amounts of searching. If I just joined the
+windows, the series would look flat across twenty years.
 
-Google scales every request so that the maximum value inside that request is
-100. A value of 60 in the 2004 to 2008 window and a value of 60 in the 2019 to
-2023 window therefore describe completely different amounts of searching, and
-concatenating the windows without correction would produce a series that looks
-flat across twenty years because every window was independently normalised.
+I fix this with the year of overlap that each window shares with the next one.
+Starting from the earliest window, I divide the two windows' totals across their
+shared weeks. That factor puts the later window on the earlier window's scale.
 
-The correction uses the year of overlap that each window shares with the next.
-Working forward from the earliest window, the ratio of the two windows' totals
-across their shared weeks gives a factor that puts the later window on the
-earlier window's scale, and applying each factor in turn places every window on
-one scale.
+I use a ratio of sums, not a median of weekly ratios. Trends returns small whole
+numbers for low volume terms, so single weeks read 1 against 2, or 0 against 2.
+A median of those lands on 0.5 or 0, and a factor of 0 wipes out every week after
+the join. A ratio of sums follows the weeks that carry real signal.
 
-The factor is a ratio of sums rather than a median of weekly ratios, which
-matters more than it sounds. Trends returns small integers for low volume terms,
-so single weeks read 1 against 2, or 0 against 2. A median of those weekly ratios
-lands on 0.5 or on 0, and a factor of 0 silently erases every week after the
-join. A ratio of sums is dominated by the weeks that carry real signal, so a
-sparse term degrades into noise rather than into zeros.
+I write the disagreement in each overlap to weekly_stitch_check.csv. A stitch
+that lines up within a few per cent can be trusted. One that does not is a limit
+I have to state in my report.
 
-Because the result is a chain of estimates, the disagreement in each overlap is
-written to weekly_stitch_check.csv. A stitch that lines up to within a few
-per cent can be relied on; one that does not is a limitation the report has to
-state, and either way the number is on record rather than assumed.
-
-The stitched series is rescaled to a 0 to 100 range at the end, so it reads like
-a Trends series, but it is an index of this project's own construction. It is
-never presented as a raw Google figure.
+At the end I rescale the stitched series to 0 to 100, so it reads like a Trends
+series. It is my own index and I never present it as a raw Google figure.
 """
 
 from __future__ import annotations
@@ -61,7 +52,7 @@ FILENAME = re.compile(
 
 
 def read_interest_file(file_path: Path) -> pd.DataFrame:
-    """Read one saved interest file into long form: date, term, interest."""
+    """Reading one saved interest file into long form: date, term, interest."""
     match = FILENAME.match(file_path.stem)
     if not match:
         log_data_issue(
@@ -76,9 +67,9 @@ def read_interest_file(file_path: Path) -> pd.DataFrame:
     frame = frame.rename(columns={date_column: "date"})
     frame["date"] = pd.to_datetime(frame["date"], errors="coerce")
 
-    # isPartial marks a period that had not finished when the data was served.
-    # Its value is genuinely lower than the finished period would be, so it is
-    # dropped rather than kept as a fall in interest.
+    # Dropping the periods marked isPartial, which had not finished when the data
+    # was served. Their value is lower than the finished period would be, so keeping
+    # them would look like a fall in interest.
     if "isPartial" in frame.columns:
         partial = frame["isPartial"].astype(str).str.lower().eq("true")
         if partial.any():
@@ -98,9 +89,9 @@ def read_interest_file(file_path: Path) -> pd.DataFrame:
 
 
 def stitch_windows(windows: dict[str, pd.DataFrame], term: str, group: str, geo: str) -> tuple[pd.DataFrame, list[dict]]:
-    """Put a term's overlapping windows onto one scale, earliest window first.
+    """Putting a term's overlapping windows onto one scale, earliest window first.
 
-    Returns the stitched frame and one check row per join.
+    I return the stitched table and one check row per join.
     """
     ordered = sorted(windows.items(), key=lambda item: item[0])
     checks: list[dict] = []
@@ -120,13 +111,12 @@ def stitch_windows(windows: dict[str, pd.DataFrame], term: str, group: str, geo:
                 (overlap["interest_curr"] > 0) & overlap["interest_prev"].notna()
             ]
 
-            # The factor is the ratio of the two windows' totals across the
-            # overlap, not the median of the weekly ratios. Trends returns small
-            # integers for low volume terms, so a week reading 1 against 2 gives
-            # a ratio of 0.5 and a week reading 0 against 2 gives 0. Taking a
-            # median of those collapses the factor to zero and silently erases
-            # everything after the join. A ratio of sums is dominated by the
-            # weeks that carry real signal, which is the behaviour wanted here.
+            # Working out the factor as the ratio of the two windows' totals across
+            # the overlap, not the median of the weekly ratios. Trends returns small
+            # whole numbers for low volume terms, so a week reading 1 against 2 gives
+            # 0.5 and a week reading 0 against 2 gives 0. A median of those can drop
+            # the factor to zero and wipe out everything after the join. A ratio of
+            # sums follows the weeks that carry real signal, which is what I want.
             previous_total = float(usable["interest_prev"].sum())
             current_total = float(usable["interest_curr"].sum())
 
@@ -142,9 +132,9 @@ def stitch_windows(windows: dict[str, pd.DataFrame], term: str, group: str, geo:
                 )
                 note = "stitched on the measured overlap"
             else:
-                # Not enough signal in the overlap to measure a factor. Carrying
-                # the previous one forward is a guess, and it is labelled as one
-                # rather than quietly producing a zeroed series.
+                # Carrying the previous factor forward, because the overlap has too
+                # little signal to measure a new one. This is a guess, so I label it
+                # as one in the note and do not quietly write a series of zeros.
                 scaled["interest"] = frame["interest"] * running_factor
                 disagreement = np.nan
                 if len(usable) < 4:
@@ -183,8 +173,8 @@ def stitch_windows(windows: dict[str, pd.DataFrame], term: str, group: str, geo:
 
     combined = pd.concat(stitched_parts, ignore_index=True)
 
-    # Where windows overlap, two scaled estimates exist for the same week. The
-    # mean of them is a smoother join than picking one arbitrarily.
+    # Averaging the two scaled values I get for a week where windows overlap. The
+    # mean gives a smoother join than picking one of them at random.
     combined = (
         combined.groupby("date", as_index=False)
         .agg(interest=("interest", "mean"), windows_contributing=("window", "nunique"))
@@ -213,8 +203,9 @@ def main() -> None:
 
         rows_out = 0
 
-        # --- monthly, the long history. One file per group and geography, so
-        # there is nothing to stitch: each is already on its own single scale.
+        # Cleaning the monthly files, which hold the long history. There is one file
+        # per group and geography, so I have nothing to stitch. Each one is already
+        # on its own single scale.
         if monthly_files:
             monthly = pd.concat([read_interest_file(f) for f in monthly_files], ignore_index=True)
             monthly = monthly[monthly["interest"].notna()]
@@ -234,7 +225,7 @@ def main() -> None:
                 monthly["date"].min(), monthly["date"].max(), relative(target),
             )
 
-        # --- weekly, stitched across windows
+        # Cleaning the weekly files and stitching them across windows.
         if weekly_files:
             raw_weekly = pd.concat([read_interest_file(f) for f in weekly_files], ignore_index=True)
             stitched_parts: list[pd.DataFrame] = []
@@ -251,7 +242,7 @@ def main() -> None:
 
             weekly = pd.concat(stitched_parts, ignore_index=True)
 
-            # Rescale each series to 0 to 100 so it reads like a Trends series.
+            # Rescaling each series to 0 to 100 so it reads like a Trends series.
             weekly["interest_index"] = weekly.groupby(["group", "geo", "term"])["interest"].transform(
                 lambda s: s / s.max() * 100 if s.max() and s.max() > 0 else s
             )
@@ -301,10 +292,10 @@ def main() -> None:
                     "the previous scale factor was carried forward for those joins",
                 )
 
-            # A term that is zero for most of its history has no weekly signal to
-            # measure. Naming those terms here stops a later module reading a flat
-            # line of zeros as evidence of no interest, when it is really evidence
-            # of a search term too rare to register.
+            # Naming the terms that are zero for most of their history, because they
+            # have no weekly signal to measure. This stops a later module from reading
+            # a flat line of zeros as no interest, when the search term is really just
+            # too rare to register.
             sparsity = (
                 weekly.assign(is_zero=weekly["interest_stitched_raw"].fillna(0) <= 0)
                 .groupby(["group", "geo", "term"], as_index=False)["is_zero"]

@@ -1,17 +1,17 @@
-"""Collect character attributes from the HP API.
+"""Collecting character attributes from the HP API.
 
-Reads  : config.yaml (sources.hpapi).
-Writes : data/raw/hpapi/characters.json, data/raw/hpapi/spells.json.
+Reading: config.yaml (sources.hpapi).
+Writing: data/raw/hpapi/characters.json, data/raw/hpapi/spells.json.
 Runtime: a few seconds.
 
-PotterDB already carries characters, but its house field is sparse across five
-thousand minor records. The HP API returns a much smaller, curated set with
-house, species, wand and patronus filled in reliably. The two are complementary:
-PotterDB gives coverage, HP API gives attribute completeness on the characters
-anyone has heard of. Module 1 joins them on a normalised name.
+PotterDB already has characters, but its house field is often empty across its
+five thousand minor records. The HP API returns a much smaller set, with house,
+species, wand and patronus filled in reliably. So I use both: PotterDB gives me
+coverage, and the HP API gives me complete attributes for the well known
+characters. My module 1 joins them on a normalised name.
 
-The endpoint is a single uncached call per resource with no pagination and no
-key, so there is nothing to rate limit beyond ordinary politeness.
+Each resource is one call with no pagination and no key, so I only wait a
+second between calls to be polite.
 """
 
 from __future__ import annotations

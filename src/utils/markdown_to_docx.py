@@ -1,17 +1,16 @@
-"""Turn the project's Markdown documentation into Word documents.
+"""Turning my project's Markdown documents into Word documents.
 
-The documentation is written and generated as Markdown because that is what code
-can write and what `git diff` can show line by line. Word is what a reader who is
-not opening a code editor actually wants. This module bridges the two, so the
-Markdown stays the single source and the Word files are built from it rather than
-maintained alongside it.
+I write and generate my documentation as Markdown, because code can write it and
+`git diff` can show the changes line by line. A reader who does not open a code
+editor wants Word. So I build the Word files from the Markdown here, and the
+Markdown stays my single source.
 
-Nothing here is hand-maintained. Editing a `.docx` produced by this module is a
-mistake: the next build overwrites it. Edit the Markdown.
+I never edit a `.docx` made by this module, because the next build overwrites it.
+I edit the Markdown.
 
-Supported Markdown, which is all the project's documents use: headings to three
-levels, paragraphs, bullet and numbered lists, tables, fenced code blocks, block
-quotes, horizontal rules, and inline bold, italic, code and links.
+I support only the Markdown my documents use: headings to three levels,
+paragraphs, bullet and numbered lists, tables, fenced code blocks, block quotes,
+horizontal rules, and inline bold, italic, code and links.
 """
 
 from __future__ import annotations
@@ -24,7 +23,7 @@ from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Inches, Pt, RGBColor
 
-# Matches the project palette in src/utils/plotting.py and web/css/base.css.
+# Matching my project palette in src/utils/plotting.py and web/css/base.css.
 INK = RGBColor(0x10, 0x26, 0x2B)
 ACCENT = RGBColor(0x0E, 0x7C, 0x86)
 MUTED = RGBColor(0x5F, 0x7A, 0x80)
@@ -32,13 +31,13 @@ MUTED = RGBColor(0x5F, 0x7A, 0x80)
 BODY_FONT = "Segoe UI"
 MONO_FONT = "Consolas"
 
-# Inline markup, resolved in one pass so that bold inside a link, or code inside
+# Handling all inline markup in one pass, so bold inside a link, or code inside
 # a bullet, does not need a second rule.
 INLINE = re.compile(
-    r"(\*\*.+?\*\*)"          # bold
-    r"|(`[^`]+`)"             # inline code
-    r"|(\[[^\]]+\]\([^)]+\))"  # link
-    r"|(\*[^*]+\*)"           # italic
+    r"(\*\*.+?\*\*)"          # Matching bold
+    r"|(`[^`]+`)"             # Matching inline code
+    r"|(\[[^\]]+\]\([^)]+\))"  # Matching a link
+    r"|(\*[^*]+\*)"           # Matching italic
 )
 
 
@@ -61,7 +60,7 @@ def _style_document(document: Document) -> None:
 
 
 def _add_runs(paragraph, text: str) -> None:
-    """Write text into a paragraph, honouring inline bold, italic, code and links."""
+    """Writing text into a paragraph, and keeping inline bold, italic, code and links."""
     position = 0
     for match in INLINE.finditer(text):
         if match.start() > position:
@@ -76,9 +75,9 @@ def _add_runs(paragraph, text: str) -> None:
             run.font.size = Pt(9.5)
             run.font.color.rgb = ACCENT
         elif link:
-            # The link text alone. A Word hyperlink needs a relationship on the
-            # document part, and these mostly point at files inside the repo,
-            # which would be broken links for anyone reading the .docx on its own.
+            # Keeping only the link text. A real Word hyperlink needs a relationship on
+            # the document part, and most of my links point at files inside the repo.
+            # Those would be broken links for anyone reading the .docx on its own.
             label = re.match(r"\[([^\]]+)\]", link).group(1)
             run = paragraph.add_run(label)
             run.font.color.rgb = ACCENT
@@ -92,12 +91,12 @@ def _add_runs(paragraph, text: str) -> None:
 
 
 def _add_table(document: Document, rows: list[str]) -> None:
-    """Render a Markdown pipe table."""
+    """Turning a Markdown pipe table into a Word table."""
     def cells(line: str) -> list[str]:
         return [c.strip() for c in line.strip().strip("|").split("|")]
 
     header = cells(rows[0])
-    body = [cells(r) for r in rows[2:]]  # row 1 is the --- separator
+    body = [cells(r) for r in rows[2:]]  # Skipping row 1, which is the --- separator
 
     table = document.add_table(rows=1, cols=len(header))
     table.style = "Light Grid Accent 1"
@@ -135,10 +134,10 @@ def _add_code_block(document: Document, lines: list[str]) -> None:
 
 
 def render_markdown(document: Document, markdown: str, heading_offset: int = 0) -> None:
-    """Append one Markdown document to an open Word document.
+    """Adding one Markdown document to the end of an open Word document.
 
-    `heading_offset` pushes every heading down a level, so several documents can
-    be combined under one report title without three competing Heading 1s.
+    `heading_offset` pushes every heading down a level. This lets me join several
+    documents under one report title without three Heading 1s competing.
     """
     lines = markdown.split("\n")
     index = 0
@@ -147,7 +146,7 @@ def render_markdown(document: Document, markdown: str, heading_offset: int = 0) 
         line = lines[index]
         stripped = line.strip()
 
-        # fenced code
+        # Handling fenced code
         if stripped.startswith("```"):
             block = []
             index += 1
@@ -158,7 +157,7 @@ def render_markdown(document: Document, markdown: str, heading_offset: int = 0) 
             index += 1
             continue
 
-        # table
+        # Handling a table
         if stripped.startswith("|") and index + 1 < len(lines) and set(lines[index + 1].strip()) <= set("|-: "):
             block = []
             while index < len(lines) and lines[index].strip().startswith("|"):
@@ -168,7 +167,7 @@ def render_markdown(document: Document, markdown: str, heading_offset: int = 0) 
                 _add_table(document, block)
             continue
 
-        # headings
+        # Handling headings
         heading = re.match(r"^(#{1,6})\s+(.*)$", stripped)
         if heading:
             level = min(len(heading.group(1)) + heading_offset, 4)
@@ -177,13 +176,13 @@ def render_markdown(document: Document, markdown: str, heading_offset: int = 0) 
             index += 1
             continue
 
-        # horizontal rule: a spacer, not a line, which Word renders badly
+        # Turning a horizontal rule into a spacer and not a line, because Word draws the line badly
         if stripped in {"---", "***", "___"}:
             document.add_paragraph()
             index += 1
             continue
 
-        # block quote
+        # Handling a block quote
         if stripped.startswith(">"):
             paragraph = document.add_paragraph()
             paragraph.paragraph_format.left_indent = Inches(0.3)
@@ -194,7 +193,7 @@ def render_markdown(document: Document, markdown: str, heading_offset: int = 0) 
             index += 1
             continue
 
-        # bullet
+        # Handling a bullet
         bullet = re.match(r"^[-*+]\s+(.*)$", stripped)
         if bullet:
             paragraph = document.add_paragraph(style="List Bullet")
@@ -202,7 +201,7 @@ def render_markdown(document: Document, markdown: str, heading_offset: int = 0) 
             index += 1
             continue
 
-        # numbered
+        # Handling a numbered item
         numbered = re.match(r"^\d+[.)]\s+(.*)$", stripped)
         if numbered:
             paragraph = document.add_paragraph(style="List Number")
@@ -210,12 +209,12 @@ def render_markdown(document: Document, markdown: str, heading_offset: int = 0) 
             index += 1
             continue
 
-        # blank
+        # Skipping a blank line
         if not stripped:
             index += 1
             continue
 
-        # paragraph, joining wrapped lines until a blank or a new block
+        # Building a paragraph by joining wrapped lines until a blank line or a new block
         block = [stripped]
         index += 1
         while index < len(lines):
@@ -265,13 +264,13 @@ def title_page(document: Document, title: str, subtitle: str, meta: list[str]) -
 
 
 def convert_file(source: Path, target: Path, title: str, subtitle: str, meta: list[str]) -> Path:
-    """Convert one Markdown file to a standalone Word document."""
+    """Converting one Markdown file into its own Word document."""
     document = new_document()
     title_page(document, title, subtitle, meta)
     document.add_paragraph()
 
-    # Drop the Markdown's own leading H1. The title page above already carries
-    # the document name, and printing it twice reads as a mistake.
+    # Dropping the Markdown's own first H1. My title page above already shows
+    # the document name, and printing it twice looks like a mistake.
     body = source.read_text(encoding="utf-8")
     if body.startswith("# "):
         body = body.split("\n", 1)[1]

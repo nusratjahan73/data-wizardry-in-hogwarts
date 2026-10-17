@@ -23,12 +23,12 @@ One row per theatrical film. Performance and reception from three sourced extern
 | `release_date` | date | date | The Numbers | none | 2001-11-15 to 2022-04-06 | first theatrical release anywhere |
 | `release_date_na` | date | date | Box Office Mojo | none | 2001-11-16 to 2022-04-15 | North American release; the date the opening weekend belongs to |
 | `budget_usd` | int64 | US dollars, nominal | The Numbers | none | 1e+08 to 2.5e+08 | production budget only, excludes marketing; the two Deathly Hallows budgets are a convention, not a measurement |
-| `domestic_gross_usd` | int64 | US dollars, nominal | The Numbers | none | 9.585e+07 to 3.825e+08 | North America, includes re-releases |
+| `domestic_gross_usd` | int64 | US dollars, nominal | The Numbers | none | 9.585e+07 to 3.825e+08 | North America, includes rereleases |
 | `international_gross_usd` | int64 | US dollars, nominal | The Numbers | none | 3.113e+08 to 9.293e+08 | all territories outside North America |
 | `worldwide_gross_usd` | int64 | US dollars, nominal | The Numbers | none | 4.072e+08 to 1.312e+09 | domestic plus international |
 | `opening_weekend_domestic_usd` | int64 | US dollars, nominal | Box Office Mojo | none | 4.215e+07 to 1.692e+08 | three day North American opening |
 | `rt_critic_score` | int64 | percent | Rotten Tomatoes | none | 36 to 96 | Tomatometer, read 2 September 2026 |
-| `rt_audience_score` | int64 | percent | Rotten Tomatoes | none | 53 to 89 | Popcornmeter; gathered over decades, so not a release-time measure |
+| `rt_audience_score` | int64 | percent | Rotten Tomatoes | none | 53 to 89 | Popcornmeter; gathered over decades, so not a release time measure |
 | `metacritic_score` | int64 | score 0 to 100 | Wikipedia | none | 47 to 85 | critic aggregate |
 | `cinemascore` | category | letter grade | Wikipedia | 3 (27%) | A, A+, A-, B+ | blank for three films where none was published |
 | `source_financials` | category | text | hand entered | none | the-numbers.com/movies/franchise/Harry-Potter | origin of the figure in the matching column |

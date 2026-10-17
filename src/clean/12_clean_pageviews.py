@@ -1,24 +1,23 @@
-"""Clean Wikipedia pageviews into one long daily table and a weekly roll up.
+"""Cleaning Wikipedia pageviews into one long daily table and a weekly roll up.
 
-Reads  : data/raw/pageviews/*.json
-Writes : data/cleaned/pageviews/pageviews_daily.csv
+Reading: data/raw/pageviews/*.json
+Writing: data/cleaned/pageviews/pageviews_daily.csv
          data/cleaned/pageviews/pageviews_weekly.csv
-Runtime: about ten seconds.
+Running time: about ten seconds.
 
-This is the project's backbone attention series, so the shape it takes here is
-what every later module inherits.
+This is my main attention series, so every later module uses the shape I give it
+here.
 
-Long, not wide. One row per article per day, with the group as a column. A wide
-table with one column per article would need a schema change every time an
-article is added, and would make the group level roll ups awkward.
+I keep it long, not wide. There is one row per article per day, with the group as
+a column. A wide table with one column per article would need a new column every
+time I add an article, and the group level roll ups would be awkward.
 
-Weeks start on Monday, and a week is only kept if all seven of its days are
-present. A partial week is a smaller number that looks like falling attention,
-which is exactly the kind of artefact that would corrupt a seasonality reading.
-The number of dropped partial weeks is logged rather than passed over.
+My weeks start on Monday, and I only keep a week if all seven of its days are
+present. A partial week gives a smaller number that looks like falling attention,
+and that would spoil my seasonality reading. I log how many partial weeks I drop.
 
-Zero versus missing. A day the API did not return is not a day with no views.
-Missing days are left missing here and are never filled with zero.
+Zero is not the same as missing. A day the API did not return is not a day with
+no views. I leave missing days missing and never fill them with zero.
 """
 
 from __future__ import annotations
@@ -39,19 +38,19 @@ logger = get_logger(SCRIPT)
 
 
 def read_one(file_path: Path) -> pd.DataFrame:
-    """Turn one saved article response into a tidy daily frame."""
+    """Turning one saved article response into a tidy daily table."""
     payload = load_raw_json(file_path)
     items = payload.get("items", [])
     if not items:
         return pd.DataFrame()
 
     frame = pd.DataFrame(items)
-    # timestamps arrive as YYYYMMDDHH with the hour always 00 for daily data
+    # Reading the timestamps, which arrive as YYYYMMDDHH with the hour always 00 for daily data.
     frame["date"] = pd.to_datetime(frame["timestamp"].str[:8], format="%Y%m%d", errors="coerce")
     frame["views"] = pd.to_numeric(frame["views"], errors="coerce")
 
-    # The group is the part of the filename before the double underscore, which
-    # is how the collection script recorded it.
+    # Taking the group from the part of the file name before the double underscore,
+    # which is how my collection script recorded it.
     group = file_path.stem.split("__", 1)[0]
 
     return pd.DataFrame(
@@ -65,9 +64,9 @@ def read_one(file_path: Path) -> pd.DataFrame:
 
 
 def build_weekly(daily: pd.DataFrame) -> tuple[pd.DataFrame, int]:
-    """Roll daily views up to complete Monday weeks.
+    """Rolling daily views up to complete Monday weeks.
 
-    Returns the weekly frame and the number of incomplete weeks dropped.
+    I return the weekly table and the number of incomplete weeks I dropped.
     """
     working = daily.copy()
     working["week_start"] = working["date"] - pd.to_timedelta(working["date"].dt.weekday, unit="D")
@@ -135,7 +134,7 @@ def main() -> None:
             relative(daily_target),
         )
 
-        # Rebuild a datetime column for the weekly roll up; the CSV keeps dates.
+        # Rebuilding a datetime column for the weekly roll up, because the CSV keeps plain dates.
         for_weekly = daily.copy()
         for_weekly["date"] = pd.to_datetime(for_weekly["date"])
         weekly, incomplete = build_weekly(for_weekly)

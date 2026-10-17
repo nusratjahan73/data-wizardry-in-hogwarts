@@ -1,14 +1,14 @@
-"""Checks on the generated Power BI project.
+"""Checking the Power BI project that my code generates.
 
-These cannot prove the project opens in Power BI Desktop. Nothing here can drive
-a GUI application, so what is tested is everything short of that: the files exist,
-they are valid JSON, every relationship points at a table and column that really
-exist, every measure references a table in the model, and the M queries point at
-CSVs that are actually on disk.
+These tests cannot prove the project opens in Power BI Desktop, because nothing
+here can drive a GUI application. So I test everything short of that: the files
+exist, they are valid JSON, every relationship points at a real table and column,
+every measure references a table in the model, and the M queries point at CSVs
+that are really on disk.
 
-That catches the failure this project is most likely to hit, which is drift:
-23_star_schema.py changes a column name, and the Power BI project silently keeps
-referencing the old one until somebody opens it and finds a broken relationship.
+This catches the problem my project is most likely to hit, which is drift.
+23_star_schema.py changes a column name, and the Power BI project quietly keeps
+using the old one until I open it and find a broken relationship.
 """
 
 from __future__ import annotations
@@ -69,8 +69,8 @@ def test_measures_reference_tables_in_the_model() -> None:
     referenced = re.compile(r"(\w+)\[")
     for measure in measures:
         for name in referenced.findall(measure["expression"]):
-            # A bare name followed by [ is either a table reference or, for a
-            # measure reference like [Total Budget], nothing at all.
+            # Reading a bare name followed by [ as a table reference. For a
+            # measure reference like [Total Budget] there is no name at all.
             if name and name not in table_names and not name[0].isupper():
                 raise AssertionError(
                     f"measure {measure['name']} references unknown table {name}"
@@ -84,7 +84,7 @@ def test_partition_sources_point_at_files_that_exist() -> None:
             expression = partition["source"]["expression"]
             match = re.search(r'File\.Contents\("([^"]+)"\)', expression)
             if not match:
-                continue  # the Measures table has no file source
+                continue  # Skipping the Measures table, which has no file source
             path = Path(match.group(1).replace("\\\\", "\\"))
             assert path.exists(), f"{table['name']} reads a CSV that does not exist: {path}"
 
@@ -102,11 +102,11 @@ def test_report_defines_the_six_specified_pages() -> None:
 
 
 def test_no_table_uses_a_name_power_bi_reserves() -> None:
-    """Power BI refuses to open a model containing a table called "Measures".
+    """Checking no table uses a reserved name, because Power BI refuses a table called "Measures".
 
     It fails with "Unsupported Table name "Measures" has been found in data model
-    schema" and gives no partial load. The first generated project hit exactly
-    this, so the name is guarded in the generator and here.
+    schema" and loads nothing at all. My first generated project hit exactly
+    this, so I guard the name in my generator and here.
     """
     model = load_model()["model"]
     reserved = {"measures", "table", "column", "row", "value", "values", "model"}
@@ -119,7 +119,7 @@ def test_no_table_uses_a_name_power_bi_reserves() -> None:
 
 
 def test_measures_live_on_exactly_one_table() -> None:
-    """All twenty measures belong together, so they are findable in the field list."""
+    """Checking all twenty measures sit on one table, so I can find them in the field list."""
     model = load_model()["model"]
     hosts = [t["name"] for t in model["tables"] if t.get("measures")]
     assert len(hosts) == 1, f"measures are scattered across {hosts}"
@@ -139,7 +139,7 @@ def _visual_configs() -> list[dict]:
 
 
 def test_pages_actually_contain_visuals() -> None:
-    """An empty page is the thing that made the first dashboard useless."""
+    """Checking every page has visuals, because empty pages made my first dashboard useless."""
     report_file = PBIP_DIR / "DataWizardry.Report" / "report.json"
     if not report_file.exists():
         pytest.skip("no Power BI project built")
@@ -152,16 +152,16 @@ def test_pages_actually_contain_visuals() -> None:
 
 
 def test_every_projection_resolves_to_a_select() -> None:
-    """A queryRef with no matching Select renders a blank visual and no error.
+    """Checking every queryRef has a matching Select, or the visual shows blank with no error.
 
-    This is the quiet failure: the page looks built, the chart is empty, and
-    Power BI says nothing. Catching it here is the only cheap way.
+    This is the quiet failure. The page looks built, the chart is empty, and
+    Power BI says nothing. Catching it here is the only cheap way I have.
     """
     for page, config in _visual_configs():
         single = config.get("singleVisual", {})
         projections = single.get("projections")
         if not projections:
-            continue  # text boxes have no query
+            continue  # Skipping text boxes, which have no query
 
         select_names = {s["Name"] for s in single["prototypeQuery"]["Select"]}
         for role, fields in projections.items():
@@ -173,7 +173,7 @@ def test_every_projection_resolves_to_a_select() -> None:
 
 
 def test_every_visual_field_exists_in_the_model() -> None:
-    """Columns and measures referenced by a visual must exist in the model."""
+    """Checking every column and measure that a visual uses exists in my model."""
     model = load_model()["model"]
     columns = {
         table["name"]: {column["name"] for column in table["columns"]}
@@ -210,7 +210,7 @@ def test_every_visual_field_exists_in_the_model() -> None:
 
 
 def test_visuals_stay_on_the_canvas() -> None:
-    """A visual positioned off the canvas is invisible and looks like a bug."""
+    """Checking no visual sits off the canvas, where it is invisible and looks like a bug."""
     for page, config in _visual_configs():
         position = config["layouts"][0]["position"]
         assert position["x"] >= 0 and position["y"] >= 0, f"{page}: visual at a negative position"

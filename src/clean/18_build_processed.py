@@ -1,26 +1,26 @@
-"""Build the joined, analysis ready tables in data/processed.
+"""Building my joined, analysis ready tables in data/processed.
 
-Reads  : every table under data/cleaned.
-Writes : data/processed/{films,characters,attention_weekly,retail_monthly,products}.csv
+Reading: every table under data/cleaned.
+Writing: data/processed/{films,characters,attention_weekly,retail_monthly,products}.csv
 Runtime: about thirty seconds.
 
-This is the only place in the project where sources are joined, and the only
-folder the analysis scripts may read. Section 4 is strict about that for a
-reason: if joins happen inside analysis scripts, two analyses that ought to agree
-quietly diverge because one of them joined slightly differently.
+This is the only place in my project where I join sources, and data/processed is
+the only folder my analysis scripts may read. I am strict about this for a reason.
+If I joined inside the analysis scripts, two analyses that should agree could
+quietly drift apart, because one of them joined a little differently.
 
-The five tables the brief asks for:
+The five tables I build:
 
   films             one row per film, performance and reception together
   characters        one row per character, PotterDB coverage plus HP API detail,
                     plus measured attention from Wikipedia
-  attention_weekly  one row per week per series, the forecast's input
+  attention_weekly  one row per week per series, the input for my forecast
   retail_monthly    Canadian category and total retail sales, inflation adjusted
   products          one row per branded construction set
 
-Each is given a primary key that is checked for uniqueness before it is written,
-because a silently duplicated key is the failure mode that produces a plausible
-looking but wrong answer three modules later.
+I give each table a primary key and check that it is unique before I write the
+table. A key that is duplicated without me noticing gives an answer that looks
+fine but is wrong three modules later.
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ from src.utils.config import get, path
 from src.utils.io import relative, save_processed
 from src.utils.logging_setup import RunTimer, get_logger, log_data_issue
 
-SCRIPT = "19_build_processed"
+SCRIPT = "18_build_processed"
 logger = get_logger(SCRIPT)
 
 
@@ -50,7 +50,7 @@ def read_cleaned_if_present(source: str, filename: str) -> pd.DataFrame | None:
 
 
 def check_key(frame: pd.DataFrame, key: list[str], table_name: str) -> None:
-    """Refuse to write a table whose primary key is not unique."""
+    """Refusing to write a table if its primary key is not unique."""
     duplicates = int(frame.duplicated(subset=key).sum())
     if duplicates:
         log_data_issue(
@@ -66,7 +66,7 @@ def check_key(frame: pd.DataFrame, key: list[str], table_name: str) -> None:
 
 
 def name_key(name: object) -> str:
-    """Same normalisation the HP API cleaner uses, so the join keys match."""
+    """Cleaning a name the same way my HP API cleaner does, so my join keys match."""
     if not isinstance(name, str):
         return ""
     cleaned = re.sub(r"[^a-z0-9\s]", "", name.lower())
@@ -74,14 +74,14 @@ def name_key(name: object) -> str:
 
 
 def build_films() -> int:
-    """One row per film. The cleaned film table is already the join of three sources."""
+    """Building one row per film. My cleaned film table is already a join of three sources."""
     films = read_cleaned_if_present("films", "films.csv")
     if films is None:
         log_data_issue(SCRIPT, "films", "cleaned film table missing", "run 17_clean_external.py", severity="error")
         return 0
 
-    # Attach PotterDB's own figures beside the sourced ones, so the dashboard can
-    # show the discrepancy rather than the report merely asserting it.
+    # Attaching PotterDB's own figures beside the sourced ones, so my dashboard can
+    # show the difference and my report does not only claim it.
     potterdb = read_cleaned_if_present("potterdb", "movies.csv")
     if potterdb is not None:
         potterdb = potterdb.assign(title_key=potterdb["title"].map(name_key))
@@ -93,7 +93,7 @@ def build_films() -> int:
         matched = int(films["potterdb_box_office_usd"].notna().sum())
         logger.info("matched %d of %d films to PotterDB for the source comparison", matched, len(films))
 
-        # Quantify the disagreement, since the methods note claims it exists.
+        # Measuring the disagreement, because my methods note says it exists.
         films["potterdb_box_office_error_ratio"] = (
             films["potterdb_box_office_usd"] / films["worldwide_gross_usd"]
         )
@@ -106,7 +106,7 @@ def build_films() -> int:
 
 
 def build_characters() -> int:
-    """One row per character: PotterDB breadth, HP API detail, measured attention."""
+    """Building one row per character: PotterDB breadth, HP API detail, measured attention."""
     potterdb = read_cleaned_if_present("potterdb", "characters.csv")
     if potterdb is None:
         log_data_issue(SCRIPT, "characters", "cleaned PotterDB characters missing", "run 10_clean_potterdb.py", severity="error")
@@ -115,11 +115,11 @@ def build_characters() -> int:
     characters = potterdb.copy()
     characters["name_key"] = characters["name"].map(name_key)
 
-    # PotterDB has 5410 rows and many are duplicates by name (variants, unnamed
-    # background characters). The key is the PotterDB id, not the name.
+    # Using the PotterDB id as my key, not the name. PotterDB has 5410 rows and many
+    # share a name (variants, unnamed background characters).
     hpapi = read_cleaned_if_present("hpapi", "characters.csv")
     if hpapi is not None:
-        # Keep one HP API row per name so the join cannot multiply rows.
+        # Keeping one HP API row per name, so my join cannot multiply rows.
         hpapi_unique = hpapi.sort_values("name").drop_duplicates(subset=["name_key"], keep="first")
         overlap_columns = [
             c for c in ["house", "species", "patronus", "wand_wood", "wand_core", "actor", "hogwarts_student", "hogwarts_staff"]
@@ -134,8 +134,8 @@ def build_characters() -> int:
         matched = int(characters["hpapi_house"].notna().sum()) if "hpapi_house" in characters else 0
         logger.info("matched %d characters to the HP API", matched)
 
-        # House from either source, preferring the curated one. Recorded so a
-        # reader can see which source supplied each value.
+        # Taking the house from either source, and preferring the curated one. I record
+        # the source, so a reader can see where each value came from.
         if "hpapi_house" in characters.columns:
             characters["house_combined"] = characters["hpapi_house"].fillna(characters.get("house"))
             characters["house_source"] = characters["hpapi_house"].notna().map(
@@ -143,8 +143,8 @@ def build_characters() -> int:
             )
             characters.loc[characters["house_combined"].isna(), "house_source"] = "unknown"
 
-    # Measured attention per character, which is what the product recommendation
-    # actually needs: not who is important in the books, but who people look up.
+    # Adding measured attention per character. My product recommendation needs to
+    # know who people look up, not who is important in the books.
     weekly = read_cleaned_if_present("pageviews", "pageviews_weekly.csv")
     if weekly is not None:
         character_views = weekly[weekly["group"] == "characters"]
@@ -158,10 +158,10 @@ def build_characters() -> int:
                     weeks_observed=("views", "count"),
                 )
             )
-            # Joined on the explicit article to slug map in config, not on a
-            # normalised name. See the comment beside that map: name matching
-            # silently drops most of the main cast and mispairs Sirius Black
-            # with his grandfather.
+            # Joining on the explicit article to slug map in my config, not on a
+            # cleaned name. See my comment beside that map. Name matching quietly
+            # drops most of the main cast and pairs Sirius Black with his
+            # grandfather by mistake.
             article_to_slug = get("sources.pageviews.character_article_to_potterdb_slug")
             summary["slug"] = summary["article"].map(article_to_slug)
 
@@ -197,12 +197,11 @@ def build_characters() -> int:
 
 
 def build_attention_weekly() -> int:
-    """One row per week per series, from both attention sources.
+    """Building one row per week per series, from both of my attention sources.
 
-    Pageviews and search interest measure different things and are on different
-    scales, so they are stacked in long form with a `source` column rather than
-    joined side by side. Anything that needs them together must decide explicitly
-    how to combine them, which is the point.
+    Pageviews and search interest measure different things on different scales.
+    So I stack them in long form with a `source` column and do not join them side
+    by side. Any analysis that needs both must choose openly how to combine them.
     """
     parts: list[pd.DataFrame] = []
 
@@ -227,7 +226,7 @@ def build_attention_weekly() -> int:
         log_data_issue(
             SCRIPT, "attention_weekly",
             "neither attention source produced a weekly series",
-            "the forecast has no input; stage 1 of section 16 has failed",
+            "the forecast has no input; the stage 1 gate has failed",
             severity="critical",
         )
         return 0
@@ -236,8 +235,8 @@ def build_attention_weekly() -> int:
     attention["week"] = pd.to_datetime(attention["week"], errors="coerce").dt.date
     attention = attention.dropna(subset=["week", "value"]).sort_values(["source", "series", "week"])
 
-    # The group belongs in the key. The anchor term appears in every Trends
-    # keyword group by design, and each geography is a separate pull, so
+    # Putting the group in my key. I planned the anchor term to appear in every
+    # Trends keyword group, and each geography is a separate pull. So
     # source + series + week alone is not unique and never was.
     check_key(attention, ["source", "group", "series", "week"], "attention_weekly")
     target = save_processed(
@@ -255,7 +254,7 @@ def build_attention_weekly() -> int:
 
 
 def build_retail_monthly() -> int:
-    """Canadian monthly retail sales, inflation adjusted, with the category flagged."""
+    """Building Canadian monthly retail sales, inflation adjusted, with my category flagged."""
     retail = read_cleaned_if_present("statcan", "retail_sales_monthly.csv")
     if retail is None:
         log_data_issue(SCRIPT, "retail_monthly", "cleaned retail series missing", "run 14_clean_statcan.py", severity="error")
@@ -304,7 +303,7 @@ def build_retail_monthly() -> int:
 
 
 def build_products() -> int:
-    """One row per branded construction set, with price per piece where possible."""
+    """Building one row per branded construction set, with price per piece where I have one."""
     sets = read_cleaned_if_present("toys", "sets.csv")
     if sets is None:
         log_data_issue(SCRIPT, "products", "cleaned toy table missing", "run 15_clean_toys.py", severity="error")
@@ -317,7 +316,7 @@ def build_products() -> int:
         pieces = pd.to_numeric(products["num_parts"], errors="coerce")
         products["price_per_piece_cad"] = price / pieces.where(pieces > 0)
 
-        # Real price needs an annual CPI, joined on release year.
+        # Joining an annual CPI on release year, because my real price needs it.
         cpi = read_cleaned_if_present("statcan", "cpi_monthly.csv")
         if cpi is not None:
             cpi["month"] = pd.to_datetime(cpi["month"], errors="coerce")

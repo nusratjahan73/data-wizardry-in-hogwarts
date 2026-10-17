@@ -1,42 +1,28 @@
-"""Module 5.2. Does franchise attention move Canadian category sales, and with what lag?
+"""Checking if franchise attention moves Canadian category sales, and with what lag.
 
-Reads  : data/processed/attention_weekly.csv, data/processed/retail_monthly.csv
-Writes : images/figures/interest_to_sales_lags.png
+Reading: data/processed/attention_weekly.csv
+         data/processed/retail_monthly.csv
+Writing: images/figures/interest_to_sales_lags.png
          outputs/tables/interest_to_sales_lags.csv
          outputs/tables/interest_to_sales_model.csv
          outputs/models/interest_to_sales.json
          docs/findings.md (one entry)
-Runtime: about twenty seconds.
+Running time: about twenty seconds.
 
-This is the bridge that turns attention into an order quantity, and section 11
-is blunt about it: document its weakness honestly. So, before the method, the
-three things that limit what this can ever show.
+This is my module 5.2, the bridge from attention to an order quantity. It is weak in three
+ways and I want to be honest about that. It is only a correlation, so it shows no cause. It
+is at category level: NAICS 459A covers every hobby shop and bookshop in Canada, and wizarding
+products are a small part of one line in it. And it has only eleven years of monthly data,
+about 134 points, which is small for a regression with seasonal controls.
 
-It is correlational. Nothing here identifies a causal effect. Attention and
-sales both respond to the calendar, to the economy and to whatever else was
-happening that month, and no instrument or experiment separates those.
+I make both series monthly. Then I regress log real category sales on log attention at lag L.
+I control for log total Canadian retail sales, which takes up the general economy and
+Christmas, and for month dummies, which take up the category's own season. I fit lags of zero
+to three months and compare them on adjusted R squared and on the significance of the
+attention term. My baseline is the same model with no attention term.
 
-It is category level, not product level. The published series is NAICS 459A,
-"sporting goods, hobby, musical instrument, book retailers and news dealers",
-which covers every hobby shop and bookshop in Canada. Wizarding merchandise is a
-small fraction of one line inside that. Expecting franchise attention to explain
-much of its month to month movement would be expecting a rowing boat to move the
-tide, and the measured elasticity below should be read in that light.
-
-It is eleven years of monthly data, which is about 134 points before any lag is
-taken. That is a small sample for a regression with seasonal controls in it.
-
-Method. Both series go to monthly. The model regresses log real category sales
-on log franchise attention at lag L, controlling for log total Canadian retail
-sales, which absorbs the general economy and the general Christmas, and on month
-dummies, which absorb the category's own seasonal shape. What is left for
-attention to explain is category movement that is not explained by the season or
-by Canadian retail as a whole. Lags of zero to three months are each fitted and
-compared on adjusted R squared and on the significance of the attention term.
-
-Because the controls and the target are both logs, the attention coefficient
-reads as an elasticity: a one per cent rise in attention is associated with a
-coefficient per cent change in category sales.
+Both sides are logs, so the attention coefficient is an elasticity: a one per cent rise in
+attention goes with a coefficient per cent change in category sales.
 """
 
 from __future__ import annotations
@@ -70,15 +56,15 @@ COMPOSITE_ARTICLES = [
     "Fantastic_Beasts",
 ]
 
-# Excluded, not adjusted. Canadian retail in April 2020 is not a data point
-# about franchise attention; it is a data point about closed shops, and it would
-# dominate any regression it appeared in.
+# Leaving these months out, not adjusting them. Canadian retail in April 2020 tells me
+# about closed shops, not about franchise attention, and it would take over any
+# regression it was in.
 PANDEMIC_START = "2020-03"
 PANDEMIC_END = "2021-06"
 
 
 def monthly_attention() -> pd.Series:
-    """Composite franchise attention as a monthly mean of weekly views."""
+    """Building composite franchise attention as a monthly mean of weekly views."""
     attention = read_processed("attention_weekly.csv")
     subset = attention[
         (attention["source"] == "wikipedia_pageviews")
@@ -108,7 +94,7 @@ def monthly_sales(naics_code: str, name: str) -> pd.Series:
 
 
 def build_panel() -> pd.DataFrame:
-    """Join attention and both sales series onto one monthly frame."""
+    """Joining attention and both sales series into one monthly table."""
     focus_code = get("sources.statcan.naics_focus")
     control_code = get("sources.statcan.naics_control")
 
@@ -132,10 +118,10 @@ def build_panel() -> pd.DataFrame:
 
 
 def fit_lag(panel: pd.DataFrame, lag: int):
-    """Fit the lagged model and return its summary numbers and the fitted model.
+    """Fitting the lagged model and returning its summary numbers and the fitted model.
 
-    Attention is shifted forward by `lag` months, so the model asks whether
-    attention this month is associated with sales `lag` months later.
+    I shift attention forward by `lag` months. So the model asks if attention this
+    month goes with sales `lag` months later.
     """
     frame = panel.copy()
     frame["attention_lagged"] = frame["attention"].shift(lag)
@@ -153,15 +139,15 @@ def fit_lag(panel: pd.DataFrame, lag: int):
         index=frame.index,
     )
 
-    # Month dummies, January dropped as the reference, so the category's own
-    # seasonal shape is absorbed rather than attributed to attention.
+    # Adding month dummies, with January dropped as the reference. They take up the
+    # category's own seasonal shape, so it is not credited to attention.
     dummies = pd.get_dummies(frame["month_number"], prefix="m", drop_first=True).astype(float)
     design = sm.add_constant(pd.concat([design, dummies], axis=1))
 
     target = np.log(frame["category_sales"])
 
-    # Newey-West standard errors: monthly retail is autocorrelated, and ordinary
-    # errors would make the attention term look more precise than it is.
+    # Using Newey-West standard errors, because monthly retail is autocorrelated.
+    # Ordinary errors would make the attention term look more exact than it is.
     model = sm.OLS(target, design).fit(cov_type="HAC", cov_kwds={"maxlags": 6})
 
     coefficient = float(model.params["log_attention"])
@@ -184,12 +170,12 @@ def fit_lag(panel: pd.DataFrame, lag: int):
 
 
 def fit_without_attention(panel: pd.DataFrame) -> float:
-    """Adjusted R squared of the controls alone, the baseline this must beat.
+    """Getting the adjusted R squared of the controls alone, the baseline my model must beat.
 
-    Section 11 requires a baseline beside every model. Here the meaningful
-    baseline is not a naive forecast but the same regression with the attention
-    term removed: if adding attention does not raise the adjusted R squared, then
-    attention adds nothing once season and the wider economy are accounted for.
+    I put a baseline beside every model. Here the useful baseline is not a naive
+    forecast. It is the same regression with no attention term. If adding attention does
+    not raise the adjusted R squared, then attention adds nothing beyond the season and
+    the wider economy.
     """
     frame = panel.dropna()
     design = pd.DataFrame({"log_total_retail": np.log(frame["total_retail"])}, index=frame.index)
@@ -235,7 +221,7 @@ def plot_lags(results: pd.DataFrame, baseline_r2: float, headline: str, subtitle
         min(baseline_r2 * 0.98, float(usable["adj_r_squared"].min()) * 0.98), 1.0
     )
     ax_right.legend(loc="lower right", fontsize=8.5)
-    ax_right.set_title("Fit against the controls-only baseline", loc="left", fontsize=11)
+    ax_right.set_title("Fit against the controls only baseline", loc="left", fontsize=11)
 
     title_block(ax_left, headline, subtitle, subtitle_wrap=125)
     return save_figure(
@@ -257,7 +243,7 @@ def main() -> None:
         )
 
         baseline_r2 = fit_without_attention(panel)
-        logger.info("controls-only adjusted R squared: %.4f", baseline_r2)
+        logger.info("controls only adjusted R squared: %.4f", baseline_r2)
 
         rows = []
         models = {}
@@ -277,7 +263,7 @@ def main() -> None:
 
         lag_table = save_table(
             "interest_to_sales_lags.csv", results,
-            note="elasticity is the log-log coefficient on franchise attention, "
+            note="elasticity is the log log coefficient on franchise attention, "
                  "controlling for total Canadian retail and month of year",
         )
 
@@ -293,9 +279,9 @@ def main() -> None:
             run.rows_out = 0
             return
 
-        # The best lag is the one with the strongest fit, but a lag whose
-        # coefficient is not distinguishable from zero is reported as such
-        # rather than quietly promoted for having the highest R squared.
+        # Picking the lag with the strongest fit as the best one. If its coefficient
+        # cannot be told apart from zero, I report that plainly. I do not quietly promote
+        # it just for having the highest R squared.
         best = usable.loc[usable["adj_r_squared"].idxmax()]
         best_lag = int(best["lag_months"])
         any_significant = bool(usable["significant_at_5pc"].any())
@@ -394,10 +380,10 @@ def main() -> None:
             "5.2 Interest to sales: the bridge, and how much weight it will bear",
             finding,
             evidence=(
-                "Log-log OLS of real category sales (NAICS 459A) on lagged franchise attention, "
+                "Log log OLS of real category sales (NAICS 459A) on lagged franchise attention, "
                 "controlling for log total Canadian retail sales and month of year dummies, with "
                 "Newey-West standard errors at six lags to account for autocorrelation. Lags of "
-                "zero to three months each fitted and compared against a controls-only baseline."
+                "zero to three months each fitted and compared against a controls only baseline."
             ),
             sample=(
                 f"{int(best['observations'])} monthly observations after lagging, from "
@@ -409,7 +395,7 @@ def main() -> None:
                 "appears. It is measured at category level, and wizarding product is a small part "
                 "of NAICS 459A, so the elasticity understates the effect on the specific products "
                 "a buyer would order while overstating how confidently it can be applied to them. "
-                "The confidence interval is in the table and the improvement over the controls-only "
+                "The confidence interval is in the table and the improvement over the controls only "
                 "baseline is small. Any order quantity derived from it inherits all of that, which "
                 "is why module 6 carries a range rather than a point."
             ),

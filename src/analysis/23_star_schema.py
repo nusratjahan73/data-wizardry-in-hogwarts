@@ -1,26 +1,25 @@
-"""Module 2. Build the star schema the Power BI dashboard imports.
+"""Building the star schema that my Power BI dashboard imports (module 2).
 
-Reads  : data/processed/*.csv
-Writes : dashboard/model/dim_*.csv and dashboard/model/fact_*.csv
+Reading: data/processed/*.csv
+Writing: dashboard/model/dim_*.csv and dashboard/model/fact_*.csv
          dashboard/model/relationships.csv
 Runtime: about ten seconds.
 
-Section 8 asks for a star schema rather than a pile of flat tables, and for the
-schema to be written down so a reader can rebuild it. This script builds it, so
-the model is generated from the processed tables rather than assembled by hand
-inside a file nobody can diff.
+I want a star schema and not a pile of flat tables, and I want it written down so
+a reader can rebuild it. This script builds the model from my processed tables, so
+it is not put together by hand inside a file nobody can diff.
 
-Why the tables live in dashboard/model rather than data/processed. They are not
-analysis inputs; no script in src reads them. They exist only to be imported by
-Power BI, and they are shaped for that: surrogate keys, conformed dimensions, no
-free text where a lookup will do. Putting them beside the dashboard keeps the
-deliverable together and keeps data/processed as the single source the analysis
-reads. That is a departure from the folder drawing in section 4 and is recorded
-in docs/word/open_questions.docx.
+I keep these tables in dashboard/model and not in data/processed. They are not
+analysis inputs, and no script in src reads them. They exist only for Power BI to
+import, and I shaped them for that: surrogate keys, conformed dimensions, no free
+text where a lookup will do. Keeping them beside the dashboard keeps that work
+together, and data/processed stays the single source my analysis reads. This is
+different from my planned folder layout, and I noted it in
+docs/word/open_questions.docx.
 
-The grain of each fact table is stated in its docstring below and repeated in
+I state the grain of each fact table in its docstring below and again in
 dashboard/model_notes.md. Getting the grain wrong is the usual way a star schema
-double counts, so it is written down twice on purpose.
+double counts, so I write it down twice on purpose.
 """
 
 from __future__ import annotations
@@ -51,14 +50,12 @@ def save_model_table(name: str, frame: pd.DataFrame, grain: str) -> Path:
     return target
 
 
-# --------------------------------------------------------------------------- #
-# dimensions
-# --------------------------------------------------------------------------- #
+# Building the dimension tables.
 
 def dim_date() -> pd.DataFrame:
-    """One row per month from 1991 to 2028. Grain: month.
+    """Building one row per month from 1991 to 2028. Grain: month.
 
-    Monthly rather than daily because every fact table in this model is monthly
+    I use months and not days because every fact table in my model is monthly
     or coarser. A daily date dimension would be 13,000 rows supporting nothing.
     """
     months = pd.date_range("1991-01-01", "2028-12-01", freq="MS")
@@ -89,7 +86,7 @@ def dim_date() -> pd.DataFrame:
 
 
 def dim_film() -> pd.DataFrame:
-    """One row per film. Grain: film."""
+    """Building one row per film. Grain: film."""
     films = read_processed("films.csv")
     eras = get("eras")
 
@@ -110,10 +107,10 @@ def dim_film() -> pd.DataFrame:
 
 
 def dim_character() -> pd.DataFrame:
-    """One row per main-cast character with measured attention. Grain: character.
+    """Building one row per main cast character with measured attention. Grain: character.
 
-    Restricted to the sixteen mapped characters. The full 5,410-row catalogue is
-    not a useful dashboard dimension: 80 per cent of it has no house, no
+    I keep only the sixteen mapped characters. The full catalogue of 5,410 rows is
+    not a useful dashboard dimension, because 80 per cent of it has no house, no
     attention data and no commercial relevance.
     """
     characters = read_processed("characters.csv")
@@ -141,7 +138,7 @@ def dim_character() -> pd.DataFrame:
 
 
 def dim_product_theme() -> pd.DataFrame:
-    """One row per construction toy theme. Grain: theme."""
+    """Building one row per construction toy theme. Grain: theme."""
     products = read_processed("products.csv")
     themes = products.groupby("theme_id", as_index=False).agg(
         theme_name=("theme_name", "first"),
@@ -153,12 +150,12 @@ def dim_product_theme() -> pd.DataFrame:
 
 
 def dim_country() -> pd.DataFrame:
-    """One row per country appearing in the regional search interest data."""
-    # The franchise group only, not every keyword group. Trends scales each
-    # request to its own maximum, so taking the highest value a country reaches
-    # across four independently-normalised groups is not a ranking of anything:
-    # it put 30 countries on a tied 100 and moved Canada from 9th to 45th. The
-    # franchise group is the one the geography claim is made from.
+    """Building one row per country that appears in my regional search interest data."""
+    # Using the franchise group only, not every keyword group. Trends scales each
+    # request to its own maximum, so the highest value a country reaches across
+    # four groups that were each scaled on their own is not a ranking of anything.
+    # It put 30 countries on a tied 100 and moved Canada from 9th to 45th. I make
+    # my geography claim from the franchise group.
     trends_dir = path("data_raw", "trends")
     source_file = trends_dir / "region__a_franchise__worldwide.csv"
     if not source_file.exists():
@@ -171,17 +168,17 @@ def dim_country() -> pd.DataFrame:
 
     combined = pd.concat(frames, ignore_index=True)
 
-    # The saved file carries a reset index in its first column, so the country
-    # name is looked up by name rather than by position. Reading column zero
-    # returned the row number and produced a dimension of integers.
+    # Looking up the country column by name and not by position, because the saved
+    # file has a reset index in its first column. Reading column zero gave me the
+    # row number and a dimension full of integers.
     if "geoName" not in combined.columns:
         logger.warning("region files have no geoName column; country dimension left empty")
         return pd.DataFrame(columns=["country_key", "country_code", "country_name", "is_canada"])
 
-    # The dimension needs a metric on it, or the Geography page has nothing to
-    # show. This table is unrelated to the rest of the model by design (the
-    # regional data is a snapshot, not a series, so it has no date key), which
-    # means no measure can reach it and the value has to live here.
+    # Putting a metric on this dimension, or my Geography page has nothing to
+    # show. I left this table unrelated to the rest of the model on purpose. The
+    # regional data is a snapshot, not a series, so it has no date key. That
+    # means no measure can reach it, and the value has to live here.
     anchor = get("sources.trends.anchor_term")
     value_column = anchor if anchor in combined.columns else None
     if value_column is None:
@@ -208,12 +205,10 @@ def dim_country() -> pd.DataFrame:
     return frame
 
 
-# --------------------------------------------------------------------------- #
-# facts
-# --------------------------------------------------------------------------- #
+# Building the fact tables.
 
 def fact_film_performance() -> pd.DataFrame:
-    """Grain: one row per film. Additive on the money columns."""
+    """Building the film fact table. Grain: one row per film. Additive on the money columns."""
     films = read_processed("films.csv")
     columns = [
         "film_id", "budget_usd", "domestic_gross_usd", "international_gross_usd",
@@ -228,11 +223,11 @@ def fact_film_performance() -> pd.DataFrame:
 
 
 def fact_attention_monthly() -> pd.DataFrame:
-    """Grain: one row per series per month.
+    """Building the attention fact table. Grain: one row per series per month.
 
-    Rolled from weekly to monthly so it joins the date dimension, which is
-    monthly. Weekly and monthly facts in one model with one date table is the
-    classic way to double count, so only one grain is published.
+    I roll weekly up to monthly so it joins my date dimension, which is monthly.
+    Mixing weekly and monthly facts in one model with one date table is the
+    classic way to double count, so I publish only one grain.
     """
     attention = read_processed("attention_weekly.csv")
     attention["week"] = pd.to_datetime(attention["week"])
@@ -247,7 +242,7 @@ def fact_attention_monthly() -> pd.DataFrame:
 
 
 def fact_retail_monthly() -> pd.DataFrame:
-    """Grain: one row per NAICS category per month."""
+    """Building the retail fact table. Grain: one row per NAICS category per month."""
     retail = read_processed("retail_monthly.csv")
     frame = retail[[
         "naics_code", "naics_name", "sales_thousands_cad", "sales_thousands_cad_real",
@@ -258,21 +253,21 @@ def fact_retail_monthly() -> pd.DataFrame:
 
 
 def fact_product_release() -> pd.DataFrame:
-    """Grain: one row per construction set."""
+    """Building the product fact table. Grain: one row per construction set."""
     products = read_processed("products.csv")
     columns = [
         "set_num", "set_name", "theme_id", "year", "num_parts", "minifig_count",
         "is_promotional", "retail_price_cad", "price_per_piece_cad",
     ]
     frame = products[[c for c in columns if c in products.columns]].copy()
-    # Sets are released in a year, not a month; January is used as the anchor so
-    # the join to a monthly date dimension is well defined and documented.
+    # Using January as the anchor month, because sets are released in a year, not
+    # a month. This way the join to my monthly date dimension is clear and written down.
     frame["date_key"] = (pd.to_numeric(frame["year"], errors="coerce") * 100 + 1).astype("Int64")
     return frame.rename(columns={"set_num": "set_key", "theme_id": "theme_key"})
 
 
 def fact_park_attendance() -> pd.DataFrame:
-    """Grain: one row per park per year."""
+    """Building the park fact table. Grain: one row per park per year."""
     parks = pd.read_csv(path("data_cleaned", "parks", "parks.csv"))
     frame = parks[[
         "park", "country", "year", "attendance", "wizarding_land_open_this_year",
@@ -283,7 +278,7 @@ def fact_park_attendance() -> pd.DataFrame:
 
 
 def relationships() -> pd.DataFrame:
-    """The relationships a reader has to recreate in Power BI."""
+    """Listing the relationships a reader has to recreate in Power BI."""
     rows = [
         ("dim_date", "date_key", "fact_film_performance", "date_key", "one-to-many", "single"),
         ("dim_date", "date_key", "fact_attention_monthly", "date_key", "one-to-many", "single"),

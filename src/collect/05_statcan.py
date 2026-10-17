@@ -1,38 +1,27 @@
-"""Collect Canadian monthly retail trade sales and the consumer price index.
+"""Collecting Canadian monthly retail trade sales and the consumer price index.
 
-Reads  : config.yaml (sources.statcan).
-Writes : data/raw/statcan/csv/<product_id>.csv  (the table itself)
+Reading: config.yaml (sources.statcan).
+Writing: data/raw/statcan/csv/<product_id>.csv  (the table itself)
          data/raw/statcan/json/<product_id>_metadata.json  (dimensions and members)
 Runtime: two to four minutes, mostly download and unzip.
 
-This is the source the whole retail argument stands on. Without a Canadian
-monthly sales series there is no measured seasonality, and section 16 says the
-timing argument would have to fall back to a stated assumption.
+My whole retail argument stands on this source. Without a Canadian monthly sales series I have no
+measured seasonality, and my timing argument would have to rest on a stated assumption.
 
-Two decisions are worth reading before the code.
+I use two routes, chosen per table. I pull the retail tables in bulk, because I read thirty NAICS
+categories from each, so one request is simpler than thirty. I pull the CPI table as one series by
+coordinate. Its bulk download is 162MB, with 30 geographies and 359 product groups, and I only use
+Canada and All-items, which is 1,351 rows or 0.12 per cent of it. If the coordinate breaks because
+Statistics Canada renumbers a member, I fall back to the bulk download.
 
-Two routes, chosen per table. The retail tables are pulled in bulk: this
-project reads thirty NAICS categories out of each, so most of the file is used
-and one request is simpler than thirty. The CPI table is pulled as a single
-series by coordinate, because its bulk download is 162MB spanning 30 geographies
-and 359 product groups while this project uses exactly one combination of them,
-Canada and All-items, which is 1,351 rows. Downloading 162MB to keep 0.12 per
-cent of it is not politeness, it is waste at both ends of the connection.
+I collect two retail tables. Table 20-10-0056 is active but starts in 2017, which is too short to
+measure a seasonal pattern. Table 20-10-0008 covers 1991 to 2022 but was archived in December 2022.
+Chaining them on the 2017 to 2022 overlap gives me a series long enough to decompose, and the
+overlap lets me check the join. The chaining happens in my cleaning script, because collection never
+changes the data.
 
-The series route needs a coordinate that could break if Statistics Canada
-renumbers a member, so a failure falls back to the bulk download rather than
-failing the run.
-
-Two retail tables, not one. Table 20-10-0056 is active but starts in 2017, which
-is not enough history to measure a seasonal pattern against. Table 20-10-0008
-covers 1991 to 2022 but was archived in December 2022. Collecting both and
-chaining them on the 2017 to 2022 overlap gives a series long enough to
-decompose, and the overlap gives a way to check the join rather than assert it.
-The chaining happens in the cleaning script, not here, because collection never
-transforms anything.
-
-Because one source returns two formats, this script uses the format subfolders
-data/raw/statcan/csv and data/raw/statcan/json that section 4 provides for.
+This source returns two formats, so I use the subfolders data/raw/statcan/csv and
+data/raw/statcan/json.
 """
 
 from __future__ import annotations
@@ -58,11 +47,11 @@ logger = get_logger(SCRIPT)
 
 
 def fetch_metadata(base_url: str, product_id: int, limiter: RateLimiter) -> dict | None:
-    """Pull the cube metadata, which names every dimension member.
+    """Pulling the cube metadata, which names every dimension member.
 
-    Saving this alongside the data matters: the CSV carries member names as
-    text, and a reader who wants to know what codes were available, or whether a
-    table is flagged archived, should not have to call the API again to find out.
+    I save this next to the data because the CSV only has member names as text.
+    A reader who wants to know which codes exist, or whether a table is flagged
+    archived, should not have to call the API again.
     """
     url = f"{base_url}/getCubeMetadata"
     limiter.wait()
@@ -97,7 +86,7 @@ def fetch_metadata(base_url: str, product_id: int, limiter: RateLimiter) -> dict
 
 
 def summarise_metadata(metadata: dict) -> dict:
-    """Reduce the metadata to the parts a human would actually read."""
+    """Cutting the metadata down to the parts a reader would really look at."""
     return {
         "product_id": metadata.get("productId"),
         "title_en": metadata.get("cubeTitleEn"),
@@ -124,17 +113,12 @@ def summarise_metadata(metadata: dict) -> dict:
 
 
 def download_series(base_url: str, spec: dict, limiter: RateLimiter) -> int:
-    """Fetch one series by coordinate instead of downloading the whole table.
+    """Fetching one series by coordinate, so I do not download the whole table.
 
-    The CPI table is 162MB because it holds every geography crossed with every
-    product group. This project uses one of those combinations, Canada and
-    All-items, which is 1,351 rows. Asking for that cell directly returns about
-    300KB.
-
-    The result is written in the same column shape the bulk CSV would have, so
-    14_clean_statcan.py needs no knowledge of which route was taken.
-
-    Returns the row count, or 0 so the caller can fall back to the bulk file.
+    The CPI table is 162MB and I only use Canada and All-items, which is 1,351
+    rows. Asking for that one cell returns about 300KB. I write it with the same
+    columns as the bulk CSV, so 14_clean_statcan.py does not need to know which
+    route I took. I return the row count, or 0 so the caller can use the bulk file.
     """
     product_id = int(spec["product_id"])
     body = [{
@@ -213,9 +197,9 @@ def download_series(base_url: str, spec: dict, limiter: RateLimiter) -> int:
 
 
 def download_table(base_url: str, product_id: int, limiter: RateLimiter) -> int:
-    """Download and unzip one full table into data/raw/statcan/csv.
+    """Downloading and unzipping one full table into data/raw/statcan/csv.
 
-    Returns the number of data rows written, or 0 on failure.
+    I return the number of data rows written, or 0 if it failed.
     """
     try:
         pointer = get_json(
@@ -259,9 +243,9 @@ def download_table(base_url: str, product_id: int, limiter: RateLimiter) -> int:
         )
         return 0
 
-    # The archive holds the data CSV and a metadata CSV. Keep the data one, named
-    # <product_id>.csv, and ignore the second: the richer JSON metadata from the
-    # API is saved separately and is easier to read.
+    # Keeping only the data CSV from the archive, named <product_id>.csv. The archive
+    # also holds a metadata CSV, but I skip it because I already save the richer JSON
+    # metadata from the API, which is easier to read.
     data_names = [n for n in archive.namelist() if n.lower().endswith(".csv") and "MetaData" not in n]
     if not data_names:
         log_data_issue(
@@ -302,7 +286,7 @@ def main() -> None:
             metadata = fetch_metadata(base_url, product_id, limiter)
             if metadata:
                 summary = summarise_metadata(metadata)
-                # archived is "1" for inactive tables and "2" for active ones.
+                # Checking the archived flag, which is "1" for inactive tables and "2" for active ones.
                 if str(summary.get("archived")) == "1":
                     log_data_issue(
                         SCRIPT,
@@ -338,7 +322,7 @@ def main() -> None:
                 SOURCE,
                 "no StatCan table could be downloaded",
                 "stage 2 gate fails; the retail argument must fall back to a stated "
-                "assumption and say so prominently, per section 16",
+                "assumption and say so prominently, as I planned for this case",
                 severity="critical",
             )
 

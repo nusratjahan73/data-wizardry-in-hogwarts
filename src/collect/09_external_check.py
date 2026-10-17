@@ -1,17 +1,18 @@
-"""Validate the hand entered tables in data/external.
+"""Checking the tables I entered by hand in data/external.
 
-Reads  : data/external/films.csv, data/external/parks.csv.
-Writes : nothing. Logs, and appends to logs/data_issues.md on a problem.
+Reading: data/external/films.csv, data/external/parks.csv.
+Writing: nothing. I log, and I append to logs/data_issues.md when I find a problem.
 Runtime: instant.
 
-The files in data/external are the only ones a script cannot rebuild, which
-makes them the only ones where a typo can survive a full rebuild unnoticed. This
-script is the guard against that. It is numbered with the collection scripts
-because that is where it belongs in run order, even though it downloads nothing.
+The files in data/external are the only ones a script cannot rebuild. So they
+are the only place where a typo can survive a full rebuild without anyone
+noticing, and this script guards against that. I number it with the collection
+scripts because that is where it belongs in the run order, even though it
+downloads nothing.
 
-Section 6 sets two conditions on hand entered data: every figure carries its
-source, and every row carries the date it was retrieved. Both are checked here
-rather than trusted.
+I have two rules for data entered by hand: every figure has its source, and
+every row has the date I retrieved it. I check both here and do not just trust
+them.
 """
 
 from __future__ import annotations
@@ -32,8 +33,8 @@ SCRIPT = "09_external_check"
 SOURCE = "external"
 logger = get_logger(SCRIPT)
 
-# column -> whether a blank is acceptable. CinemaScore is genuinely missing for
-# three films, so it is allowed to be blank; a blank budget would be a mistake.
+# Listing the columns that must never be blank. CinemaScore is truly missing for
+# three films, so I allow it to be blank. A blank budget would be a mistake.
 FILM_REQUIRED = [
     "film_id", "title", "series", "release_date", "release_date_na",
     "budget_usd", "domestic_gross_usd", "worldwide_gross_usd",
@@ -44,7 +45,7 @@ PARK_REQUIRED = ["park", "year", "attendance", "wizarding_land_opened", "source"
 
 
 def check_sources_and_dates(frame: pd.DataFrame, name: str) -> list[str]:
-    """Every row must say where it came from and when it was read."""
+    """Checking that every row says where it came from and when I read it."""
     problems: list[str] = []
 
     source_columns = [c for c in frame.columns if c.startswith("source")]
@@ -95,8 +96,8 @@ def check_films() -> tuple[int, list[str]]:
     if "film_id" in films.columns and films["film_id"].duplicated().any():
         problems.append("films.csv has duplicate film_id values")
 
-    # Money columns must be positive, and gross must exceed nothing in particular
-    # but must at least be a number. A negative here means a stray minus sign.
+    # Checking that every money column is a number above zero. I set no other limit
+    # on the gross. A negative value here means a stray minus sign.
     for column in ["budget_usd", "domestic_gross_usd", "worldwide_gross_usd",
                    "opening_weekend_domestic_usd"]:
         if column in films.columns:
@@ -106,8 +107,8 @@ def check_films() -> tuple[int, list[str]]:
             elif (values <= 0).any():
                 problems.append(f"films.csv.{column} contains a value that is zero or negative")
 
-    # Worldwide should never be less than domestic. If it is, two sources have
-    # been mixed within one row.
+    # Checking that worldwide gross is never below domestic gross. If it is, I have
+    # mixed two sources in one row.
     if {"domestic_gross_usd", "worldwide_gross_usd"} <= set(films.columns):
         domestic = pd.to_numeric(films["domestic_gross_usd"], errors="coerce")
         worldwide = pd.to_numeric(films["worldwide_gross_usd"], errors="coerce")
@@ -117,7 +118,7 @@ def check_films() -> tuple[int, list[str]]:
                 f"films.csv has {bad} rows where worldwide gross is below domestic gross"
             )
 
-    # Opening weekend cannot exceed the whole domestic run.
+    # Checking that the opening weekend is not bigger than the whole domestic run.
     if {"opening_weekend_domestic_usd", "domestic_gross_usd"} <= set(films.columns):
         opening = pd.to_numeric(films["opening_weekend_domestic_usd"], errors="coerce")
         domestic = pd.to_numeric(films["domestic_gross_usd"], errors="coerce")
@@ -168,8 +169,8 @@ def check_parks() -> tuple[int, list[str]]:
         if (years > date.today().year).any():
             problems.append("parks.csv.year contains a year in the future")
 
-    # The open flag has to agree with the opening date, or the step change
-    # analysis will attribute a rise to the wrong year.
+    # Checking that the open flag agrees with the opening date. If not, my step
+    # change analysis would link a rise to the wrong year.
     if {"year", "wizarding_land_opened", "wizarding_land_open_this_year"} <= set(parks.columns):
         opened_year = pd.to_datetime(parks["wizarding_land_opened"], errors="coerce").dt.year
         expected = (pd.to_numeric(parks["year"], errors="coerce") >= opened_year).astype("Int64")
@@ -209,8 +210,8 @@ def main() -> None:
         if not problems:
             logger.info("hand entered tables passed every check")
         else:
-            # Loud, but not fatal: the rest of the build should still run so that
-            # every problem is visible in one pass rather than one per rerun.
+            # Logging this loudly but not stopping. I want the rest of the build to run,
+            # so I see every problem in one pass and not one per rerun.
             logger.error("%d problems found in data/external, see logs/data_issues.md", len(problems))
 
 

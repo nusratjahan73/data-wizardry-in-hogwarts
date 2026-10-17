@@ -1,40 +1,31 @@
-"""Clean Canadian retail sales and CPI, chaining the archived and active retail tables.
+"""Cleaning Canadian retail sales and CPI, and chaining the archived and active retail tables.
 
-Reads  : data/raw/statcan/csv/{20100056,20100008,18100004}.csv
-Writes : data/cleaned/statcan/retail_sales_monthly.csv
+Reading: data/raw/statcan/csv/{20100056,20100008,18100004}.csv
+Writing: data/cleaned/statcan/retail_sales_monthly.csv
          data/cleaned/statcan/cpi_monthly.csv
          data/cleaned/statcan/retail_chain_check.csv
-Runtime: about a minute; the CPI table is 1.15 million rows before filtering.
+Running time: about a minute. The CPI table has 1.15 million rows before I filter it.
 
-The chaining is the part worth reading.
+Table 20-10-0056 is active but starts in January 2017. Nine years is too short to
+tell a seasonal pattern from a trend. Table 20-10-0008 goes back to 1991 but was
+archived in December 2022. Together they cover 1991 to 2026 with a six year overlap.
 
-Table 20-10-0056 is active but begins in January 2017. Nine years is not enough
-history to separate a seasonal pattern from a trend with any confidence. Table
-20-10-0008 reaches back to 1991 but was archived in December 2022. Neither alone
-is adequate; together they cover 1991 to 2026 with a six year overlap.
+The two tables use different codes. The archived one uses NAICS 2017 and the
+active one uses NAICS 2022, and my focus category was renumbered. "Sporting goods,
+hobby, book and music stores [451]" became "Sporting goods, hobby, musical
+instrument, book retailers and news dealers [459A]". Joining on the code alone
+would leave my focus category with no history before 2017, while total retail
+trade would look fine because its code never changed. My crosswalk in config.yaml
+maps the old codes to the new ones.
 
-There is a second problem underneath the first, and it is the one that would
-have done real damage. The archived table is coded to NAICS 2017 and the active
-one to NAICS 2022. The revision renumbered the category this project is about:
-"Sporting goods, hobby, book and music stores [451]" became "Sporting goods,
-hobby, musical instrument, book retailers and news dealers [459A]". Concatenating
-the two tables on the code alone therefore leaves the focus category with no
-history before 2017 at all, silently, while total retail trade looks fine
-because its code never changed. The crosswalk in config.yaml maps the old codes
-to the new ones, and the overlap check below then measures how well each mapped
-pair actually agrees, so an approximate mapping is reported as approximate.
+I chain the tables on their overlap. For each series I measure the ratio between
+the two tables in every month they share. Then I multiply the archived table by
+the median of those ratios before I use its pre 2017 part. I write the factors
+and the overlap disagreement to retail_chain_check.csv, so a reader can see how
+well each mapped pair lines up.
 
-The two are chained on that overlap rather than simply concatenated. For each
-series, the ratio between the two tables is measured across every month they
-share, and the historical table is multiplied by the median of those ratios
-before the pre 2017 part of it is used. If the two tables agreed exactly the
-factor would be 1.0 and the chain would be a plain join; measuring it instead of
-assuming it is what turns a hopeful join into a checked one. The measured
-factors and the overlap disagreement are written to retail_chain_check.csv so a
-reader can see how well the two sources actually line up.
-
-Only unadjusted data is kept. Seasonally adjusted figures have had the very
-pattern this project is trying to measure removed from them.
+I keep only unadjusted data. Seasonally adjusted figures have had the pattern I
+want to measure taken out of them.
 """
 
 from __future__ import annotations
@@ -55,8 +46,8 @@ SCRIPT = "14_clean_statcan"
 SOURCE = "statcan"
 logger = get_logger(SCRIPT)
 
-# The StatCan bulk CSV uses these column names. Kept in one place so a rename at
-# source is a one line fix rather than a hunt.
+# Keeping the column names of the StatCan bulk CSV in one place. If StatCan renames
+# a column, I only have to fix one line.
 COL_DATE = "REF_DATE"
 COL_GEO = "GEO"
 COL_VALUE = "VALUE"
@@ -80,12 +71,12 @@ def load_table(product_id: int) -> pd.DataFrame | None:
 
 
 def extract_naics_code(text: object) -> str | None:
-    """Pull the bracketed NAICS code out of a member name.
+    """Pulling the bracketed NAICS code out of a member name.
 
     The CSV writes the classification as 'Sporting goods ... [459A]'. The code is
-    the stable identifier; the wording of the label has changed between vintages
-    of the classification, so matching on the code rather than the name is what
-    lets the archived and active tables be compared at all.
+    the steady identifier, while the wording of the label changed between versions
+    of the classification. So I match on the code and not the name, which lets me
+    compare the archived and active tables.
     """
     if not isinstance(text, str) or "[" not in text:
         return None
@@ -99,12 +90,11 @@ def tidy_retail(
     adjustment: str,
     crosswalk: dict[str, str] | None = None,
 ) -> pd.DataFrame:
-    """Filter one retail table to Canada, unadjusted, and tidy it.
+    """Filtering one retail table to Canada and unadjusted data, then tidying it.
 
-    When a crosswalk is supplied, the NAICS 2017 codes in the archived table are
-    translated to their NAICS 2022 equivalents so the two tables can be compared
-    at all. The original code is kept in `naics_code_original` so the translation
-    is auditable rather than invisible.
+    When I pass a crosswalk, I translate the NAICS 2017 codes in the archived table
+    to their NAICS 2022 codes, so I can compare the two tables. I keep the original
+    code in `naics_code_original` so anyone can check the translation.
     """
     working = frame.copy()
     working["naics_code"] = working[COL_NAICS].map(extract_naics_code)
@@ -118,8 +108,8 @@ def tidy_retail(
     if COL_ADJUST in working.columns:
         working = working[working[COL_ADJUST] == adjustment]
 
-    # The active table adds a Sales dimension splitting total from e-commerce.
-    # Only the total is comparable with the archived table.
+    # Keeping only the total. The active table adds a Sales dimension that splits
+    # total from ecommerce, and only the total can be compared with the archived table.
     if COL_SALES in working.columns:
         working = working[working[COL_SALES] == "Total retail sales"]
 
@@ -136,9 +126,9 @@ def tidy_retail(
 
 
 def chain_tables(historical: pd.DataFrame, current: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Splice the archived table onto the active one using their overlap.
+    """Joining the archived table onto the active one using their overlap.
 
-    Returns the chained series and a per series check table.
+    I return the chained series and a check table with one row per series.
     """
     overlap_start = current["month"].min()
     overlap_end = historical["month"].max()
@@ -149,7 +139,7 @@ def chain_tables(historical: pd.DataFrame, current: pd.DataFrame) -> tuple[pd.Da
     for code, current_series in current.groupby("naics_code"):
         historical_series = historical[historical["naics_code"] == code]
         if historical_series.empty:
-            # A code present only in the active table simply starts in 2017.
+            # Starting this series in 2017, because its code is only in the active table.
             chained_parts.append(current_series)
             checks.append({
                 "naics_code": code,
@@ -307,8 +297,8 @@ def main() -> None:
             )
             logger.info("chain check -> %s", relative(check_target))
 
-            # The focus category is the one the whole retail argument runs on, so
-            # check its history specifically rather than trusting the overall span.
+            # Checking the history of my focus category on its own, because my whole
+            # retail argument rests on it. The overall span alone is not enough to trust.
             focus = get("sources.statcan.naics_focus")
             focus_series = chained[chained["naics_code"] == focus]
             if focus_series.empty:
@@ -341,7 +331,7 @@ def main() -> None:
                 log_data_issue(
                     SCRIPT, SOURCE,
                     f"the chained retail series covers only {years} years",
-                    "stage 2 of section 16 asks for at least fifteen; record the shortfall",
+                    "the stage 2 gate asks for at least fifteen; record the shortfall",
                     severity="error",
                 )
             else:

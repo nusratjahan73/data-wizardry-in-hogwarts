@@ -1,34 +1,31 @@
-"""Generate a Power BI project (.pbip) that Power BI Desktop can open directly.
+"""Building a Power BI project (.pbip) that Power BI Desktop can open directly.
 
-Reads  : dashboard/model/*.csv (written by 23_star_schema.py)
-Writes : dashboard/pbip/DataWizardry.pbip
+Reading: dashboard/model/*.csv (written by 23_star_schema.py)
+Writing: dashboard/pbip/DataWizardry.pbip
          dashboard/pbip/DataWizardry.SemanticModel/  (model, relationships, measures)
          dashboard/pbip/DataWizardry.Report/         (six named pages)
 Runtime: instant.
 
-**Why this exists.** A `.pbix` file is a proprietary binary: a ZIP containing a
-compiled Analysis Services tabular model that only Power BI Desktop can produce.
-No script can author one. But Microsoft's `.pbip` project format, supported since
+A `.pbix` file is a closed binary format that only Power BI Desktop can make,
+so no script can write one. Microsoft's `.pbip` project format, supported since
 May 2023, is plain text: JSON and TMSL. Power BI Desktop opens a `.pbip` folder
-natively and can then save it as `.pbix` from the File menu.
+and can then save it as `.pbix` from the File menu.
 
-So this closes most of the gap in module 2. What it produces is the part that is
-tedious and error-prone by hand, and that this project already knows: ten tables
-with typed columns, eight relationships with the right cardinality and filter
-direction, and twenty DAX measures. It also lays out the six pages: cards, line
-and column charts, scatter plots, tables, a map and the era slicer, each with the
-page's finding as a text box across the top.
+This fills most of what I was missing in module 2. I build the parts that are
+slow and easy to get wrong by hand: ten tables with typed columns, eight
+relationships with the right cardinality and filter direction, and twenty DAX
+measures. I also lay out the six pages with cards, line and column charts,
+scatter plots, tables, a map and the era slicer. Each page has its finding in a
+text box across the top.
 
-**Verification.** Nothing here can drive a GUI application, so this generator
-validates JSON well-formedness, relationships that point at real columns, and M
-queries that point at files that exist, and no further. The first version it
-produced failed to open, because it named the measures table "Measures", which
-Power BI reserves; that is fixed and guarded. Any further failure has to be found
-the same way, by opening it, and the error text is worth pasting back rather than
-guessing at.
+I cannot drive a desktop app from a script, so I only check that the JSON is
+well formed, that relationships point at real columns, and that the M queries
+point at files that exist. My first version failed to open because I named the
+measures table "Measures", which Power BI reserves, so I fixed that and added a
+guard. Any other failure has to be found the same way, by opening the project.
 
-**Paths are absolute.** The M queries point at the CSVs by absolute path, written
-at generation time. Moving the repository means rerunning this script.
+The M queries use absolute paths to the CSVs, written when this script runs. If
+I move the project folder, I have to run this script again.
 """
 
 from __future__ import annotations
@@ -54,18 +51,18 @@ MODEL_DIR = repo_root() / "dashboard" / "model"
 PBIP_DIR = repo_root() / "dashboard" / "pbip"
 PROJECT = "DataWizardry"
 
-# The table that holds the measures. NOT "Measures": Power BI rejects that name
-# outright with "Unsupported Table name "Measures" has been found in data model
-# schema" and refuses to open the file. Found by opening the first generated
-# project in Power BI Desktop, which is exactly the check this generator cannot
+# Naming the table that holds the measures. It must NOT be "Measures": Power BI
+# rejects that name with "Unsupported Table name "Measures" has been found in data
+# model schema" and will not open the file. I found this by opening my first
+# generated project in Power BI Desktop, which is the one check this script cannot
 # run for itself.
 MEASURES_TABLE = "Key Measures"
 
-# Names Power BI reserves and will not accept as a table name. Guarded in code
-# and in tests/test_powerbi_project.py so this cannot regress quietly.
+# Listing the names Power BI reserves and will not accept as a table name. I guard
+# this in code and in tests/test_powerbi_project.py, so it cannot quietly break again.
 RESERVED_TABLE_NAMES = {"measures", "table", "column", "row", "value", "values", "model"}
 
-# Column type mapping from pandas to the tabular model.
+# Mapping column types from pandas to the tabular model.
 TYPE_MAP = {
     "int64": ("int64", "Int64.Type"),
     "Int64": ("int64", "Int64.Type"),
@@ -76,7 +73,7 @@ TYPE_MAP = {
 
 DATE_COLUMNS = {"month_start", "release_date", "release_date_na", "month", "week"}
 
-# The eight relationships from model_notes.md. from = many side, to = one side.
+# Listing the eight relationships from model_notes.md. from = many side, to = one side.
 RELATIONSHIPS = [
     ("fact_film_performance", "date_key", "dim_date", "date_key"),
     ("fact_attention_monthly", "date_key", "dim_date", "date_key"),
@@ -88,7 +85,7 @@ RELATIONSHIPS = [
     ("fact_attention_monthly", "series", "dim_character", "article"),
 ]
 
-# The measures from model_notes.md, kept in step with that document.
+# Listing the measures from model_notes.md. I keep them in step with that document.
 MEASURES = [
     ("Total Budget", "SUM ( fact_film_performance[budget_usd] )", "\\$#,0"),
     ("Total Worldwide Gross", "SUM ( fact_film_performance[worldwide_gross_usd] )", "\\$#,0"),
@@ -170,7 +167,7 @@ PAGES = [
 
 
 def m_query(csv_path: Path, columns: list[tuple[str, str]]) -> str:
-    """A Power Query M expression reading one CSV with explicit types."""
+    """Writing a Power Query M expression that reads one CSV with explicit types."""
     transforms = ", ".join(f'{{"{name}", {m_type}}}' for name, m_type in columns)
     windows_path = str(csv_path).replace("\\", "\\\\")
     return (
@@ -222,14 +219,13 @@ def build_model() -> dict:
     for csv_path in sorted(MODEL_DIR.glob("*.csv")):
         name = csv_path.stem
         if name == "relationships":
-            continue  # documentation, not a model table
+            continue  # Skipping this file, because it is documentation and not a model table
         tables.append(build_table(name, csv_path))
         available[name] = {c["name"] for c in tables[-1]["columns"]}
         logger.info("table %-24s %2d columns", name, len(tables[-1]["columns"]))
 
-    # Measures live on a dedicated table, which is the convention that keeps
-    # them findable rather than scattered across whichever fact table they
-    # happened to be created on.
+    # Putting the measures on their own table. This is the usual way to keep them
+    # easy to find, and not scattered across whichever fact table they were made on.
     tables.append({
         "name": MEASURES_TABLE,
         "columns": [{
@@ -312,11 +308,11 @@ def platform_file(display_name: str, kind: str) -> dict:
 
 
 def build_report() -> dict:
-    """The six pages with their visuals, laid out on a 1280 x 720 canvas.
+    """Building the six pages with their visuals, laid out on a 1280 x 720 canvas.
 
-    Built by src/utils/pbi_visuals.py. A visual whose projections and
-    prototypeQuery disagree renders blank with no error, so an empty-looking
-    chart in Power BI means a queryRef mismatch rather than missing data.
+    The visuals come from src/utils/pbi_visuals.py. A visual whose projections
+    and prototypeQuery disagree draws blank with no error. So a chart that looks
+    empty in Power BI means a queryRef mismatch, not missing data.
     """
     sections = []
     for index, (name, finding) in enumerate(PAGES):
@@ -367,21 +363,21 @@ def main() -> None:
         semantic_dir = PBIP_DIR / f"{PROJECT}.SemanticModel"
         report_dir = PBIP_DIR / f"{PROJECT}.Report"
 
-        # --- the project pointer file ---
+        # Writing the project pointer file.
         write_json(PBIP_DIR / f"{PROJECT}.pbip", {
             "version": "1.0",
             "artifacts": [{"report": {"path": f"{PROJECT}.Report"}}],
             "settings": {"enableAutoRecovery": True},
         })
 
-        # --- semantic model ---
+        # Writing the semantic model.
         model = build_model()
         write_json(semantic_dir / "model.bim", model)
         write_json(semantic_dir / "definition.pbism", {"version": "4.0", "settings": {}})
         write_json(semantic_dir / ".platform", platform_file(PROJECT, "SemanticModel"))
         write_json(semantic_dir / "diagramLayout.json", {"version": "1.1.0", "diagrams": []})
 
-        # --- report ---
+        # Writing the report.
         write_json(report_dir / "report.json", build_report())
         write_json(report_dir / "definition.pbir", {
             "version": "1.0",
@@ -389,7 +385,7 @@ def main() -> None:
         })
         write_json(report_dir / ".platform", platform_file(PROJECT, "Report"))
 
-        # --- validate what can be validated from here ---
+        # Checking what I can check from here.
         problems = []
         for file in PBIP_DIR.rglob("*"):
             if file.is_file() and file.suffix in {".json", ".bim", ".pbip", ".pbism", ".pbir", ".platform"}:
@@ -414,7 +410,7 @@ def main() -> None:
             SCRIPT, "powerbi",
             "the generated .pbip has not been opened in Power BI Desktop",
             "nothing here can drive a GUI application, so it is validated for JSON "
-            "well-formedness and internal consistency only. If it fails to open, the star "
+            "well formedness and internal consistency only. If it fails to open, the star "
             "schema CSVs and the DAX in dashboard/model_notes.md remain the fallback.",
             severity="note",
         )

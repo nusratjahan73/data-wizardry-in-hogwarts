@@ -1,13 +1,13 @@
-"""Acceptance tests for the processed tables. Module 1's definition of done.
+"""Testing my processed tables. Passing these tests is how I know module 1 is done.
 
 Run with:  python -m pytest tests/ -v
 
-Section 7 of the brief names four checks: no processed table is empty, no date is
-after the run date, no monetary column is negative, and primary keys are unique.
-Those are all here, plus a few that the specific tables in this project need.
+I run four main checks: no processed table is empty, no date is after the run
+date, no money column is negative, and primary keys are unique. I also add a few
+checks that the tables in my project need.
 
-The tests read only from data/processed. If they fail, the fix belongs in the
-cleaning scripts, never in a test.
+The tests read only from data/processed. If they fail, I fix my cleaning scripts,
+never a test.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.utils.config import path
 
-# table name -> primary key columns
+# Mapping each table name to its primary key columns
 TABLES = {
     "films.csv": ["film_id"],
     "characters.csv": ["id"],
@@ -32,9 +32,9 @@ TABLES = {
     "products.csv": ["set_num"],
 }
 
-# Columns that hold money and must never be negative. A negative here means a
-# parse went wrong, not that a film lost money: profit columns are excluded on
-# purpose, because a film genuinely can fail to earn back its budget.
+# Listing the columns that hold money and must never be negative. A negative here
+# means a parse went wrong, not that a film lost money. I leave profit columns out
+# on purpose, because a film really can fail to earn back its budget.
 MONEY_COLUMNS = [
     "budget_usd", "domestic_gross_usd", "international_gross_usd",
     "worldwide_gross_usd", "opening_weekend_domestic_usd",
@@ -52,7 +52,7 @@ DATE_COLUMNS = [
 def load(name: str) -> pd.DataFrame:
     target = path("data_processed", name)
     if not target.exists():
-        pytest.skip(f"{name} has not been built yet; run src/clean/19_build_processed.py")
+        pytest.skip(f"{name} has not been built yet; run src/clean/18_build_processed.py")
     return pd.read_csv(target, low_memory=False)
 
 
@@ -75,10 +75,10 @@ def test_primary_key_is_unique(name: str, key: list[str]) -> None:
 
 @pytest.mark.parametrize("name", list(TABLES))
 def test_no_date_is_after_today(name: str) -> None:
-    """A date beyond the run date means a parse error or a fabricated row.
+    """Checking no date is after the run date, which would mean a parse error or a made up row.
 
     The premiere date is in the future by design, but it lives in config, not in
-    a processed table, so nothing here should carry a future date.
+    a processed table. So nothing here should have a future date.
     """
     frame = load(name)
     today = date.today()
@@ -109,7 +109,7 @@ def test_no_money_column_is_negative(name: str) -> None:
 
 
 def test_attention_series_reaches_weekly_granularity() -> None:
-    """Stage 1's gate: an attention series at weekly or better granularity."""
+    """Checking my stage 1 gate: an attention series that is weekly or finer."""
     attention = load("attention_weekly.csv")
     weeks = pd.to_datetime(attention["week"], errors="coerce")
     gaps = weeks.sort_values().diff().dt.days.dropna()
@@ -120,7 +120,7 @@ def test_attention_series_reaches_weekly_granularity() -> None:
 
 
 def test_retail_series_covers_fifteen_years() -> None:
-    """Stage 2's gate: a monthly series covering at least fifteen years."""
+    """Checking my stage 2 gate: a monthly series that covers at least fifteen years."""
     retail = load("retail_monthly.csv")
     months = pd.to_datetime(retail["month"], errors="coerce").dropna()
     span_years = (months.max() - months.min()).days / 365.25
@@ -128,10 +128,10 @@ def test_retail_series_covers_fifteen_years() -> None:
 
 
 def test_focus_category_has_history() -> None:
-    """The category the retail argument runs on must reach back before 2017.
+    """Checking the category my retail argument uses reaches back before 2017.
 
     This is the check that catches the NAICS renumbering problem. Without the
-    crosswalk in the cleaning step, this category silently begins in 2017 while
+    crosswalk in my cleaning step, this category quietly begins in 2017 while
     every other test still passes.
     """
     retail = load("retail_monthly.csv")
@@ -163,7 +163,7 @@ def test_film_table_is_internally_consistent() -> None:
 
 
 def test_every_processed_table_has_metadata() -> None:
-    """Section 4: every saved file carries its collection date in a sidecar."""
+    """Checking every saved file has a sidecar that records when I built it."""
     for name in TABLES:
         target = path("data_processed", name)
         if not target.exists():
@@ -173,7 +173,7 @@ def test_every_processed_table_has_metadata() -> None:
 
 
 def test_no_personal_identifier_reaches_processed_tables() -> None:
-    """Module 8: no username or email may appear in a processed table."""
+    """Checking no username or email appears in a processed table, as module 8 needs."""
     forbidden = {"author", "author_name", "username", "email", "user", "screen_name"}
     for name in TABLES:
         target = path("data_processed", name)

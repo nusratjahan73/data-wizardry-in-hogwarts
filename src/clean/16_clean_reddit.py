@@ -1,19 +1,18 @@
-"""Clean the Reddit corpus into a post table and a comment table.
+"""Cleaning my Reddit data into a post table and a comment table.
 
-Reads  : data/raw/reddit/{posts,comments}__*.json
-Writes : data/cleaned/reddit/posts.csv, data/cleaned/reddit/comments.csv
-Runtime: seconds to a minute, depending on corpus size.
+Reading: data/raw/reddit/{posts,comments}__*.json
+Writing: data/cleaned/reddit/posts.csv, data/cleaned/reddit/comments.csv
+Runtime: seconds to a minute, depending on how much data I collected.
 
-Nothing here can undo a privacy mistake made during collection, so this script
-assumes the collector did its job and checks that it did: if a raw file contains
-an `author` field rather than an `author_hash`, the run stops. That is a
-deliberate hard failure. Every other data problem in this project is logged and
-worked around, but personal data reaching disk is the one thing that cannot be
-handled by writing a note about it.
+I cannot undo a privacy mistake here if one was made during collection. So I
+check the raw files first. If a file has an `author` field and not an
+`author_hash`, I stop the run. This is the one hard stop I chose on purpose.
+I log every other data problem and work around it, but personal data on disk
+is not something I can fix with a note.
 
-Text is kept here because the sentiment and segmentation modules need it, but it
-is fan written commentary, not copyrighted work, and section 6 forbids storing
-the novels or scripts in any form. Module 3 stores only derived features.
+I keep the text because my sentiment and segmentation modules need it. It is
+fan written commentary, not copyrighted work. I never store the novels or the
+scripts in any form, and module 3 stores only derived features.
 """
 
 from __future__ import annotations
@@ -36,7 +35,7 @@ FORBIDDEN_FIELDS = {"author", "author_name", "username", "author_fullname", "ema
 
 
 def assert_no_personal_fields(records: list[dict], file_name: str) -> None:
-    """Stop the run if a raw file carries an identifier it should never have."""
+    """Stopping my run if a raw file holds a personal field it should never have."""
     if not records:
         return
     present = FORBIDDEN_FIELDS & set(records[0].keys())
@@ -62,7 +61,7 @@ def load_kind(kind: str) -> pd.DataFrame:
 
 
 def add_time_features(frame: pd.DataFrame) -> pd.DataFrame:
-    """Add the calendar columns the seasonality and segmentation work needs."""
+    """Adding the calendar columns I need for my seasonality and segmentation work."""
     created = pd.to_datetime(frame["created_utc"], errors="coerce", utc=True)
     frame["created_date"] = created.dt.date
     frame["created_year"] = created.dt.year.astype("Int64")
@@ -123,7 +122,7 @@ def main() -> None:
             comments["body"] = comments["body"].fillna("")
             comments["word_count"] = comments["body"].str.split().str.len()
 
-            # Removed and deleted comments carry no opinion, only a placeholder.
+            # Dropping removed and deleted comments, because they hold a placeholder and no opinion.
             placeholders = comments["body"].isin(["[removed]", "[deleted]", ""])
             if placeholders.any():
                 logger.info("dropped %d removed or deleted comments", int(placeholders.sum()))

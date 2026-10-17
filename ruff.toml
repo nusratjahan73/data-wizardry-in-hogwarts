@@ -1,56 +1,54 @@
-# Lint configuration. Section 17 of the brief asks that ruff run before every
-# commit, so the rule set is written down rather than left to whatever the
-# installed version happens to default to.
+# Setting my lint rules. I run ruff before every commit, so I write the rule
+# set down here. I do not leave it to the defaults of whatever version is
+# installed.
 
 line-length = 110
 target-version = "py311"
 
 [lint]
 select = [
-    "E",    # pycodestyle errors
-    "F",    # pyflakes: unused imports, undefined names
-    "I",    # import sorting
-    "UP",   # pyupgrade: modern syntax
-    "B",    # bugbear: likely bugs
-    "SIM",  # simplify
-    "RUF",  # ruff's own rules
-    "DTZ",  # naive datetime use
-    "BLE",  # blind except
+    "E",    # Checking pycodestyle errors
+    "F",    # Checking pyflakes: unused imports, undefined names
+    "I",    # Sorting imports
+    "UP",   # Using pyupgrade for modern syntax
+    "B",    # Catching likely bugs with bugbear
+    "SIM",  # Simplifying code
+    "RUF",  # Applying ruff's own rules
+    "DTZ",  # Flagging naive datetime use
+    "BLE",  # Flagging blind except
 ]
 
 ignore = [
-    # Deliberate, and explained at each site in the code.
-    #
-    # BLE001: three collection scripts catch bare Exception on purpose. trendspy
-    # and praw both raise a wide and undocumented range of network and parsing
-    # errors, and the required behaviour from section 1 of the brief is to log
-    # the failure and continue to the next source rather than abort the build.
-    # Catching only the exceptions those libraries document today would mean a
-    # new one crashes a four hour collection run.
+    # Ignoring these rules on purpose. I explain each one at its place in the
+    # code. BLE001: three of my collection scripts catch bare Exception on
+    # purpose. trendspy and praw both raise a wide and undocumented range of
+    # network and parsing errors. When a source fails, I want the build to log
+    # the failure and go on to the next source, not stop. If I caught only the
+    # exceptions those libraries document today, a new one would crash a four
+    # hour collection run.
     "BLE001",
-    #
-    # DTZ011: date.today() is used for "is this date in the future" checks
-    # against dates that are themselves timezone naive calendar dates. Adding a
-    # timezone to one side of that comparison would be precision this data does
-    # not have; a monthly retail figure has no time of day.
+    # Ignoring DTZ011: I use date.today() for "is this date in the future"
+    # checks. The dates I compare against are calendar dates with no timezone.
+    # Adding a timezone to one side of that comparison would be precision my
+    # data does not have. A monthly retail figure has no time of day.
     "DTZ011",
     "DTZ007",
-    #
-    # E501: long lines are almost all docstrings and explanatory comments, where
-    # breaking a sentence to satisfy a column limit makes it harder to read.
+    # Ignoring E501: almost all of my long lines are docstrings and explaining
+    # comments. Breaking a sentence to fit a column limit makes it harder to
+    # read.
     "E501",
-    #
-    # RUF001: the en dash in 10_clean_potterdb.py is deliberate. PotterDB writes
-    # budget ranges as "150–200 million" with an en dash, and the parser has to
-    # match the character the source actually uses, not the one that looks safer.
+    # Ignoring RUF001: I use the en dash in 10_clean_potterdb.py on purpose.
+    # PotterDB writes budget ranges as "150–200 million" with an en dash. My
+    # parser has to match the character the source really uses, not the one
+    # that looks safer.
     "RUF001",
 ]
 
 [lint.per-file-ignores]
-# Scripts are numbered so that filename order is run order, which means module
-# names begin with a digit and are never imported as modules. Each therefore
-# needs the sys.path preamble before its own imports, which is not a sortable
-# import block.
+# Allowing E402 in my scripts. I number them so that filename order is run
+# order. That means module names begin with a digit and are never imported as
+# modules. So each script needs the sys.path lines before its own imports, and
+# that is not a sortable import block.
 "src/collect/*.py" = ["E402"]
 "src/clean/*.py" = ["E402"]
 "src/analysis/*.py" = ["E402"]

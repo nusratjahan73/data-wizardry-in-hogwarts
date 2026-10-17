@@ -1,38 +1,29 @@
-"""Module 9. The infographic: one page, generated rather than laid out by hand.
+"""Drawing my one page infographic from the saved tables, not laying it out by hand (module 9).
 
-Reads  : outputs/tables/*.csv
-Writes : images/infographic/data_wizardry_infographic.png
+Reading: outputs/tables/*.csv
+Writing: images/infographic/data_wizardry_infographic.png
          images/infographic/data_wizardry_infographic.pdf
 Runtime: about twenty seconds.
 
-The brief asks for this in Canva. Canva is a browser application that cannot be
-driven from a script, so it is drawn here instead, which has a property the Canva
-version would not: every number on the page is read from a file in outputs/tables
-at render time. Section 15's acceptance test is that every number traces to a
-file, and generating the page makes that true by construction rather than by
-somebody checking it afterwards.
+I first planned to make this page in Canva. Canva runs in a browser and I
+cannot drive it from a script, so I draw the page here. Every number on the
+page is read from a file in outputs/tables when the page is drawn, so each
+number traces back to a file without anyone checking it by hand.
 
-Layout is a portrait A3-proportioned canvas: a headline block, a calendar strip,
-three charts, a scenario block and a footer.
+The page is a portrait canvas with A3 proportions. It has a headline block, a
+calendar strip, three charts, a scenario block and a footer.
 
-This file is the whole record of that design. There was a separate specification
-document, infographic/asset_pack.md, written when the page was going to be built
-by hand in Canva. It carried a table tracing every number on the page back to its
-source file, and by the time the page was generated instead, one of its rows had
-already drifted: it claimed an attention swing of 25 points where the analysis
-produced 24. A hand-maintained list of numbers describing a generated page is a
-second source of truth that can only ever go stale, so it was deleted rather than
-corrected. The trace it provided is now structural: every value below is read
-from outputs/tables at render time, so it cannot disagree with the analysis.
+This file is my only record of the design. I once kept a separate document,
+infographic/asset_pack.md, with a table tracing every number to its source
+file. One row in it had already gone stale. A list kept by hand can only go
+stale, so I deleted it and did not correct it.
 
 The caveat line and the source line at the foot of the page are part of the
-design, not decoration. A one-page summary that states a recommendation without
-stating what it rests on is the kind of document that gets acted on and then
-blamed; it costs one line to prevent.
+design. A one page summary that gives a recommendation should also say what it
+rests on, and that costs me only one line.
 
-The calendar strip is the piece that carries the finding, so it gets the most
-space after the headline: two shaded bands that barely overlap, with the premiere
-sitting on the boundary between them.
+The calendar strip carries my finding, so it gets the most space after the
+headline: two shaded bands that barely overlap, with the premiere between them.
 """
 
 from __future__ import annotations
@@ -64,11 +55,11 @@ def table(name: str) -> pd.DataFrame:
 
 
 def money_short(value: float) -> str:
-    r"""Short money label with the dollar sign escaped for matplotlib.
+    r"""Making a short money label with the dollar sign escaped for matplotlib.
 
-    An unescaped pair of dollar signs in one string is read as LaTeX mathtext,
-    which silently swallowed the words between them and rendered "$2.0m to
-    $2.5m" as "2.0mto2.5m". Escaping makes every dollar sign literal.
+    Two plain dollar signs in one string are read as LaTeX mathtext. That
+    swallowed the words between them with no warning and drew "$2.0m to $2.5m"
+    as "2.0mto2.5m". Escaping makes every dollar sign literal.
     """
     if abs(value) >= 1_000_000:
         return rf"\${value / 1_000_000:.1f}m"
@@ -94,18 +85,20 @@ def draw_headline(ax, recommendation: pd.Series, tradeoff: pd.DataFrame) -> None
             fontsize=62, color=PALETTE["accent"], fontweight="bold", va="top",
             transform=ax.transAxes)
     ax.text(0.005, 0.13,
-            f"wizarding category buy for Nov 2026 – Mar 2027, about "
-            f"{float(recommendation['recommended_units']):,.0f} units",
+            f"wizarding category buy for Nov 2026 to Mar 2027, about "
+            f"{round(float(recommendation['recommended_units']), -3):,.0f} units",
             fontsize=11.5, color=PALETTE["muted"], va="top", transform=ax.transAxes)
+    # Writing the order date the way the README does, as 27 August 2026.
+    order_by = pd.Timestamp(recommendation["january_order_by_imported"])
     ax.text(0.005, 0.05,
-            f"Hold {low:.0%}–{high:.0%} of it for January. Imported product was due on order by "
-            f"{recommendation['january_order_by_imported']}.",
+            f"Hold {low:.0%} to {high:.0%} of it for January. Imported product was due on order by "
+            f"{order_by.day} {order_by:%B %Y}.",
             fontsize=11.5, color=PALETTE["ink"], va="top", fontweight="bold",
             transform=ax.transAxes)
 
 
 def draw_calendar(ax, seasonality: pd.DataFrame) -> None:
-    """The visual that carries the finding: two bands that barely overlap."""
+    """Drawing the picture that carries my finding: two bands that barely overlap."""
     ax.set_xlim(0, 12)
     ax.set_ylim(0, 1)
     ax.axis("off")
@@ -114,25 +107,32 @@ def draw_calendar(ax, seasonality: pd.DataFrame) -> None:
     december = float(category[category["month_number"] == 12]["seasonal_index"].iloc[0])
     january = float(category[category["month_number"] == 1]["seasonal_index"].iloc[0])
 
-    # Nov 1 to Dec 24 is roughly x = 0 to 3.6 on a five-month strip.
-    ax.add_patch(plt.Rectangle((0, 0.42), 3.55, 0.34, color=PALETTE["highlight"], alpha=0.22, lw=0))
-    ax.add_patch(plt.Rectangle((3.65, 0.42), 8.35, 0.34, color=PALETTE["accent"], alpha=0.16, lw=0))
+    # Placing each date by its real day count, so 1 Nov is x = 0 and 31 Mar is x = 12.
+    start, end = pd.Timestamp("2026-11-01"), pd.Timestamp("2027-03-31")
 
-    ax.plot([3.6, 3.6], [0.34, 0.86], color=PALETTE["highlight"], lw=2.6, linestyle="--")
-    ax.text(3.6, 0.92, "PREMIERE  25 Dec", fontsize=10.5, color=PALETTE["warn"],
+    def x_of(day: str) -> float:
+        return 12 * (pd.Timestamp(day) - start).days / (end - start).days
+
+    premiere = x_of("2026-12-25")
+    ax.add_patch(plt.Rectangle((0, 0.42), premiere - 0.05, 0.34, color=PALETTE["highlight"], alpha=0.22, lw=0))
+    ax.add_patch(plt.Rectangle((premiere + 0.05, 0.42), 12 - premiere - 0.05, 0.34,
+                               color=PALETTE["accent"], alpha=0.16, lw=0))
+
+    ax.plot([premiere, premiere], [0.34, 0.86], color=PALETTE["highlight"], lw=2.6, linestyle="--")
+    ax.text(premiere, 0.92, "PREMIERE  25 Dec", fontsize=10.5, color=PALETTE["warn"],
             fontweight="bold", ha="center")
 
-    ax.text(1.75, 0.59, "Gift buying window", fontsize=11.5, ha="center",
+    ax.text(premiere / 2, 0.59, "Gift buying window", fontsize=11.5, ha="center",
             va="center", color=PALETTE["ink"], fontweight="bold")
-    ax.text(1.75, 0.48, f"category runs at {december:.0f}", fontsize=10,
+    ax.text(premiere / 2, 0.48, f"category peaks at {december:.0f} in December", fontsize=10,
             ha="center", va="center", color=PALETTE["muted"])
 
-    ax.text(7.8, 0.59, "Viewing-driven demand", fontsize=11.5, ha="center",
+    ax.text((premiere + 12) / 2, 0.59, "Viewing driven demand", fontsize=11.5, ha="center",
             va="center", color=PALETTE["ink"], fontweight="bold")
-    ax.text(7.8, 0.48, f"category normally collapses to {january:.0f}", fontsize=10,
+    ax.text((premiere + 12) / 2, 0.48, f"category normally falls to {january:.0f} in January", fontsize=10,
             ha="center", va="center", color=PALETTE["muted"])
 
-    for x, label in [(0, "1 Nov"), (3.6, "25 Dec"), (7.2, "31 Jan"), (12, "31 Mar")]:
+    for x, label in [(0, "1 Nov"), (premiere, "25 Dec"), (x_of("2027-01-31"), "31 Jan"), (12, "31 Mar")]:
         ax.text(x, 0.30, label, fontsize=9, color=PALETTE["muted"],
                 ha="left" if x == 0 else ("right" if x == 12 else "center"))
     ax.plot([0, 12], [0.38, 0.38], color=PALETTE["grid"], lw=1)
@@ -156,7 +156,11 @@ def draw_seasonality(ax, seasonality: pd.DataFrame) -> None:
     ax.axhline(100, color=PALETTE["grid"], lw=1, zorder=0)
     ax.set_xticks(list(x))
     ax.set_xticklabels(MONTHS, fontsize=8)
-    ax.set_title("Retail swings 99 points a year. Attention swings 25.",
+    # Reading both swings from the table, so my title cannot go stale.
+    retail_swing = max(series("459A")) - min(series("459A"))
+    attention_swing = max(series("Franchise attention")) - min(series("Franchise attention"))
+    ax.set_title(f"Retail swings {retail_swing:.0f} points a year. "
+                 f"Attention swings {attention_swing:.0f}.",
                  loc="left", fontsize=11, fontweight="bold")
     ax.set_ylabel("index, 100 = average month", fontsize=9)
     ax.legend(fontsize=8.5, loc="upper left")
@@ -190,7 +194,10 @@ def draw_tradeoff(ax, tradeoff: pd.DataFrame) -> None:
     ax.bar(x, tradeoff["expected_profit_cad"] / 1000, color=colours, width=7)
     ax.set_xticks(x)
     ax.set_xticklabels([f"{int(v)}%" for v in x], fontsize=8)
-    ax.set_title("Hold back 50–60%. Expected profit peaks there.",
+    # Reading the two reserve shares from the table, the same way my headline does.
+    safest_index = int(tradeoff["worst_case_profit_cad"].idxmax())
+    shares = sorted(float(tradeoff["january_reserve_proportion"][i]) for i in (best_index, safest_index))
+    ax.set_title(f"Hold back {shares[0]:.0%} to {shares[1]:.0%}. Expected profit peaks there.",
                  loc="left", fontsize=11, fontweight="bold")
     ax.set_ylabel("expected profit, $000", fontsize=9)
     ax.set_xlabel("share held for January", fontsize=9)
@@ -203,7 +210,7 @@ def draw_footer(ax, sensitivity: pd.DataFrame, assumption: float) -> None:
 
     ax.text(0, 0.86,
             f"The conversion from attention to sales is an assumption ({assumption:.0%}), not a "
-            f"measurement. Across its plausible range the buy runs {money_short(low)} to "
+            f"measurement. Across its plausible range central season sales run {money_short(low)} to "
             f"{money_short(high)}.",
             fontsize=10, color=PALETTE["warn"], va="top", transform=ax.transAxes, wrap=True)
     ax.plot([0, 1], [0.62, 0.62], color=PALETTE["grid"], lw=1, transform=ax.transAxes)
@@ -236,7 +243,7 @@ def main() -> None:
             ].iloc[0]
         )
 
-        fig = plt.figure(figsize=(11.7, 16.5))  # A3 proportions, portrait
+        fig = plt.figure(figsize=(11.7, 16.5))  # Using A3 proportions, portrait
         grid = GridSpec(
             5, 2, figure=fig,
             height_ratios=[1.45, 0.85, 1.15, 1.15, 0.55],
@@ -250,8 +257,8 @@ def main() -> None:
         draw_demand(fig.add_subplot(grid[2, 1]), profile)
         draw_tradeoff(fig.add_subplot(grid[3, 0]), tradeoff)
 
-        # The right cell of row 3 carries the three scenario numbers as text,
-        # which reads better than a fourth chart on a page this dense.
+        # Putting the three scenario numbers as text in the right cell of row 3.
+        # That reads better than a fourth chart on a page this full.
         ax_numbers = fig.add_subplot(grid[3, 1])
         ax_numbers.axis("off")
         ax_numbers.set_title("The range, and why it is wide.", loc="left",

@@ -1,19 +1,18 @@
-"""Collect the PotterDB catalogue: books, characters, movies, spells, potions, chapters.
+"""Collecting the PotterDB catalogue: books, characters, movies, spells, potions and chapters.
 
-Reads  : config.yaml (sources.potterdb).
-Writes : data/raw/potterdb/<endpoint>.json plus a .meta.json for each.
-Runtime: about four minutes, held down by the 900 requests per hour rate limit.
+Reading: config.yaml (sources.potterdb).
+Writing: data/raw/potterdb/<endpoint>.json plus a .meta.json for each.
+Runtime: about four minutes, because the API allows only 900 requests per hour.
 
-PotterDB serves JSON:API, so every response carries `data` (a list of records
-with `id`, `type` and `attributes`) and `meta.pagination`. This script saves the
-records exactly as they arrive, with no flattening or type coercion, because
-section 4 forbids converting anything during collection.
+PotterDB serves JSON:API, so every response has `data` (a list of records with
+`id`, `type` and `attributes`) and `meta.pagination`. I save the records exactly
+as they arrive. I do not flatten them or change any types, because my rule is
+that collection never converts anything.
 
-One shape difference from the brief is handled here. Chapters are not a top
-level endpoint: they hang off each book at /v1/books/<slug>/chapters. The brief's
-appendix already warns that chapter records carry only order, slug, title and
-summary, with no character list, which is why module 3 builds its network from
-attention data instead.
+Chapters are not a top level endpoint. They sit under each book at
+/v1/books/<slug>/chapters. A chapter record only has order, slug, title and
+summary, with no character list. That is why my module 3 builds its network
+from attention data instead.
 """
 
 from __future__ import annotations
@@ -36,10 +35,10 @@ logger = get_logger(SCRIPT)
 def fetch_paginated(
     url: str, limiter: RateLimiter, page_size: int, label: str
 ) -> tuple[list[dict], dict]:
-    """Walk every page of a JSON:API collection and return all records.
+    """Walking through every page of a JSON:API collection and returning all records.
 
-    Returns the records and the pagination block from the first response, which
-    carries the record count the log line reports against.
+    I also return the pagination block from the first response, because it holds
+    the record count that my log line reports.
     """
     records: list[dict] = []
     page = 1
@@ -73,7 +72,7 @@ def fetch_paginated(
 
 
 def collect_endpoint(endpoint: str, limiter: RateLimiter, base_url: str, page_size: int) -> int:
-    """Pull one top level endpoint and save it. Returns the record count."""
+    """Pulling one top level endpoint, saving it and returning the record count."""
     url = f"{base_url}/{endpoint}"
     try:
         records, pagination = fetch_paginated(url, limiter, page_size, endpoint)
@@ -111,12 +110,11 @@ def collect_endpoint(endpoint: str, limiter: RateLimiter, base_url: str, page_si
 
 
 def collect_chapters(limiter: RateLimiter, base_url: str, page_size: int) -> int:
-    """Pull chapters for every book and save them as one file with a book key.
+    """Pulling the chapters for every book and saving them as one file with a book key.
 
-    Chapters carry no character list, only order, slug, title and summary. That
-    limitation is recorded here as well as in the methods note, because the
-    person reading the collection script is the one most likely to wonder why
-    the network analysis does not use it.
+    Chapters have no character list, only order, slug, title and summary. I note
+    this limit here and in my methods note, so anyone reading this script can see
+    why my network analysis does not use chapters.
     """
     try:
         books, _ = fetch_paginated(f"{base_url}/books", limiter, page_size, "books")
@@ -146,7 +144,7 @@ def collect_chapters(limiter: RateLimiter, base_url: str, page_size: int) -> int
                 "that book's chapters skipped, remaining books continued",
             )
             continue
-        # Stamp the parent book onto each chapter so the flat file stays joinable.
+        # Adding the parent book to each chapter, so I can still join my flat file to the books.
         for chapter in chapters:
             chapter["book_slug"] = slug
             chapter["book_title"] = book.get("attributes", {}).get("title")
@@ -160,7 +158,7 @@ def collect_chapters(limiter: RateLimiter, base_url: str, page_size: int) -> int
         records=len(all_chapters),
         note=(
             "Chapters carry order, slug, title and summary only. No character "
-            "list is available, which is why module 3 builds its co-occurrence "
+            "list is available, which is why module 3 builds its cooccurrence "
             "network from attention data rather than from chapter membership."
         ),
     )

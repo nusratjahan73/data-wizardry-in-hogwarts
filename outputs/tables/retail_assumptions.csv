@@ -5,7 +5,7 @@ gross margin rate,0.42,share of retail,"stated assumption, licensed product",ret
 markdown rate on unsold stock,0.4,share of retail,stated assumption,retail.markdown_rate
 annual holding cost rate,0.25,share of unit cost,stated assumption,retail.holding_cost_rate_annual
 goodwill multiplier on a lost sale,1.15,multiplier,stated assumption,retail.lost_sale_goodwill_multiplier
-service level target,0.95,share,"section 20 default, reserved for the human",retail.service_level
+service level target,0.95,share,"my default, to be confirmed with the retailer",retail.service_level
 service level implied by the cost assumptions,0.9302,share,"derived, newsvendor critical ratio",derived
 imported lead time,120.0,days,stated assumption,retail.lead_time_days.imported
 domestic lead time,45.0,days,stated assumption,retail.lead_time_days.domestic

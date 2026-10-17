@@ -1,13 +1,13 @@
-"""Polite HTTP client: identified, rate limited, retried, and honest on failure.
+"""Sending polite HTTP requests: named, rate limited, retried, and honest when they fail.
 
-Reads  : config.yaml for the user agent and per source rate limits.
-Writes : nothing directly. Callers save the responses.
+Reading: config.yaml for the user agent and the rate limit of each source.
+Writing: nothing directly. The scripts that call this save the responses.
 Runtime: depends on the caller.
 
-Every outbound request in this project goes through here. That guarantees three
-things the ethics module has to be able to claim truthfully: every request
-identifies the project, no source is called faster than its published limit, and
-a refusal is respected rather than retried around.
+Every outbound request in my project goes through here. That lets my ethics module
+say three things honestly: every request identifies my project, I never call a
+source faster than its published limit, and when a source refuses me I accept it
+and do not retry around it.
 """
 
 from __future__ import annotations
@@ -19,18 +19,18 @@ import requests
 
 from .config import user_agent
 
-# Status codes worth retrying. 429 is rate limiting, the 5xx codes are the
-# server having a bad moment. A 403 or a 404 is an answer, not a hiccup, so it
-# is never retried.
+# Listing the status codes worth retrying. 429 means rate limiting, and the 5xx
+# codes mean the server is having a bad moment. A 403 or a 404 is a real answer,
+# not a hiccup, so I never retry those.
 RETRYABLE = {429, 500, 502, 503, 504}
 
 
 class RateLimiter:
-    """Simple wall clock spacer between calls to one host.
+    """Spacing out my calls to one host with a simple wall clock wait.
 
-    A token bucket would allow short bursts, which is exactly what a published
-    limit like "900 per hour" is not asking for. Even spacing is slower but it
-    is the behaviour that can be defended in the ethics write up.
+    A token bucket would allow short bursts, and a published limit like
+    "900 per hour" is not asking for bursts. Even spacing is slower, but it is
+    the behaviour I can defend in my ethics write up.
     """
 
     def __init__(self, min_seconds_between_calls: float) -> None:
@@ -47,7 +47,7 @@ class RateLimiter:
 
 
 class ApiError(RuntimeError):
-    """Raised when a request fails in a way the caller should record and skip."""
+    """Signalling that a request failed in a way the caller should record and skip."""
 
     def __init__(self, url: str, status: int | None, detail: str) -> None:
         self.url = url
@@ -65,11 +65,11 @@ def get_json(
     timeout: int = 60,
     logger=None,
 ) -> Any:
-    """GET a URL and return parsed JSON, retrying only transient failures.
+    """Getting a URL and returning the parsed JSON, retrying only short lived failures.
 
-    Raises ApiError once the attempts are exhausted or the failure is permanent,
-    so the calling collection script can log the issue and move to the next
-    source instead of dying mid build.
+    I raise ApiError when the attempts run out or the failure is permanent. The
+    collection script that called me can then log the issue and move to the next
+    source, and not die in the middle of a build.
     """
     all_headers = {"User-Agent": user_agent(), "Accept": "application/json"}
     if headers:
@@ -98,7 +98,7 @@ def get_json(
             if response.status_code not in RETRYABLE:
                 raise ApiError(url, response.status_code, last_detail)
 
-            # Respect an explicit Retry-After before falling back to backoff.
+            # Following the server's Retry-After wait first, before I fall back to my own backoff.
             retry_after = response.headers.get("Retry-After")
             if retry_after and retry_after.isdigit():
                 wait_for = int(retry_after)
@@ -130,7 +130,7 @@ def get_text(
     limiter: RateLimiter | None = None,
     timeout: int = 120,
 ) -> str:
-    """GET a URL and return the body as text, for CSV and XML endpoints."""
+    """Getting a URL and returning the body as text, for CSV and XML endpoints."""
     all_headers = {"User-Agent": user_agent()}
     if headers:
         all_headers.update(headers)
@@ -152,7 +152,7 @@ def download_binary(
     limiter: RateLimiter | None = None,
     timeout: int = 300,
 ) -> int:
-    """Stream a binary file to disk and return the byte count."""
+    """Streaming a binary file to disk and returning the number of bytes written."""
     all_headers = {"User-Agent": user_agent()}
     if headers:
         all_headers.update(headers)

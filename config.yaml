@@ -1,18 +1,18 @@
-# Data Wizardry in Hogwarts - central configuration
-# Every date, path, threshold and parameter used anywhere in this project lives
-# in this file. No script may hard code any of these values.
+# Keeping the central configuration for Data Wizardry in Hogwarts here.
+# Every date, path, threshold and parameter I use in this project lives in
+# this file. None of my scripts may hard code any of these values.
 
 project:
   name: data-wizardry-in-hogwarts
-  reporting_currency: CAD          # section 20, client is Canadian
+  reporting_currency: CAD          # Reporting in CAD because my client is Canadian
   random_seed: 42
   user_agent: "data-wizardry-in-hogwarts/1.0 (MBAI student project; contact via repository)"
 
 dates:
-  premiere: 2026-12-25             # section 5, the fixed event the project plans around
-  pageviews_start: 2015-07-01      # Wikimedia daily article data begins here
-  pageviews_end: 2026-09-01        # brief issue date, sources verified
-  forecast_horizon_months: 12      # at least twelve months past the premiere
+  premiere: 2026-12-25             # Fixing the premiere date, the event my whole project plans around
+  pageviews_start: 2015-07-01      # Starting where the Wikimedia daily article data begins
+  pageviews_end: 2026-09-01        # Ending on the date of my project plan, when I verified my sources
+  forecast_horizon_months: 12      # Forecasting at least twelve months past the premiere
   gift_season_start: 2026-11-01
   january_position_end: 2027-01-31
 
@@ -35,12 +35,12 @@ paths:
 sources:
   potterdb:
     base_url: https://api.potterdb.com/v1
-    # Chapters are not a top level endpoint. They hang off each book as
-    # /v1/books/<slug>/chapters, so they are collected separately. Verified
-    # 2 September 2026; the flat /v1/chapters path returns 404.
+    # Collecting chapters separately, because they are not a top level
+    # endpoint. They hang off each book as /v1/books/<slug>/chapters. I
+    # verified this on 2 September 2026. The flat /v1/chapters path returns 404.
     endpoints: [books, characters, movies, spells, potions]
-    page_size: 100                 # 100 is accepted and cuts 217 calls to 55
-    rate_limit_per_hour: 900       # appendix A, 900/hour = 15/minute
+    page_size: 100                 # Using 100 because it is accepted and cuts 217 calls to 55
+    rate_limit_per_hour: 900       # Keeping to the API limit of 900 calls an hour, which is 15 a minute
     min_seconds_between_calls: 4.0
   hpapi:
     base_url: https://hp-api.onrender.com/api
@@ -52,10 +52,10 @@ sources:
     agent: all-agents
     granularity: daily
     min_seconds_between_calls: 0.2
-    # Wikipedia article titles, grouped by what they measure. Titles must match
-    # the live article exactly; a redirect returns no data rather than an error,
-    # so any article returning nothing is logged as a data issue and dropped
-    # rather than silently treated as zero attention.
+    # Listing the Wikipedia article titles, grouped by what they measure. Each
+    # title must match the live article exactly. A redirect returns no data and
+    # no error. So when an article returns nothing, I log it as a data issue
+    # and drop it. I do not quietly treat it as zero attention.
     articles:
       franchise:
         - Harry_Potter
@@ -95,22 +95,24 @@ sources:
         - Dobby_(Harry_Potter)
         - Remus_Lupin
       control:
-        # Comparison franchises, so a general seasonal rise in attention is not
-        # mistaken for a franchise specific one. Section 6, keyword group D.
+        # Adding comparison franchises, so I do not mistake a general seasonal
+        # rise in attention for a Harry Potter one. They match my Trends keyword
+        # group D further down.
         - The_Lord_of_the_Rings
         - Star_Wars
         - The_Chronicles_of_Narnia
         - Percy_Jackson
-    # Wikipedia article -> PotterDB character slug. Written out by hand because
-    # the two sources name people differently and no automatic rule joins them
-    # safely. Wikipedia uses the common name ("Ron Weasley", "Lord Voldemort");
-    # PotterDB uses the canonical one ("Ronald Bilius Weasley", "Tom Marvolo
-    # Riddle"). Matching on a normalised name misses nine of the sixteen, and
-    # loosening the match until they join starts pairing "Sirius Black" with his
-    # grandfather, who is a different character in a different house. Sixteen
-    # explicit lines that a reader can check beat a clever rule that is wrong in
-    # ways nobody notices. The slug is used rather than the name because it is
-    # ASCII and stable, where several names carry an accented "née".
+    # Mapping each Wikipedia article to its PotterDB character slug. I wrote the
+    # map by hand because the two sources name people differently and no
+    # automatic rule joins them safely. Wikipedia uses the common name ("Ron
+    # Weasley", "Lord Voldemort"). PotterDB uses the canonical one ("Ronald
+    # Bilius Weasley", "Tom Marvolo Riddle"). Matching on a normalised name
+    # misses nine of the sixteen. A looser match starts pairing "Sirius Black"
+    # with his grandfather, who is a different character in a different house.
+    # Sixteen plain lines that a reader can check are better than a clever rule
+    # that is wrong in ways nobody notices. I use the slug and not the name
+    # because the slug is ASCII and stable, while several names carry an
+    # accented "née".
     character_article_to_potterdb_slug:
       Harry_Potter_(character): harry-potter
       Hermione_Granger: hermione-granger
@@ -120,7 +122,7 @@ sources:
       Lord_Voldemort: tom-riddle
       Draco_Malfoy: draco-malfoy
       Rubeus_Hagrid: rubeus-hagrid
-      Sirius_Black: sirius-black          # Sirius Black III, Harry's godfather
+      Sirius_Black: sirius-black          # Pointing to Sirius Black III, Harry's godfather
       Minerva_McGonagall: minerva-mcgonagall
       Bellatrix_Lestrange: bellatrix-lestrange
       Luna_Lovegood: luna-lovegood
@@ -129,30 +131,31 @@ sources:
       Dobby_(Harry_Potter): dobby
       Remus_Lupin: remus-lupin
   trends:
-    library: trendspy               # section 6, pytrends is archived and broken
-    geos: ["", "CA"]                # worldwide and Canada
+    library: trendspy               # Using trendspy because pytrends is archived and broken
+    geos: ["", "CA"]                # Pulling worldwide and Canada
     timeframe: "2004-01-01 2026-09-01"
-    request_delay_seconds: 12       # Trends throttles hard; slow is the only way through
-    max_terms_per_group: 5          # a Trends comparison accepts no more than five
-    anchor_term: "harry potter"     # present in every group so groups are comparable
-    # Google chooses the granularity from the length of the window, and does not
-    # let the caller ask. A request spanning more than about five years comes
-    # back monthly. Verified 2 September 2026: 2004-01-01 to 2026-09-01 returned
-    # 273 monthly points, not weeks. So the series is pulled twice.
-    #   full range  -> monthly, the long history the seasonality work needs
-    #   short windows -> weekly, the granularity section 6 asks for
-    # The windows overlap so the cleaning step can rescale them onto one series
-    # using the ratio of the overlapping months, rather than pretending that a
-    # value of 100 in one window means the same as 100 in the next.
+    request_delay_seconds: 12       # Waiting 12 seconds because Trends throttles hard and slow is the only way through
+    max_terms_per_group: 5          # Limiting to five because a Trends comparison accepts no more than five
+    anchor_term: "harry potter"     # Putting this term in every group so I can compare the groups
+    # Pulling the series twice, because Google picks the granularity from the
+    # length of the window and I cannot ask for one. A request longer than
+    # about five years comes back monthly. I verified this on 2 September 2026:
+    # 2004-01-01 to 2026-09-01 returned 273 monthly points, not weeks. The full
+    # range gives monthly data, the long history my seasonality work needs.
+    # The short windows give weekly data, the detail I planned to use for
+    # timing. The windows overlap so my cleaning step can rescale them onto one
+    # series with the ratio of the overlapping months. A value of 100 in one
+    # window does not mean the same as 100 in the next.
     weekly_window_years: 4
-    weekly_window_step_years: 3     # a four year window every three years = one year of overlap
-    weekly_groups:                  # only the groups the timing argument needs
+    weekly_window_step_years: 3     # Stepping a four year window every three years, which gives one year of overlap
+    weekly_groups:                  # Listing only the groups my timing argument needs
       - a_franchise
       - b_product_intent
     keyword_groups:
-      # Each group is scaled relative to its own maximum, so the same anchor term
-      # appears in all four. Without it, a value of 60 in group A and a value of
-      # 60 in group C would mean different things and could not be compared.
+      # Putting the same anchor term in all four groups, because each group is
+      # scaled to its own maximum. Without it, a value of 60 in group A and a
+      # value of 60 in group C would mean different things and I could not
+      # compare them.
       a_franchise:
         - harry potter
         - wizarding world
@@ -171,8 +174,8 @@ sources:
         - draco malfoy
         - dumbledore
       d_control:
-        # Comparison franchises. If all five rise together in November, the rise
-        # is Christmas, not the wizarding revival.
+        # Adding comparison franchises. If all five rise together in November,
+        # the rise is Christmas, not the wizarding revival.
         - harry potter
         - lord of the rings
         - star wars
@@ -180,12 +183,12 @@ sources:
         - narnia
   statcan:
     base_url: https://www150.statcan.gc.ca/t1/wds/rest
-    # Verified against the live cube list on 2 September 2026. The brief's
-    # appendix warned that one retail table was archived, and it is: 20-10-0008
-    # stopped in December 2022. It is still downloadable and it is the only way
-    # to reach back beyond 2017, so both tables are collected and the cleaning
-    # step chains them on their 2017 to 2022 overlap. Both carry identical
-    # geography and NAICS dimensions, which is what makes the chain defensible.
+    # Collecting two retail tables. I checked them against the live cube list
+    # on 2 September 2026. I expected one retail table to be archived, and it
+    # is: 20-10-0008 stopped in December 2022. I can still download it and it is
+    # the only way to reach back before 2017. So I collect both tables and my
+    # cleaning step chains them on their 2017 to 2022 overlap. Both have the
+    # same geography and NAICS dimensions, which is why I can defend the chain.
     tables:
       retail_current:
         product_id: 20100056
@@ -205,56 +208,56 @@ sources:
         title: Consumer Price Index, monthly, not seasonally adjusted
         status: active
         coverage: 1914-01 to 2026-07
-        # Fetched as a single series rather than as the whole table. The bulk
-        # download is 162MB covering 30 geographies and 359 product groups, of
-        # which this project uses one combination: Canada, All-items. That is
-        # 1,351 rows, or 0.12 per cent of what the bulk file contains.
-        #
-        # The coordinate addresses one cell of the cube. Positions are
+        # Fetching one series and not the whole table. The bulk download is
+        # 162MB and covers 30 geographies and 359 product groups. My project
+        # uses one combination: Canada, All-items. That is 1,351 rows, or 0.12
+        # per cent of the bulk file.
+        # The coordinate points to one cell of the cube. The positions are
         # Geography then Products, and the trailing zeros pad it to the ten
         # dimensions the API always expects. Member 2 is Canada and member 2 is
-        # All-items, both read from the cube metadata rather than guessed.
-        #
-        # The trade is real: the bulk file needs no identifier and cannot go
-        # stale, while this coordinate breaks if Statistics Canada renumbers a
-        # member. 05_statcan.py falls back to the bulk download if the series
-        # request fails, so a renumbering costs disk space rather than the run.
+        # All-items. I read both from the cube metadata and did not guess them.
+        # There is a real trade here. The bulk file needs no identifier and
+        # cannot go stale, but this coordinate breaks if Statistics Canada
+        # renumbers a member. 05_statcan.py falls back to the bulk download if
+        # the series request fails, so a renumbering costs disk space and not
+        # the run.
         mode: series
         coordinate: "2.2.0.0.0.0.0.0.0.0"
         geography_member: Canada
         product_member: All-items
         max_periods: 1500
     geography: Canada
-    # NAICS 459A is the closest published match to a book and lifestyle retailer.
-    # 44-45 is total retail trade, used as the control for general seasonality:
-    # without it, a November rise in the category cannot be told apart from
+    # Using NAICS 459A as the closest published match to a book and lifestyle
+    # retailer. 44-45 is total retail trade, my control for general seasonality.
+    # Without it, I cannot tell a November rise in the category apart from
     # Christmas happening to every shop in the country.
     naics_focus: "459A"
     naics_focus_name: "Sporting goods, hobby, musical instrument, book retailers and news dealers"
     naics_control: "44-45"
     cpi_products: ["All-items"]
-    adjustment: "Unadjusted"    # seasonality must be measured, not removed first
-    # The archived table is coded to NAICS 2017 and the active one to NAICS 2022,
-    # so the same shop sits under a different code either side of the join. Left
-    # unmapped, the category this project is about would have no history before
-    # 2017 at all. This crosswalk maps the old code to the new one; the chaining
-    # step then measures, on the six year overlap, how well the two actually
-    # agree, so the quality of each mapping is reported rather than assumed.
-    # Codes absent from this map were not renumbered and carry across unchanged.
+    adjustment: "Unadjusted"    # Keeping the data unadjusted, because I must measure seasonality, not remove it first
+    # Mapping each old NAICS code to the new one. The archived table is coded to
+    # NAICS 2017 and the active one to NAICS 2022, so the same shop sits under a
+    # different code on each side of the join. Without this map, the category
+    # my project is about would have no history before 2017 at all. The
+    # chaining step then measures, on the six year overlap, how well the two
+    # really agree. So I report the quality of each mapping and do not assume
+    # it. Codes that are not in this map were not renumbered and carry across
+    # unchanged.
     naics_crosswalk_2017_to_2022:
-      "451": "459A"     # sporting goods, hobby, book and music stores -> ... book retailers and news dealers
-      "452": "455"      # general merchandise stores -> general merchandise retailers
-      "453": "459B"     # miscellaneous store retailers -> miscellaneous retailers
-      "446": "456"      # health and personal care
-      "447": "457"      # gasoline stations -> gasoline stations and fuel vendors
-      "448": "458"      # clothing and clothing accessories
+      "451": "459A"     # Mapping sporting goods, hobby, book and music stores to sporting goods, hobby, musical instrument, book retailers and news dealers
+      "452": "455"      # Mapping general merchandise stores to general merchandise retailers
+      "453": "459B"     # Mapping miscellaneous store retailers to miscellaneous retailers
+      "446": "456"      # Mapping health and personal care
+      "447": "457"      # Mapping gasoline stations to gasoline stations and fuel vendors
+      "448": "458"      # Mapping clothing and clothing accessories
       "4481": "4581"
       "4482": "4582"
       "4483": "4583"
-      "44512": "44513"  # convenience stores -> convenience retailers and vending machine operators
-    # 442 and 443 were merged into 449 in the 2022 revision. A merge cannot be
-    # expressed as a one to one map, so those two are deliberately left out and
-    # 449 simply starts in 2017. Nothing in this project depends on them.
+      "44512": "44513"  # Mapping convenience stores to convenience retailers and vending machine operators
+    # Leaving out 442 and 443 on purpose. They were merged into 449 in the 2022
+    # revision, and I cannot write a merge as a one to one map. So 449 simply
+    # starts in 2017. Nothing in my project depends on them.
   toys:
     rebrickable_base_url: https://rebrickable.com/api/v3/lego
     brickset_base_url: https://brickset.com/api/v3.asmx
@@ -266,8 +269,9 @@ sources:
     post_limit_per_subreddit: 1000
 
 films:
-  # The eleven theatrical films that carry measurable performance data.
-  # Section 18: never fit a predictive model on these rows, description only.
+  # Listing the eleven theatrical films that have measurable performance data.
+  # My rule: I never fit a predictive model on these rows. Eleven rows are too
+  # few for that, so I only describe them.
   titles:
     - "Harry Potter and the Philosopher's Stone"
     - "Harry Potter and the Chamber of Secrets"
@@ -282,10 +286,10 @@ films:
     - "Fantastic Beasts: The Secrets of Dumbledore"
 
 events:
-  # Dated events used as regressors in the forecast and as the validation check
-  # section 11 asks for. Only events that are both externally verifiable and
-  # visible in the collected data are listed; an event nobody can see in the
-  # series is not evidence of anything.
+  # Listing the dated events I use as regressors in the forecast and as my
+  # validation check for it. I only list events that can be verified from
+  # outside and that show up in my collected data. An event nobody can see in
+  # the series is not evidence of anything.
   - name: first_teaser_trailer
     date: 2026-03-25
     description: >
@@ -299,19 +303,20 @@ events:
     expected_effect: large transient spike plus a permanent level shift
 
 eras:
-  # Used by the dashboard slicers and by several charts.
+  # Setting the eras used by the dashboard slicers and by several charts.
   original: [2001, 2011]
   middle: [2012, 2022]
   revival: [2023, 2027]
 
 modelling:
-  test_size_weeks: 52              # held out period for the interest forecast
-  # Five, not three. The smallest usable spell class holds ten examples, so at
-  # three folds each test fold sees about three of them and the per-class recall
-  # is mostly noise; five folds leave more in training, which matters more than
-  # test-fold size when classes are this thin. This was 3 in config while the
-  # classifier hardcoded 5, which is the silent disagreement config is supposed
-  # to prevent; the code now reads this value and this value is the considered one.
+  test_size_weeks: 52              # Holding out this period for the interest forecast
+  # Using five folds, not three. The smallest usable spell class holds ten
+  # examples, so at three folds each test fold sees about three of them and the
+  # per class recall is mostly noise. Five folds leave more in training, which
+  # matters more than test fold size when classes are this thin. This was 3 in
+  # config while my classifier hard coded 5. That is the silent mismatch this
+  # file should prevent. The code now reads this value, and 5 is the value I
+  # chose after thinking it through.
   cv_folds: 5
   scenarios: [low, central, high]
   max_interest_to_sales_lag_months: 3
@@ -320,41 +325,40 @@ modelling:
     silhouette_min: 0.15
 
 retail:
-  service_level: 0.95              # section 20 default, stated as an assumption
+  service_level: 0.95              # Using my default, stated as an assumption
   lead_time_days:
-    imported: 120                  # sea freight from Asia plus port and DC handling
+    imported: 120                  # Counting sea freight from Asia plus port and DC handling
     domestic: 45
     reprinted_books: 75
   review_period_days: 30
-  gross_margin_rate: 0.42          # category gross margin on branded licensed product
-  markdown_rate: 0.40              # average markdown taken to clear unsold seasonal stock
-  holding_cost_rate_annual: 0.25   # capital, space and shrink as a share of unit cost
+  gross_margin_rate: 0.42          # Setting the category gross margin on branded licensed product
+  markdown_rate: 0.40              # Setting the average markdown taken to clear unsold seasonal stock
+  holding_cost_rate_annual: 0.25   # Counting capital, space and shrink as a share of unit cost
   lost_sale_goodwill_multiplier: 1.15
   january_reserve_proportions: [0.0, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70]
-  # The premiere falls on 25 December, which is inside a month, so a monthly
-  # demand profile cannot separate the gift window from the post-premiere
-  # period without splitting December. No daily Canadian category series is
-  # published, so this share is a stated assumption rather than a measurement.
-  # It is set high because December category sales are gift purchases and gift
-  # purchasing stops on Christmas Day: the measured category index peaks at 172
-  # in December and collapses to 86 in January, which is only consistent with
-  # most December volume landing before the 25th. The recommendation is tested
+  # Splitting December, because the premiere falls on 25 December, inside a
+  # month. A monthly demand profile cannot separate the gift window from the
+  # time after the premiere without this split. No daily Canadian category
+  # series is published, so this share is my stated assumption and not a
+  # measurement. I set it high because December category sales are gift
+  # purchases, and gift buying stops on Christmas Day. The measured category
+  # index peaks at 172 in December and drops to 86 in January. That only fits
+  # if most December volume lands before the 25th. I test my recommendation
   # against this value in the sensitivity table.
   december_share_before_premiere: 0.85
-  store_count: 190                 # composite Canadian book and lifestyle chain
-  category_baseline_sales_cad: 4200000   # annual baseline wizarding category sales, assumption
-  average_unit_retail_cad: 34.0    # blended retail price across books, gift and toy lines
-  # How much of a rise in franchise attention shows up as a rise in category
-  # sales. This is an assumption, not a measurement, and it is the single number
-  # the whole recommendation is most sensitive to.
-  #
-  # Module 5.2 tried to measure it and could not: the elasticity of NAICS 459A
-  # sales to franchise attention was 0.05 with a confidence interval spanning
-  # zero (p = 0.07). That is not evidence of no effect, it is evidence that a
-  # national category containing every bookshop and hobby shop in Canada is too
-  # coarse an instrument to detect one franchise inside it. Rather than pretend
-  # a non-significant coefficient is a measurement, the conversion is declared
-  # here as an assumption and the recommendation is reported across the range.
+  store_count: 190                 # Modelling a composite Canadian book and lifestyle chain
+  category_baseline_sales_cad: 4200000   # Assuming this annual baseline for wizarding category sales
+  average_unit_retail_cad: 34.0    # Blending the retail price across books, gift and toy lines
+  # Setting how much of a rise in franchise attention shows up as a rise in
+  # category sales. This is my assumption, not a measurement, and it is the
+  # one number my whole recommendation is most sensitive to.
+  # Module 5.2 tried to measure it and could not. The elasticity of NAICS 459A
+  # sales to franchise attention was 0.05, with a confidence interval that
+  # spans zero (p = 0.07). That is not evidence of no effect. It shows that a
+  # national category with every bookshop and hobby shop in Canada is too
+  # coarse a tool to detect one franchise inside it. I will not pretend that a
+  # not significant coefficient is a measurement. So I declare the conversion
+  # here as an assumption and report my recommendation across the range.
   attention_pass_through: 0.35
   attention_pass_through_range: [0.15, 0.25, 0.35, 0.50, 0.70]
 

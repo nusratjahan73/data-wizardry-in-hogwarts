@@ -1,8 +1,7 @@
-/* Layout: page structure, masthead, stat row, footer.
- *
- * Split from base.css because they answer different questions. base.css says
- * what things look like; this says where they go. Keeping them apart means a
- * palette change never risks moving anything.
+/* Laying out the page structure, masthead, stat row and footer.
+ * I split this from base.css because the two answer different questions.
+ * base.css says what things look like, and this file says where they go.
+ * Keeping them apart means a palette change can never move anything.
  */
 
 .page {
@@ -31,7 +30,7 @@
   margin-top: var(--space-3);
 }
 
-/* The headline number row. */
+/* Laying out the headline number row. */
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
@@ -59,7 +58,7 @@
   color: var(--support);
 }
 
-/* Two-column blocks for a chart beside its explanation. */
+/* Making two-column blocks for a chart beside its explanation. */
 .split {
   display: grid;
   grid-template-columns: 1.35fr 1fr;
@@ -92,7 +91,7 @@ section {
   padding-left: 1.1rem;
 }
 
-/* Narrow screens: everything stacks. */
+/* Stacking everything on narrow screens. */
 @media (max-width: 46rem) {
   html {
     font-size: 16px;

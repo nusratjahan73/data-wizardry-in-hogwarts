@@ -1,33 +1,28 @@
-"""Collect public fan discussion from Reddit, with usernames hashed at the source.
+"""Collecting public fan discussion from Reddit, with usernames hashed at the source.
 
-Reads  : config.yaml (sources.reddit, ethics), Reddit credentials from .env.
-Writes : data/raw/reddit/posts__<subreddit>.json
+Reading: config.yaml (sources.reddit, ethics), Reddit credentials from .env.
+Writing: data/raw/reddit/posts__<subreddit>.json
          data/raw/reddit/comments__<subreddit>.json
 Runtime: five to fifteen minutes once credentials are present.
 
-This is the text corpus behind three modules: sentiment over time (3.1),
-audience segmentation (4) and the big data comparison (7). Without credentials
-none of those three can run on real text, so the script says so loudly in the
-issues register instead of failing quietly.
+This is the text behind three of my modules: sentiment over time (3.1), audience segmentation (4)
+and the big data comparison (7). Without credentials none of them can run on real text, so I say
+that clearly in logs/data_issues.md.
 
-Two rules from module 8 are enforced here rather than later, because a privacy
-rule applied after collection has already been broken once.
+I apply two privacy rules from my module 8 here and not later, because a privacy rule applied after
+collection has already been broken once.
 
-First, usernames never reach disk. Each author is replaced at the moment of
-collection with a salted SHA-256 hash, and the salt lives in .env rather than in
-the repository, so the hashes cannot be reversed by someone reading this code.
-The hash exists only so that posts by the same person can be grouped for the
-segmentation features; it is never reported.
+Usernames never reach disk. I replace each author with a salted SHA-256 hash at the moment of
+collection. The salt lives in .env and not in the repository, so nobody reading this code can
+reverse the hashes. I only use the hash to group posts by the same person for segmentation, and I
+never report it.
 
-Second, no scraping fallback. If credentials are missing the script stops. Reddit
-publishes an API and asks that automated access go through it, and the ethics
-module has to be able to state that every source was collected the way its owner
-asked.
+I never scrape. If credentials are missing I stop, because Reddit publishes an API and asks that
+automated access go through it.
 
-Getting credentials: create a "script" type application at reddit.com/prefs/apps.
-It takes about a minute and costs nothing. Copy the client id and secret into
-.env, set REDDIT_USER_AGENT to something that identifies the project and a
-contact, and set REDDIT_HASH_SALT to any long random string.
+Getting credentials: create a "script" type application at reddit.com/prefs/apps. It is free and
+takes about a minute. Copy the client id and secret into .env, set REDDIT_USER_AGENT to something
+that names the project and a contact, and set REDDIT_HASH_SALT to any long random string.
 """
 
 from __future__ import annotations
@@ -51,11 +46,10 @@ REQUIRED_KEYS = ["REDDIT_CLIENT_ID", "REDDIT_CLIENT_SECRET", "REDDIT_USER_AGENT"
 
 
 def hash_author(author: str | None, salt: str) -> str:
-    """Return a salted hash of a username, or 'deleted' when there is no author.
+    """Returning a salted hash of a username, or 'deleted' when there is no author.
 
-    Salted rather than plain, because a plain SHA-256 of a username is trivially
-    reversible with a dictionary of known usernames, which would make it personal
-    data wearing a disguise.
+    I add a salt because a plain SHA-256 of a username is easy to reverse with a
+    list of known usernames. That would still be personal data, only disguised.
     """
     if not author:
         return "deleted"
@@ -63,10 +57,10 @@ def hash_author(author: str | None, salt: str) -> str:
 
 
 def post_record(submission, salt: str) -> dict:
-    """Flatten one submission, keeping only the fields the analysis needs.
+    """Flattening one submission and keeping only the fields my analysis needs.
 
-    Selecting fields rather than dumping the object is a privacy decision as much
-    as a tidiness one: nothing that is not listed here can leak into the corpus.
+    I pick the fields one by one and do not dump the whole object. This is for
+    privacy as much as tidiness: nothing outside this list can leak into my data.
     """
     return {
         "id": submission.id,
@@ -85,18 +79,18 @@ def post_record(submission, salt: str) -> dict:
         "author_hash": hash_author(
             str(submission.author) if submission.author else None, salt
         ),
-        # Account age is a segmentation feature, but the account itself is not
-        # stored. Only the age in days at the time of the post survives.
+        # Keeping account age as a segmentation feature, but not the account itself.
+        # I only store the age in days at the time of the post.
         "author_account_age_days": account_age_days(submission),
     }
 
 
 def account_age_days(submission) -> int | None:
-    """Age of the posting account in days, or None if it cannot be read.
+    """Getting the age of the posting account in days, or None if I cannot read it.
 
-    Deleted and suspended accounts raise rather than return, and a private
-    attribute lookup on every post would double the number of API calls, so this
-    stays best effort and the cleaning step treats None as an unknown band.
+    Deleted and suspended accounts raise an error, and looking up the author on
+    every post would double my API calls. So I only try my best here, and my
+    cleaning step treats None as an unknown band.
     """
     try:
         author = submission.author
@@ -128,10 +122,10 @@ def comment_record(comment, salt: str) -> dict:
 
 
 def collect_subreddit(reddit, name: str, limit: int, salt: str) -> tuple[int, int]:
-    """Collect top posts and their top level comments for one subreddit.
+    """Collecting the top posts and their top level comments for one subreddit.
 
-    `top` over `all` is deliberate. `new` would give a snapshot of this week and
-    nothing else, where the analysis needs a series that reaches back years.
+    I chose `top` over `all` on purpose. `new` would only give me a snapshot of
+    this week, and my analysis needs a series that reaches back years.
     """
     posts: list[dict] = []
     comments: list[dict] = []
@@ -141,8 +135,8 @@ def collect_subreddit(reddit, name: str, limit: int, salt: str) -> tuple[int, in
         for submission in subreddit.top(time_filter="all", limit=limit):
             posts.append(post_record(submission, salt))
 
-            # Only the top level. Expanding every thread multiplies the call
-            # count by an order of magnitude for text that says much the same.
+            # Keeping only the top level comments. Expanding every thread would mean
+            # about ten times more calls for text that says much the same.
             submission.comments.replace_more(limit=0)
             for comment in submission.comments[:25]:
                 comments.append(comment_record(comment, salt))

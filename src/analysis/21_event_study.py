@@ -1,36 +1,29 @@
-"""Measure how franchise attention responds to a major event.
+"""Measuring how franchise attention responds to a major event.
 
-Reads  : data/cleaned/pageviews/pageviews_daily.csv, data/processed/films.csv
-Writes : images/figures/event_study_attention_response.png
+Reading: data/cleaned/pageviews/pageviews_daily.csv, data/processed/films.csv
+Writing: images/figures/event_study_attention_response.png
          outputs/tables/event_study_responses.csv
          outputs/tables/event_uplift_distribution.csv
          docs/findings.md (one entry)
 Runtime: about fifteen seconds.
 
-The forecast has to put a number on an event that has not happened yet. The only
-honest basis for that is what comparable events did to attention when they did
-happen, so this measures them.
+My forecast has to put a number on an event that has not happened yet. The only
+honest way is to measure what similar events did to attention in the past.
 
-Method. For each dated event, take the article most affected by it and compare
-the 28 days after the event to the 28 days before, using the median rather than
-the mean so a single enormous day does not define the whole window. Three things
-come out of each event:
+For each dated event I take the article it affects most and compare the 28 days
+after with the 28 days before. I use the median, not the mean, so one huge day
+does not define the whole window. I get three numbers per event:
 
-  peak multiple    the highest single day after the event over the pre-event
-                   median. How big the spike was.
-  window multiple  the median of the 28 days after over the median of the 28
-                   before. How big the sustained response was.
-  residual multiple the median of days 60 to 120 after over the pre-event
-                   median. Whether attention settled back or stayed higher.
+  peak multiple      highest single day after, over the median before. Size of the spike.
+  window multiple    median of the 28 days after, over the median of the 28 before.
+  residual multiple  median of days 60 to 120 after, over the median before.
 
-That last one is the one the retail argument needs. A spike that decays to
-nothing in a fortnight is a news cycle. A spike that leaves attention at a
-permanently higher level is a franchise that has been revived, and only the
-second kind supports holding stock into January.
+My retail argument needs the residual multiple. A spike that is gone in two weeks
+is a news cycle. Only attention that stays higher supports holding stock into January.
 
-The events are those that are both externally dated and visible in the collected
-data. Film releases come from the sourced film table; the trailer comes from
-config. No event is included on the strength of a press release alone.
+I only use events that have an outside date and show up in my data. Film releases
+come from my sourced film table and the trailer comes from config. I never include
+an event because of a press release alone.
 """
 
 from __future__ import annotations
@@ -57,17 +50,16 @@ AFTER_DAYS = 28
 RESIDUAL_FROM = 60
 RESIDUAL_TO = 120
 
-# A second, much longer baseline. The 28 day window answers "how big was the
-# spike", but it answers it against a level that the run up to the event has
-# usually already lifted, so it systematically understates a lasting change and
-# can even make one look like a decline. Comparing the quarter after the event
-# against the year ending 90 days before it answers the different and, for a
-# buyer, more important question: is attention durably higher than it used to be.
+# Adding a second, much longer baseline. The 28 day window tells me how big the
+# spike was, but the run up to the event has usually lifted that level already.
+# So it understates a lasting change and can even make one look like a fall.
+# Comparing the quarter after the event with the year ending 90 days before it
+# answers what a buyer cares about more: is attention higher than it used to be, and staying there.
 LONG_BASELINE_DAYS = 365
 LONG_BASELINE_ENDS_BEFORE = 90
 LONG_AFTER_DAYS = 90
 
-# The franchise level article, used for film events. A film release moves general
+# Using the franchise level article for film events. A film release moves general
 # franchise attention, not only the article about that one film.
 FRANCHISE_ARTICLE = "Harry_Potter"
 SERIES_ARTICLE = "Harry_Potter_(TV_series)"
@@ -87,7 +79,7 @@ def series_for(daily: pd.DataFrame, article: str) -> pd.Series:
 
 
 def measure_event(series: pd.Series, event_date: pd.Timestamp, name: str, article: str) -> dict | None:
-    """Measure one event's effect on one article's daily views."""
+    """Measuring the effect of one event on the daily views of one article."""
     if series.empty:
         return None
 
@@ -97,27 +89,27 @@ def measure_event(series: pd.Series, event_date: pd.Timestamp, name: str, articl
         event_date + pd.Timedelta(days=RESIDUAL_FROM): event_date + pd.Timedelta(days=RESIDUAL_TO)
     ]
 
-    # An event needs a real before and after window to be measurable. Anything
-    # thinner is dropped rather than reported on partial data.
+    # Checking that the event has a real before and after window. I drop anything
+    # thinner, because I do not want to report on partial data.
     if len(before) < BEFORE_DAYS * 0.75 or len(after) < AFTER_DAYS * 0.75:
         logger.info("skipping %s: only %d days before and %d after", name, len(before), len(after))
         return None
 
     baseline = float(before.median())
     if baseline <= 0:
-        logger.info("skipping %s: pre-event baseline is zero", name)
+        logger.info("skipping %s: pre event baseline is zero", name)
         return None
 
-    # Days for the response to fall back within 20 per cent of baseline.
+    # Counting the days until the response falls back within 20 per cent of baseline.
     decay_days = np.nan
     tail = series.loc[event_date: event_date + pd.Timedelta(days=RESIDUAL_TO)]
     settled = tail[tail <= baseline * 1.2]
     if not settled.empty:
         decay_days = int((settled.index[0] - event_date).days)
 
-    # The long baseline: the year ending 90 days before the event, against the
-    # quarter after it. This is what catches a step change that the short window
-    # hides.
+    # Working out the long baseline: the year ending 90 days before the event,
+    # against the quarter after it. This catches a step change that my short
+    # window hides.
     long_before = series.loc[
         event_date - pd.Timedelta(days=LONG_BASELINE_DAYS + LONG_BASELINE_ENDS_BEFORE):
         event_date - pd.Timedelta(days=LONG_BASELINE_ENDS_BEFORE)
@@ -147,7 +139,7 @@ def measure_event(series: pd.Series, event_date: pd.Timestamp, name: str, articl
 
 
 def build_event_list(films: pd.DataFrame) -> list[tuple[str, pd.Timestamp, str]]:
-    """Events that are both externally dated and inside the pageviews window."""
+    """Listing the events that have an outside date and fall inside my pageviews window."""
     events: list[tuple[str, pd.Timestamp, str]] = []
 
     pageviews_start = pd.Timestamp(str(get("dates.pageviews_start")))
@@ -155,7 +147,7 @@ def build_event_list(films: pd.DataFrame) -> list[tuple[str, pd.Timestamp, str]]
     for row in films.itertuples():
         release = pd.Timestamp(row.release_date_na)
         if release < pageviews_start:
-            continue  # pageviews only begin in July 2015
+            continue  # Skipping this film, because my pageviews only begin in July 2015.
         events.append((f"Film release: {row.title}", release, FRANCHISE_ARTICLE))
 
     for event in get("events"):
@@ -232,9 +224,9 @@ def main() -> None:
         )
         logger.info("event responses:\n%s", responses.to_string(index=False))
 
-        # The distribution the forecast draws its scenarios from. Film releases
-        # and the trailer are kept separate because they are different kinds of
-        # event: a film release is a product going on sale, a trailer is an
+        # Building the distribution that my forecast draws its scenarios from. I keep
+        # film releases and the trailer apart because they are different kinds of
+        # event. A film release is a product going on sale. A trailer is an
         # announcement about a product that is not out yet.
         film_events = responses[responses["event"].str.startswith("Film release")]
         trailer_events = responses[~responses["event"].str.startswith("Film release")]
@@ -285,8 +277,8 @@ def main() -> None:
                 f"The March 2026 teaser produced the largest single response in the whole series, "
                 f"taking the show's article from a median {trailer['baseline_daily_views']:,.0f} views "
                 f"a day to {trailer['peak_daily_views']:,.0f}, a multiple of "
-                f"{trailer['peak_multiple']:.0f} — but it was back within a fifth of its "
-                f"pre-trailer level in {trailer['days_to_settle']:.0f} days and two to four months "
+                f"{trailer['peak_multiple']:.0f}, but it was back within a fifth of its "
+                f"pre trailer level in {trailer['days_to_settle']:.0f} days and two to four months "
                 f"later was running at {trailer['residual_multiple']:.2f} times it, which is to say "
                 f"no higher than before. "
             )
@@ -294,7 +286,7 @@ def main() -> None:
         finding = (
             f"{trailer_text}"
             f"The same holds for cinema releases: across {len(film_events)} films the median peak "
-            f"was only {film_peak_median:.1f} times the pre-release baseline and attention two to "
+            f"was only {film_peak_median:.1f} times the pre release baseline and attention two to "
             f"four months later sat at {film_residual_median:.2f} times it, slightly below where it "
             f"started, because the marketing run up had already lifted the comparison. The durable "
             f"rise in attention to the new series did not come from any single dated event at all: "

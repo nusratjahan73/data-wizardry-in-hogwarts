@@ -1,18 +1,18 @@
-"""Builders for Power BI report visuals.
+"""Building the visuals for my Power BI report.
 
-Separated from the project generator because they answer a different question:
-the generator decides what the model contains, this decides what the pages look
-like. Keeping them apart means a layout change cannot alter the semantic model.
+I keep these apart from my project generator because they answer a different
+question. The generator decides what the model contains, and this file decides
+what the pages look like. This way a layout change cannot alter my semantic model.
 
-A Power BI visual is a "visualContainer" whose `config` is a JSON *string*
-holding two things that must agree with each other:
+A Power BI visual is a "visualContainer" whose `config` is a JSON *string*.
+That string holds two things that must agree with each other:
 
   projections     which field fills which visual role (Category, Y, Values, ...)
   prototypeQuery  the semantic query behind the visual
 
 The link between them is the `Name` of each Select entry, which `projections`
-refers to as `queryRef`. If those fall out of step the visual renders blank with
-no error at all, which is the failure mode to watch for when a page looks empty.
+calls `queryRef`. If the two stop matching, the visual shows blank with no error
+at all. That is the first thing I check when a page looks empty.
 """
 
 from __future__ import annotations
@@ -20,8 +20,8 @@ from __future__ import annotations
 import json
 import uuid
 
-# Must match MEASURES_TABLE in the generator. Not "Measures": Power BI reserves
-# that name and refuses to open the file.
+# Matching MEASURES_TABLE in my generator. I cannot call it "Measures", because
+# Power BI reserves that name and refuses to open the file.
 MEASURES_TABLE = "Key Measures"
 
 CANVAS_WIDTH = 1280
@@ -29,7 +29,7 @@ CANVAS_HEIGHT = 720
 
 
 def _alias(entity: str) -> str:
-    """A short, stable query alias for a table."""
+    """Making a short, stable query alias for a table."""
     initials = "".join(word[0] for word in entity.replace("_", " ").split())
     return (initials[:3] or "t").lower()
 
@@ -54,7 +54,7 @@ def measure_select(measure: str) -> dict:
 
 
 def aggregate_select(entity: str, column: str, function: int = 0, label: str | None = None) -> dict:
-    """An aggregation over a column. 0 Sum, 1 Average, 2 Count, 3 Min, 4 Max."""
+    """Building an aggregation over a column. 0 Sum, 1 Average, 2 Count, 3 Min, 4 Max."""
     names = {0: "Sum", 1: "Avg", 2: "Count", 3: "Min", 4: "Max"}
     return {
         "Aggregation": {
@@ -72,7 +72,7 @@ def aggregate_select(entity: str, column: str, function: int = 0, label: str | N
 
 
 def _entity_of(select_name: str) -> str:
-    """Recover the table a Select entry belongs to, for the From clause."""
+    """Finding the table a Select entry belongs to, for the From clause."""
     if select_name.startswith(f"{MEASURES_TABLE}."):
         return MEASURES_TABLE
     if "(" in select_name:
@@ -87,10 +87,10 @@ def visual(
     title: str,
     z: int = 0,
 ) -> dict:
-    """One visual container.
+    """Building one visual container.
 
-    Entities for the From clause are collected from the fields actually used, so
-    the query never lists a table it does not read, which Power BI rejects.
+    I collect the tables for the From clause from the fields I really use. So the
+    query never lists a table it does not read, which Power BI rejects.
     """
     x, y, width, height = position
 
@@ -147,10 +147,10 @@ def visual(
 
 
 def textbox(position: tuple[float, float, float, float], text: str, z: int = 0) -> dict:
-    """A text box, used to put each page's finding on the page itself.
+    """Building a text box, which I use to put each page's finding on the page itself.
 
-    Section 8 asks every page to carry a one line title written as a finding
-    rather than a label, and a text box is how that gets onto the canvas.
+    I want every page to carry a one line title written as a finding and not as
+    a label, and a text box is how I get that onto the canvas.
     """
     x, y, width, height = position
     config = {
@@ -194,7 +194,7 @@ def textbox(position: tuple[float, float, float, float], text: str, z: int = 0) 
 
 
 def era_slicer(position: tuple[float, float, float, float] = (16, 74, 232, 150)) -> dict:
-    """The era slicer section 8 requires. Sync it across pages in Power BI."""
+    """Building the era slicer my report needs. It still has to be synced across pages in Power BI."""
     return visual(
         "slicer", position,
         {"Values": [column_select("dim_date", "era")]},
@@ -202,9 +202,7 @@ def era_slicer(position: tuple[float, float, float, float] = (16, 74, 232, 150))
     )
 
 
-# --------------------------------------------------------------------------- #
-# the six pages
-# --------------------------------------------------------------------------- #
+# Building the six pages.
 
 def overview() -> list[dict]:
     return [
@@ -218,11 +216,11 @@ def overview() -> list[dict]:
         visual("card", (768, 74, 236, 110),
                {"Values": [measure_select("Set Count")]}, "Construction sets"),
         visual("card", (1020, 74, 244, 110),
-               {"Values": [measure_select("Mean Weekly Attention")]}, "Mean weekly attention"),
+               {"Values": [measure_select("Franchise Attention")]}, "Franchise attention, weekly views"),
         visual("lineChart", (264, 200, 1000, 250),
-               {"Category": [column_select("dim_date", "year_month")],
-                "Y": [measure_select("Mean Weekly Attention")]},
-               "Attention over time"),
+               {"Category": [column_select("dim_date", "month_start")],
+                "Y": [measure_select("Franchise Attention")]},
+               "Franchise attention over time"),
         visual("clusteredColumnChart", (16, 466, 616, 238),
                {"Category": [column_select("dim_date", "year")],
                 "Y": [measure_select("Total Worldwide Gross")]},
@@ -281,14 +279,14 @@ def reception() -> list[dict]:
 def geography() -> list[dict]:
     return [
         textbox((16, 12, 1248, 50),
-                "Search interest is near-saturated across Western markets: Canada is 9th of 61 at 97"),
-        # A bar chart rather than the map section 8 asks for. Power BI disables
+                "Search interest is nearly saturated across Western markets: Canada is 9th of 61 at 97"),
+        # Using a bar chart here where a map was expected. Power BI turns off
         # map and filled map visuals by default under Options > Global >
-        # Security, so a map renders as a "visuals are disabled" placeholder on
-        # a fresh install and the page looks broken. A bar chart works
-        # everywhere, needs no setting changed and no Bing Maps call, and for
-        # 61 countries it is the more readable of the two anyway. The map is
-        # kept as a commented alternative below for anyone who wants it.
+        # Security, so on a fresh install a map shows a "visuals are disabled"
+        # placeholder and my page looks broken. A bar chart works everywhere,
+        # needs no setting changed and no Bing Maps call, and for 61 countries
+        # it is easier to read anyway. I kept the map as a commented
+        # alternative below for anyone who wants it.
         visual("clusteredBarChart", (16, 74, 760, 630),
                {"Category": [column_select("dim_country", "country_name")],
                 "Y": [aggregate_select("dim_country", "search_interest", 1, "Interest")]},
@@ -298,7 +296,7 @@ def geography() -> list[dict]:
                            aggregate_select("dim_country", "interest_rank", 3, "Rank"),
                            aggregate_select("dim_country", "search_interest", 1, "Interest")]},
                "Interest by country, ranked"),
-        # To use a map instead, enable map visuals in Power BI under
+        # Switching to a map is possible. I would turn on map visuals in Power BI under
         # File > Options and settings > Options > Global > Security, then swap
         # the bar chart above for:
         #     visual("map", (16, 74, 760, 630),
@@ -312,11 +310,10 @@ def product_line() -> list[dict]:
     return [
         textbox((16, 12, 1248, 50),
                 "No retail price source was available, so the licensing premium is untested; size and count are not"),
-        # No price card. "Average Price Per Piece" is a real measure and stays in
-        # the model, but with no price source it renders "(Blank)", and a blank
-        # tile on a dashboard reads as something broken rather than as something
-        # honestly absent. The absence is stated in the page heading instead,
-        # where it can be read as a sentence.
+        # Leaving out a price card. "Average Price Per Piece" is a real measure and
+        # stays in my model, but with no price source it shows "(Blank)". A blank
+        # tile on a dashboard looks broken, not honestly missing. So I say the
+        # price is missing in the page heading, where it reads as a sentence.
         visual("card", (16, 74, 400, 110),
                {"Values": [measure_select("Set Count")]}, "Sets in the line"),
         visual("card", (432, 74, 400, 110),
@@ -348,7 +345,7 @@ def timing() -> list[dict]:
                "Category sales by month"),
         visual("lineChart", (648, 420, 616, 284),
                {"Category": [column_select("dim_date", "month_name")],
-                "Y": [measure_select("Mean Weekly Attention")]},
+                "Y": [measure_select("Franchise Attention")]},
                "Franchise attention by month"),
     ]
 

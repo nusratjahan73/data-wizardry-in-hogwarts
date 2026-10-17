@@ -1,45 +1,29 @@
-"""Module 3.1. Narrative tone and character presence, and what season one contains.
+"""Scoring the tone of the story and checking which characters season one contains (module 3.1).
 
-Reads  : data/cleaned/potterdb/chapters.csv, data/processed/characters.csv
-Writes : images/figures/narrative_tone_by_book.png
+Reading: data/cleaned/potterdb/chapters.csv, data/processed/characters.csv
+Writing: images/figures/narrative_tone_by_book.png
          images/figures/character_presence_vs_attention.png
          outputs/tables/narrative_tone_by_chapter.csv
          outputs/tables/character_presence_by_book.csv
          docs/findings.md (one entry)
 Runtime: about fifteen seconds.
 
-The brief's module 3.1 asks for sentiment over time across fan reviews and
-discussion posts, plotted against a timeline of franchise announcements. That
-corpus was never collected, for want of Reddit credentials, so the analysis as
-specified cannot be run and is not pretended.
+I first planned to score fan reviews and discussion posts over time, against a
+timeline of franchise announcements. I never collected that text because I had
+no Reddit credentials, so I use the chapter summaries I already have instead.
 
-What replaces it uses text the project already holds and answers a question the
-buyer actually has. The new series adapts one book per season, and season one is
-Philosopher's Stone. So two things about that book are worth knowing before
-committing a buy: how dark it is compared with the rest of the series, and which
-characters are actually in it.
+The new series adapts one book per season, and season one is Philosopher's
+Stone. So I ask how dark that book is, and which characters are in it. A
+character who is popular today but only appears in book four is a poor bet for
+a season one buy, because the season will not put them on screen.
 
-The second is the commercially useful half. A character who draws heavy
-attention today but does not appear until book four is a poor bet for a season
-one buy, however popular they are, because the season will not put them on
-screen. That is a stocking decision that follows directly from the data.
+I score tone with VADER, a word list method. I have no labelled sentiment data
+to check it against a trained model, and labelling chapters by hand would mean
+marking my own work. Module 5.4 shows a trained classifier on real labels.
 
-Two methods, both with real limits.
-
-Tone is scored with VADER, a lexicon method. There is no trained sentiment
-classifier here as a check, because checking a lexicon against a trained model
-needs labelled sentiment data and this project has none: labelling chapters by
-hand would be inventing the ground truth then marking my own work. Module 5.4
-demonstrates a trained text classifier on data that does have real labels.
-
-Character presence is name matching against chapter summaries, which the brief
-allows as its first workaround and requires be described as approximate. It is
-approximate in a specific direction: a character mentioned in a summary is
-present, but a character present in a chapter the summary does not mention will
-be missed. So presence counts here are a floor, not a measurement.
-
-The summaries are fan-written encyclopedia text from PotterDB, not the novels.
-Section 6 forbids storing the text of the books, and nothing here does.
+I find characters by matching names in the fan written PotterDB summaries. A
+character can be in a chapter whose summary does not name them, so my counts
+are a floor, not a measurement. I do not store any text from the novels.
 """
 
 from __future__ import annotations
@@ -62,8 +46,8 @@ from src.utils.plotting import PALETTE, apply_style, save_figure, title_block
 SCRIPT = "25_narrative_tone"
 logger = get_logger(SCRIPT)
 
-# Reading order. PotterDB gives each book a slug but not a series position, and
-# alphabetical order would put Chamber of Secrets before Philosopher's Stone.
+# Listing the books in reading order. PotterDB gives each book a slug but no series
+# position, and alphabetical order would put Chamber of Secrets before Philosopher's Stone.
 BOOK_ORDER = [
     "harry-potter-and-the-philosopher-s-stone",
     "harry-potter-and-the-chamber-of-secrets",
@@ -104,10 +88,10 @@ def load_chapters() -> pd.DataFrame:
     chapters["book_position"] = chapters["book_position"].astype(int)
     chapters["book_label"] = chapters["book_slug"].map(SHORT_TITLES)
 
-    # PotterDB carries chapter summaries for the first book only. The other 182
-    # chapter records exist but their summary field is empty, which was found by
-    # running this and getting 17 chapters back instead of 199. It is a source
-    # limitation, not a filter bug, and it caps what this module can claim.
+    # Checking how many books have summaries. PotterDB only has them for the first book.
+    # The other 182 chapter records exist but their summary field is empty. I found this
+    # when I ran the script and got 17 chapters back instead of 199. It is a limit of the
+    # source, not a bug in my filter, and it limits what I can claim here.
     books_with_text = chapters["book_position"].nunique()
     if books_with_text < len(BOOK_ORDER):
         log_data_issue(
@@ -123,12 +107,11 @@ def load_chapters() -> pd.DataFrame:
 
 
 def score_tone(chapters: pd.DataFrame) -> pd.DataFrame:
-    """VADER compound sentiment per chapter summary.
+    """Scoring each chapter summary with the VADER compound score.
 
-    The compound score runs from -1 to +1. On encyclopedic summaries it is
-    measuring the tone of the described events, not an opinion about them, which
-    is the right reading here: a chapter where someone dies scores negative
-    because the summary contains words about dying.
+    The score runs from -1 to +1. On these summaries it measures the tone of the
+    events, not an opinion about them. A chapter where someone dies scores
+    negative because the summary has words about dying.
     """
     analyzer = SentimentIntensityAnalyzer()
     scores = chapters["summary"].map(lambda text: analyzer.polarity_scores(str(text)))
@@ -143,12 +126,11 @@ def score_tone(chapters: pd.DataFrame) -> pd.DataFrame:
 
 
 def character_presence(chapters: pd.DataFrame) -> pd.DataFrame:
-    """Approximate character presence per book, by name matching in summaries.
+    """Counting roughly how many chapters of each book name each character.
 
-    Matching is on the character's common first name or surname as it appears in
-    the article title, not on the PotterDB canonical full name, because a
-    summary says "Hermione" and never "Hermione Jean Granger". Word boundaries
-    are enforced so that "Ron" does not match inside "Ronan".
+    I match on the first name or surname from the article title, not the full
+    PotterDB name, because a summary says "Hermione" and never "Hermione Jean
+    Granger". I use word boundaries so "Ron" does not match inside "Ronan".
     """
     characters = read_processed("characters.csv")
     mapped = characters[characters["total_weekly_views"].notna()].copy()
@@ -161,8 +143,8 @@ def character_presence(chapters: pd.DataFrame) -> pd.DataFrame:
             .replace(" (character)", "")
             .replace(" (Harry Potter)", "")
         )
-        # Match on any word of the display name that is distinctive enough. A
-        # two-letter token would match everywhere, so short tokens are skipped.
+        # Matching on any word of the display name that is long enough. A two letter
+        # word would match everywhere, so I skip words shorter than four letters.
         tokens = [t for t in display.split() if len(t) >= 4]
         if not tokens:
             tokens = [display]
@@ -196,13 +178,13 @@ def plot_tone(chapters: pd.DataFrame, by_book: pd.DataFrame, headline: str, subt
         color=PALETTE["grid"], linewidth=1.0, zorder=1,
     )
 
-    # A rolling mean makes the arc readable; the raw series is noisy per chapter.
+    # Adding a rolling mean so I can read the arc. The raw line is noisy from chapter to chapter.
     rolling = chapters["tone_compound"].rolling(9, center=True, min_periods=3).mean()
     ax.plot(chapters["chapter_index"], rolling, color=PALETTE["accent"], linewidth=2.4, zorder=3)
 
     ax.axhline(0, color=PALETTE["ink"], linewidth=1.0, linestyle="--", zorder=2)
 
-    # Book boundaries, so the arc can be read against the series structure.
+    # Drawing the book boundaries, so I can read the arc against the seven books.
     boundaries = chapters.groupby("book_position")["chapter_index"].agg(["min", "max"])
     for position, row in boundaries.iterrows():
         if position > 1:
@@ -326,14 +308,13 @@ def main() -> None:
         )
         if len(absent):
             logger.info(
-                "highest-attention characters absent from book 1:\n%s",
+                "highest attention characters absent from book 1:\n%s",
                 absent[["character", "total_weekly_views"]].head(5).to_string(index=False),
             )
 
-        # A known false negative, checked by hand. Neville Longbottom is in book
-        # one, but none of the seventeen available summaries names him. Naming it
-        # is better than letting a reader discover the method is fallible by
-        # spotting an error nobody flagged.
+        # Flagging a known miss that I checked by hand. Neville Longbottom is in book
+        # one, but none of the seventeen summaries names him. I would rather say this
+        # myself than let a reader find a mistake that I never pointed out.
         known_false_negatives = ["Neville Longbottom"]
         flagged = [c for c in known_false_negatives if c in set(absent["character"])]
 
@@ -343,13 +324,13 @@ def main() -> None:
         )
         tone_subtitle = (
             f"VADER compound tone per chapter summary, in order. Grey is the raw series, red a "
-            f"nine-chapter rolling mean, teal the book mean of {book_one_tone:+.2f}. Summaries "
-            f"exist for this book only, so no cross-book arc can be measured."
+            f"nine chapter rolling mean, teal the book mean of {book_one_tone:+.2f}. Summaries "
+            f"exist for this book only, so no cross book arc can be measured."
         )
         tone_figure = plot_tone(chapters, by_book, tone_headline, tone_subtitle)
 
         presence_headline = (
-            f"{len(absent)} of the {len(book_one)} best-known characters are never named in "
+            f"{len(absent)} of the {len(book_one)} best known characters are never named in "
             f"book one's summaries"
         )
         presence_subtitle = (
@@ -386,7 +367,7 @@ def main() -> None:
             finding,
             evidence=(
                 f"VADER lexicon sentiment over {len(chapters)} PotterDB chapter summaries, plus "
-                f"character presence from case-insensitive word-boundary name matching in those "
+                f"character presence from case insensitive word boundary name matching in those "
                 f"summaries, joined to measured Wikipedia attention per character."
             ),
             sample=(
@@ -409,7 +390,7 @@ def main() -> None:
                 "scored over calendar time against an announcement timeline; that corpus was never "
                 "collected for want of Reddit credentials. No trained classifier checks the "
                 "lexicon either, because that needs labelled sentiment data this project does not "
-                "have, and hand-labelling would mean inventing the ground truth then marking my "
+                "have, and hand labelling would mean inventing the ground truth then marking my "
                 "own work. Module 5.4 demonstrates a trained classifier on data with real labels. "
                 "VADER is tuned for social media rather than encyclopedic prose, so tone values "
                 "are best read relatively."

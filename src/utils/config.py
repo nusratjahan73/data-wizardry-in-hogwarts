@@ -1,12 +1,12 @@
-"""Single point of access to config.yaml and to the .env secrets.
+"""Giving every script one place to read config.yaml and the .env secrets.
 
-Reads  : config.yaml at the repository root, .env if present.
-Writes : nothing.
+Reading: config.yaml in my project folder, and .env if it is there.
+Writing: nothing.
 Runtime: instant.
 
-No other module in this project is allowed to hard code a path, a date, a
-threshold or a key name. Everything comes through here, so a reviewer can change
-one file and rerun the whole project.
+I do not hard code a path, a date, a threshold or a key name in any other file.
+Everything comes through here, so a reviewer can change one file and rerun the
+whole project.
 """
 
 from __future__ import annotations
@@ -22,11 +22,11 @@ from dotenv import load_dotenv
 
 
 def repo_root() -> Path:
-    """Return the repository root, found by walking up to the config file.
+    """Returning my project folder, found by walking up until I see config.yaml.
 
-    Anchoring on the file rather than on the current working directory means a
-    script behaves the same whether it is run from the root, from src/collect or
-    from a notebook.
+    I look for the file and not the current working directory, so a script behaves
+    the same when I run it from the project folder, from src/collect or from a
+    notebook.
     """
     here = Path(__file__).resolve()
     for parent in [here, *here.parents]:
@@ -40,16 +40,16 @@ def repo_root() -> Path:
 
 @lru_cache(maxsize=1)
 def load_config() -> dict[str, Any]:
-    """Load and cache config.yaml."""
+    """Loading config.yaml once and keeping it in memory."""
     with (repo_root() / "config.yaml").open("r", encoding="utf-8") as fh:
         return yaml.safe_load(fh)
 
 
 def get(dotted_key: str, default: Any = "__raise__") -> Any:
-    """Fetch a nested config value with a dotted path, e.g. get('dates.premiere').
+    """Fetching a nested config value with a dotted path, e.g. get('dates.premiere').
 
-    Raising by default is deliberate. A typo in a config key should stop the run
-    loudly rather than silently substitute None into an analysis.
+    I raise an error by default on purpose. A typo in a config key should stop the
+    run loudly, and not quietly put None into my analysis.
     """
     node: Any = load_config()
     for part in dotted_key.split("."):
@@ -62,7 +62,7 @@ def get(dotted_key: str, default: Any = "__raise__") -> Any:
 
 
 def path(key: str, *extra: str, create: bool = False) -> Path:
-    """Resolve a configured path key to an absolute Path under the repo root.
+    """Turning a path key from config into a full Path under my project folder.
 
     >>> path("figures", "seasonality.png")
     .../images/figures/seasonality.png
@@ -78,10 +78,10 @@ def path(key: str, *extra: str, create: bool = False) -> Path:
 
 
 def as_date(dotted_key: str) -> date:
-    """Read a config date key as a datetime.date.
+    """Reading a config date key as a datetime.date.
 
-    PyYAML already parses unquoted ISO dates into date objects, but a quoted one
-    arrives as a string, so accept both rather than depending on how it was typed.
+    PyYAML already turns an unquoted ISO date into a date object, but a quoted one
+    comes in as a string. I accept both, so it does not matter how I typed it.
     """
     value = get(dotted_key)
     if isinstance(value, datetime):
@@ -97,11 +97,11 @@ def _load_env() -> None:
 
 
 def secret(name: str) -> str | None:
-    """Return a secret from .env or the real environment, or None if unset.
+    """Returning a secret from .env or the real environment, or None if it is not set.
 
-    Returning None rather than raising is what lets a collection script log a
-    clear message naming the key and skip its source cleanly, which is the
-    behaviour section 5 of the brief asks for.
+    I return None and do not raise an error. That lets a collection script log a
+    clear message naming the missing key and skip its source cleanly, so one
+    missing key does not stop the other sources.
     """
     _load_env()
     value = os.getenv(name)
@@ -109,17 +109,17 @@ def secret(name: str) -> str | None:
 
 
 def require_secrets(*names: str) -> tuple[bool, list[str]]:
-    """Check several secrets at once.
+    """Checking several secrets at once.
 
-    Returns (True, []) when all are present, or (False, [missing names]) so the
-    caller can log exactly which key is absent.
+    I return (True, []) when all are present, or (False, [missing names]) so the
+    caller can log exactly which key is missing.
     """
     missing = [n for n in names if secret(n) is None]
     return (not missing), missing
 
 
 def user_agent() -> str:
-    """The identifying user agent sent with every outbound request."""
+    """Returning the user agent that identifies my project on every outbound request."""
     return get("project.user_agent")
 
 

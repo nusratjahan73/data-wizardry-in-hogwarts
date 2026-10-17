@@ -1,10 +1,10 @@
-"""Module 6. Gringotts. Turn the forecast into a buy, with quantities and dates.
+"""Turning my forecast into a buy, with quantities and dates. This is module 6, Gringotts.
 
-Reads  : outputs/tables/demand_scenarios.csv
+Reading: outputs/tables/demand_scenarios.csv
          outputs/tables/forecast_scenarios_weekly.csv
          outputs/tables/seasonality_monthly_index.csv
          config.yaml (every assumption)
-Writes : images/figures/retail_monthly_demand_profile.png
+Writing: images/figures/retail_monthly_demand_profile.png
          images/figures/retail_cost_of_being_wrong.png
          outputs/tables/retail_demand_profile.csv
          outputs/tables/retail_order_schedule.csv
@@ -14,33 +14,16 @@ Writes : images/figures/retail_monthly_demand_profile.png
          docs/findings.md (one entry)
 Runtime: about thirty seconds.
 
-Section 12 asks for the arithmetic to be visible so a reader can disagree with an
-assumption rather than with a black box. Every step below is therefore a named
-function that takes its inputs from config and writes its output to a table.
+I keep the arithmetic visible, so a reader can disagree with one assumption and not with a black
+box. Each step is a named function that reads config and writes a table. The steps are: 1 a stated
+annual category baseline, 2 the attention uplift from module 5.1 turned into a sales uplift,
+3 monthly demand for November 2026 to March 2027, 4 lead times worked back to order dates, 5 safety
+stock at the chosen service level, 6 the cost of being wrong each way and the service level it
+implies, 7 the January reserve trade off, 8 one paragraph a buyer could act on.
 
-The chain, in order:
-
-  1  a stated annual category baseline for the composite retailer
-  2  the attention uplift from module 5.1, converted to a sales uplift through
-     an explicit pass-through assumption
-  3  a monthly demand profile for November 2026 to March 2027, built from the
-     measured category seasonality and the week by week forecast
-  4  lead times worked backwards to an order-by date per product type
-  5  safety stock and a reorder point at the chosen service level
-  6  the cost of being wrong in each direction, and the service level that
-     economics actually implies
-  7  the January reserve trade-off across several proportions
-  8  one paragraph a buyer could act on
-
-On the conversion in step 2. Module 5.2 tried to measure the elasticity of
-category sales to franchise attention and could not distinguish it from zero,
-which is a real result rather than a failure: NAICS 459A contains every bookshop
-and hobby shop in Canada, so one franchise inside it is below the noise floor of
-the published series. The conversion is therefore an assumption, declared in
-config as retail.attention_pass_through, and the recommendation is reported
-across a range of values for it rather than at one. Section 18 forbids presenting
-a correlation as a cause, and it equally forbids presenting an assumption as a
-measurement.
+The pass through in step 2 is an assumption (retail.attention_pass_through), not a measurement.
+Module 5.2 could not tell it apart from zero, because NAICS 459A holds every bookshop and hobby
+shop in Canada and one franchise is lost in it. So I report the result across a range of values.
 """
 
 from __future__ import annotations
@@ -65,22 +48,19 @@ logger = get_logger(SCRIPT)
 
 MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-# The season the buy covers. November through March, so it spans the gift window,
-# the premiere and the January position the central argument is about.
+# Covering November to March with my buy, so it includes the gift window, the
+# premiere and the January position that my main argument is about.
 PROFILE_MONTHS = pd.date_range("2026-11-01", "2027-03-01", freq="MS")
 
 
-# --------------------------------------------------------------------------- #
-# step 1 and 2: baseline and uplift
-# --------------------------------------------------------------------------- #
+# Working out the baseline and the uplift (steps 1 and 2).
 
 def category_seasonal_shares() -> pd.Series:
-    """Share of annual category sales falling in each month, from measured seasonality.
+    """Working out the share of annual category sales in each month, from measured seasonality.
 
-    The seasonal index from module 3.3 says how much busier than average each
-    month is. Dividing each month's index by the sum of all twelve turns that
-    into a share of the year, which is what a baseline annual figure has to be
-    spread across.
+    My seasonal index from module 3.3 says how much busier than average each month
+    is. I divide each month's index by the sum of all twelve to get a share of the
+    year, so I can spread the annual baseline across the months.
     """
     table = path("outputs_tables", "seasonality_monthly_index.csv")
     if not table.exists():
@@ -98,12 +78,11 @@ def category_seasonal_shares() -> pd.Series:
 
 
 def monthly_attention_multiple(scenario: str) -> pd.Series:
-    """Attention in each profile month, as a multiple of the pre-premiere baseline.
+    """Working out attention in each profile month, as a multiple of the baseline with no premiere.
 
-    Taken from the weekly forecast rather than from the scenario summary, so the
-    shape within the season is preserved: the premiere lands on 25 December and
-    the response builds through January, which a single annual multiple would
-    flatten away.
+    I use the weekly forecast and not the scenario summary, so I keep the shape
+    inside the season. The premiere lands on 25 December and the response builds
+    through January. One annual multiple would flatten that away.
     """
     table = path("outputs_tables", "forecast_scenarios_weekly.csv")
     weekly = pd.read_csv(table)
@@ -115,15 +94,13 @@ def monthly_attention_multiple(scenario: str) -> pd.Series:
     monthly = weekly.set_index("week")[scenario].resample("MS").mean()
     counterfactual = weekly.set_index("week")["counterfactual"].resample("MS").mean()
 
-    # The multiple is against the counterfactual, meaning "how much more
-    # attention than there would have been with no premiere". That is the right
-    # denominator: the baseline category sales figure already contains whatever
-    # ordinary attention the franchise gets.
+    # Comparing against what would have happened with no premiere. My baseline sales
+    # already include the normal attention the franchise gets, so this is the fair comparison.
     return (monthly / counterfactual).reindex(PROFILE_MONTHS)
 
 
 def build_demand_profile(scenario: str, pass_through: float) -> pd.DataFrame:
-    """Monthly category sales for one scenario, in Canadian dollars."""
+    """Building monthly category sales for one scenario, in Canadian dollars."""
     annual_baseline = float(get("retail.category_baseline_sales_cad"))
     shares = category_seasonal_shares()
     attention_multiple = monthly_attention_multiple(scenario)
@@ -134,8 +111,8 @@ def build_demand_profile(scenario: str, pass_through: float) -> pd.DataFrame:
         baseline_sales = annual_baseline * share
         multiple = float(attention_multiple.loc[month])
 
-        # A pass-through of 1.0 would mean every extra unit of attention becomes
-        # a proportional extra unit of sales. Anything less damps it.
+        # Treating a pass through of 1.0 as every extra unit of attention becoming an
+        # extra unit of sales in the same proportion. Anything less makes the uplift smaller.
         uplift = 1 + pass_through * (multiple - 1)
         rows.append({
             "month": month.date(),
@@ -154,18 +131,16 @@ def build_demand_profile(scenario: str, pass_through: float) -> pd.DataFrame:
     return profile
 
 
-# --------------------------------------------------------------------------- #
-# step 4: lead times
-# --------------------------------------------------------------------------- #
+# Working back from lead times to order dates (step 4).
 
 def order_schedule() -> pd.DataFrame:
-    """Work backwards from the required in-store date to the order-by date."""
+    """Working backwards from the date stock must be in store to the last date I can order."""
     lead_times = get("retail.lead_time_days")
     review_period = int(get("retail.review_period_days"))
 
-    # Stock for the gift window must be on the shelf before the window opens;
-    # stock for the January position must land the week the premiere airs, so it
-    # is on the floor while the show is being watched.
+    # Putting gift window stock on the shelf before the window opens. Stock for the
+    # January position must land the week the premiere airs, so it is on the floor
+    # while people are watching the show.
     required_dates = {
         "gift window (Nov to 24 Dec)": pd.Timestamp(as_date("dates.gift_season_start")),
         "January position (26 Dec to 31 Jan)": pd.Timestamp(as_date("dates.premiere")),
@@ -189,17 +164,15 @@ def order_schedule() -> pd.DataFrame:
     return pd.DataFrame(rows).sort_values(["position", "lead_time_days"], ascending=[True, False])
 
 
-# --------------------------------------------------------------------------- #
-# step 5 and 6: safety stock and the economics of error
-# --------------------------------------------------------------------------- #
+# Sizing the safety stock and costing each kind of mistake (steps 5 and 6).
 
 def demand_variability(profiles: dict[str, pd.DataFrame]) -> float:
-    """Coefficient of variation of season demand across the three scenarios.
+    """Working out the coefficient of variation of season demand across my three scenarios.
 
-    The three scenarios are the only quantified statement this project has about
-    how uncertain demand is, so they are what the safety stock is sized against.
-    Treating the low-to-high spread as roughly a 90 per cent interval, the
-    implied standard deviation is the spread divided by 2 x 1.645.
+    The three scenarios are the only numbers I have for how uncertain demand is,
+    so I size the safety stock against them. I treat the low to high spread as
+    roughly a 90 per cent interval, so the implied standard deviation is the
+    spread divided by 2 x 1.645.
     """
     totals = {name: frame["forecast_sales_cad"].sum() for name, frame in profiles.items()}
     spread = totals["high"] - totals["low"]
@@ -208,24 +181,23 @@ def demand_variability(profiles: dict[str, pd.DataFrame]) -> float:
 
 
 def newsvendor_service_level() -> tuple[float, float, float]:
-    """The service level the economics imply, from the cost of each error.
+    """Working out the service level that my costs imply, from the cost of each mistake.
 
-    Understocking costs the lost gross margin, plus a goodwill penalty for the
-    customer who came in for it and left without it. Overstocking costs the
-    markdown taken to clear the unit plus the cost of holding it until then.
-    The critical ratio Cu / (Cu + Co) is the service level that balances them,
-    and comparing it with the 95 per cent the brief defaults to is the whole
-    point of doing this rather than assuming.
+    Understocking costs the lost gross margin, plus a goodwill penalty for the customer
+    who came in and left without the product. Overstocking costs the markdown to clear
+    the unit plus the cost of holding it until then. The critical ratio Cu / (Cu + Co)
+    is the service level that balances the two. I compare it with my 95 per cent
+    default, so I test that number and do not just assume it.
     """
     margin_rate = float(get("retail.gross_margin_rate"))
     markdown_rate = float(get("retail.markdown_rate"))
     holding_rate = float(get("retail.holding_cost_rate_annual"))
     goodwill = float(get("retail.lost_sale_goodwill_multiplier"))
 
-    # Per dollar of retail price.
+    # Measuring both costs per dollar of retail price.
     cost_of_understock = margin_rate * goodwill
-    # A marked down unit is sold at (1 - markdown) of retail, against a unit cost
-    # of (1 - margin). The loss is the difference, plus roughly a quarter year of
+    # Selling a marked down unit at (1 - markdown) of retail, against a unit cost
+    # of (1 - margin). My loss is the difference, plus roughly a quarter year of
     # holding cost on the unit cost.
     unit_cost = 1 - margin_rate
     clearance_revenue = 1 - markdown_rate
@@ -247,18 +219,15 @@ def safety_stock(central_total: float, coefficient_of_variation: float, service_
     }
 
 
-# --------------------------------------------------------------------------- #
-# step 7: the January reserve
-# --------------------------------------------------------------------------- #
+# Testing how much of the buy to hold back for January (step 7).
 
 def split_demand_at_premiere(profile: pd.DataFrame) -> tuple[float, float]:
-    """Split the season into pre-premiere and post-premiere demand.
+    """Splitting the season into demand before the premiere and demand after it.
 
-    The premiere is on 25 December, which sits inside a month, so a monthly
-    profile cannot be split on month boundaries: doing that throws the whole of
-    December into the post-premiere side and makes the gift window look tiny.
-    December is therefore divided using the stated share in config, and every
-    other month falls on the side its calendar position puts it.
+    The premiere is on 25 December, inside a month, so I cannot split a monthly profile
+    on month boundaries. That would put all of December on the after side and make the
+    gift window look tiny. I divide December with the share stated in config, and every
+    other month goes on the side its calendar position puts it.
     """
     december_share = float(get("retail.december_share_before_premiere"))
     frame = profile.copy()
@@ -274,12 +243,12 @@ def split_demand_at_premiere(profile: pd.DataFrame) -> tuple[float, float]:
 
 
 def january_reserve_tradeoff(profiles: dict[str, pd.DataFrame]) -> pd.DataFrame:
-    """Expected profit for each proportion of the buy held back for January.
+    """Working out the expected profit for each share of the buy I hold back for January.
 
-    The trade-off is real in both directions. Stock held back cannot be sold in
-    the gift window, and the gift window is when the category does most of its
-    business. Stock committed entirely to December is on the markdown table by
-    the time the show has been airing a fortnight.
+    The trade off is real in both directions. Stock I hold back cannot be sold in
+    the gift window, and that is when the category does most of its business.
+    Stock I commit only to December is on the markdown table by the time the
+    show has been airing for two weeks.
     """
     proportions = get("retail.january_reserve_proportions")
     margin_rate = float(get("retail.gross_margin_rate"))
@@ -292,13 +261,13 @@ def january_reserve_tradeoff(profiles: dict[str, pd.DataFrame]) -> pd.DataFrame:
             gift_demand, january_demand = split_demand_at_premiere(profile)
             total_demand = gift_demand + january_demand
 
-            # The buy is sized on the central scenario, then split.
+            # Sizing the buy on the central scenario, then splitting it.
             buy = float(profiles["central"]["forecast_sales_cad"].sum())
             gift_allocation = buy * (1 - proportion)
             january_allocation = buy * proportion
 
-            # Sales are capped by whichever is smaller, what was allocated or
-            # what was demanded. Unsold stock in each window is marked down.
+            # Capping sales at the smaller of what I allocated and what was
+            # demanded. Unsold stock in each window is marked down.
             gift_sold = min(gift_allocation, gift_demand)
             january_sold = min(january_allocation, january_demand)
 
@@ -319,9 +288,9 @@ def january_reserve_tradeoff(profiles: dict[str, pd.DataFrame]) -> pd.DataFrame:
                 "total_demand": total_demand,
             }
 
-        # Equal weight across scenarios. Weighting them would require a
-        # probability for each, and this project has no basis for one; saying so
-        # is better than inventing a distribution.
+        # Giving each scenario equal weight. Weighting them would need a
+        # probability for each one, and I have no basis for that. Saying so is
+        # better than making up a distribution.
         expected_profit = float(np.mean([v["profit"] for v in scenario_profits.values()]))
 
         results.append({
@@ -342,9 +311,7 @@ def january_reserve_tradeoff(profiles: dict[str, pd.DataFrame]) -> pd.DataFrame:
     return pd.DataFrame(results)
 
 
-# --------------------------------------------------------------------------- #
-# plots
-# --------------------------------------------------------------------------- #
+# Drawing my two charts.
 
 def plot_demand_profile(profiles: dict[str, pd.DataFrame], premiere: pd.Timestamp) -> Path:
     apply_style()
@@ -363,7 +330,7 @@ def plot_demand_profile(profiles: dict[str, pd.DataFrame], premiere: pd.Timestam
     ax.plot(x, baseline, color=PALETTE["ink"], linewidth=2.0, linestyle="--",
             marker="o", markersize=5, label="baseline, no premiere")
 
-    # The premiere falls inside December, between the December and January bars.
+    # Marking the premiere inside December, between the December and January bars.
     premiere_x = months.index("Dec 2026") + 0.5
     ax.axvline(premiere_x, color=PALETTE["highlight"], linewidth=1.6, linestyle="--")
     top = ax.get_ylim()[1]
@@ -384,7 +351,7 @@ def plot_demand_profile(profiles: dict[str, pd.DataFrame], premiere: pd.Timestam
         f"January 2027 is the month the premiere moves most: {jan / jan_base:.1f} times its normal level",
         "Monthly category sales for a composite Canadian retailer. Baseline is the measured "
         "seasonal shape applied to a stated annual category figure; scenarios add the forecast "
-        "attention uplift through a stated pass-through assumption.",
+        "attention uplift through a stated pass through assumption.",
         subtitle_wrap=118,
     )
     return save_figure(
@@ -436,8 +403,6 @@ def plot_cost_of_being_wrong(tradeoff: pd.DataFrame, critical_ratio: float,
     return save_figure(fig, "retail_cost_of_being_wrong.png", "All assumptions from config.yaml")
 
 
-# --------------------------------------------------------------------------- #
-
 def main() -> None:
     premiere = pd.Timestamp(as_date("dates.premiere"))
     pass_through = float(get("retail.attention_pass_through"))
@@ -445,7 +410,7 @@ def main() -> None:
     average_unit_retail = float(get("retail.average_unit_retail_cad"))
 
     with RunTimer(SCRIPT, logger) as run:
-        # --- steps 1 to 3: the demand profile ---
+        # Building the demand profile (steps 1 to 3).
         profiles = {
             scenario: build_demand_profile(scenario, pass_through)
             for scenario in ["low", "central", "high"]
@@ -472,7 +437,7 @@ def main() -> None:
 
         demand_figure = plot_demand_profile(profiles, premiere)
 
-        # --- step 4: order dates ---
+        # Working out the order dates (step 4).
         schedule = order_schedule()
         save_table("retail_order_schedule.csv", schedule)
         logger.info("order schedule:\n%s", schedule.to_string(index=False))
@@ -481,13 +446,13 @@ def main() -> None:
         if not late.empty:
             log_data_issue(
                 SCRIPT, "retail",
-                f"{len(late)} order-by dates have already passed as of the analysis date",
+                f"{len(late)} order by dates have already passed as of the analysis date",
                 "those positions can only be filled by air freight or domestic substitution "
                 "at a worse margin; the recommendation says which",
                 severity="note",
             )
 
-        # --- steps 5 and 6: safety stock and the economics ---
+        # Sizing the safety stock and working out the cost of each mistake (steps 5 and 6).
         cv = demand_variability(profiles)
         critical_ratio, cost_under, cost_over = newsvendor_service_level()
         logger.info(
@@ -499,15 +464,15 @@ def main() -> None:
         stock_assumed = safety_stock(season_totals["central"], cv, assumed_service_level)
         stock_implied = safety_stock(season_totals["central"], cv, critical_ratio)
 
-        # --- step 7: the January reserve ---
+        # Testing the January reserve shares (step 7).
         tradeoff = january_reserve_tradeoff(profiles)
         tradeoff_table = save_table("retail_january_reserve_tradeoff.csv", tradeoff)
-        logger.info("january reserve trade-off:\n%s", tradeoff.to_string(index=False))
+        logger.info("january reserve trade off:\n%s", tradeoff.to_string(index=False))
         best_reserve = tradeoff.loc[tradeoff["expected_profit_cad"].idxmax()]
 
         cost_figure = plot_cost_of_being_wrong(tradeoff, critical_ratio, assumed_service_level)
 
-        # --- sensitivity to the assumption that matters most ---
+        # Testing how much the result moves with the pass through, the assumption that matters most.
         sensitivity_rows = []
         for value in get("retail.attention_pass_through_range"):
             scenarios_at_value = {
@@ -528,9 +493,9 @@ def main() -> None:
             })
         sensitivity = pd.DataFrame(sensitivity_rows)
         save_table("retail_sensitivity.csv", sensitivity)
-        logger.info("sensitivity to the pass-through assumption:\n%s", sensitivity.to_string(index=False))
+        logger.info("sensitivity to the pass through assumption:\n%s", sensitivity.to_string(index=False))
 
-        # --- the single assumptions table section 12 requires ---
+        # Putting every assumption in one table, so a reader can check each one and disagree with it.
         assumptions = pd.DataFrame([
             {"assumption": "annual category baseline", "value": get("retail.category_baseline_sales_cad"),
              "units": "CAD", "source": "stated assumption, composite retailer",
@@ -551,7 +516,7 @@ def main() -> None:
              "units": "multiplier", "source": "stated assumption",
              "config_key": "retail.lost_sale_goodwill_multiplier"},
             {"assumption": "service level target", "value": assumed_service_level,
-             "units": "share", "source": "section 20 default, reserved for the human",
+             "units": "share", "source": "my default, to be confirmed with the retailer",
              "config_key": "retail.service_level"},
             {"assumption": "service level implied by the cost assumptions", "value": round(critical_ratio, 4),
              "units": "share", "source": "derived, newsvendor critical ratio", "config_key": "derived"},
@@ -568,7 +533,7 @@ def main() -> None:
         ])
         save_table("retail_assumptions.csv", assumptions)
 
-        # --- step 8: the recommendation ---
+        # Writing the recommendation (step 8).
         recommended_buy = stock_implied["order_up_to_cad"]
         recommended_units = recommended_buy / average_unit_retail
         january_share = float(best_reserve["january_reserve_proportion"])
@@ -582,9 +547,9 @@ def main() -> None:
         total_incremental = float(central["incremental_sales_cad"].sum())
         january_share_of_uplift = january_incremental / total_incremental if total_incremental else np.nan
 
-        # Expected profit and worst case can peak at different proportions, and a
-        # buyer needs to know when they do rather than being handed the expected
-        # value optimum as though it were free of downside.
+        # Checking if expected profit and worst case profit peak at different shares.
+        # A buyer needs to know when they do, because the share with the best
+        # expected profit still has a downside.
         safest = tradeoff.loc[tradeoff["worst_case_profit_cad"].idxmax()]
         safest_share = float(safest["january_reserve_proportion"])
         if abs(safest_share - january_share) > 1e-9:
@@ -605,7 +570,7 @@ def main() -> None:
         late_positions = schedule[schedule["already_late"]]
         if not late_positions.empty:
             late_note = (
-                f" Note that {len(late_positions)} of the six order-by dates have already passed, "
+                f" Note that {len(late_positions)} of the six order by dates have already passed, "
                 f"including imported product for the January position, which was due "
                 f"{imported_order_by}. Those positions can now only be filled by air freight or by "
                 f"substituting domestic product, both at a worse margin, and that is a cost of "
@@ -618,7 +583,7 @@ def main() -> None:
             f"Commit a wizarding category buy of ${recommended_buy:,.0f} at retail for the "
             f"November 2026 to March 2027 season, about {recommended_units:,.0f} units at an "
             f"average ${average_unit_retail:.0f} retail, and {split_advice}, rather than "
-            f"committing the buy to the pre-Christmas window as the category normally would. "
+            f"committing the buy to the pre Christmas window as the category normally would. "
             f"The range around that buy is ${season_totals['low']:,.0f} to "
             f"${season_totals['high']:,.0f} depending on how large the premiere response turns out "
             f"to be.{late_note}"
@@ -633,10 +598,10 @@ def main() -> None:
             "high_season_demand_cad": round(season_totals["high"], 0),
             "safety_stock_cad": stock_implied["safety_stock_cad"],
             "service_level_used": round(critical_ratio, 4),
-            # Both service levels are reported, not just the one used. The gap
-            # between them is small here, which is itself worth knowing: the
-            # brief's 95 per cent default and the economics nearly agree, so the
-            # choice of service level is not what the recommendation turns on.
+            # Reporting both service levels, not only the one I used. The gap
+            # between them is small here, and that is worth knowing. My 95 per
+            # cent default and the economics nearly agree, so my recommendation
+            # does not depend on the choice of service level.
             "safety_stock_at_assumed_95pc_cad": stock_assumed["safety_stock_cad"],
             "service_level_assumed": assumed_service_level,
             "safety_stock_difference_cad": round(
@@ -648,16 +613,21 @@ def main() -> None:
         }])
         save_table("retail_recommendation.csv", recommendation_table)
 
+        # Measuring both spreads, so my finding compares them with real numbers.
+        central_sales = sensitivity["season_sales_central_cad"]
+        sensitivity_spread = float(central_sales.iloc[-1] - central_sales.iloc[0])
+        scenario_gap = float(round(season_totals["high"], 0) - round(season_totals["low"], 0))
+
         finding = (
             f"{recommendation} The case for holding stock back rests on where the incremental "
-            f"sales fall: {january_share_of_uplift:.0%} of the premiere-driven uplift in the "
+            f"sales fall: {january_share_of_uplift:.0%} of the premiere driven uplift in the "
             f"central scenario lands from December onward, in the weeks when the category "
             f"normally runs at {float(central[central['month_name'] == 'Jan 2027']['seasonal_share_of_year'].iloc[0]) * 12:.2f} "
             f"times an average month and stock is usually being cleared. The cost assumptions also "
             f"argue against a cautious buy: a lost sale costs {cost_under:.2f} per retail dollar "
             f"against {cost_over:.2f} for a marked down one, which implies a "
-            f"{critical_ratio:.0%} service level rather than the {assumed_service_level:.0%} the "
-            f"brief defaults to, so the error worth avoiding here is running out, not overbuying."
+            f"{critical_ratio:.0%} service level rather than the {assumed_service_level:.0%} I "
+            f"set as my default, so the error worth avoiding here is running out, not overbuying."
         )
 
         write_finding(
@@ -667,7 +637,7 @@ def main() -> None:
                 f"A stated annual category baseline of "
                 f"${float(get('retail.category_baseline_sales_cad')):,.0f} spread across months by "
                 f"the measured category seasonality from module 3.3, multiplied by the attention "
-                f"uplift from module 5.1 through a stated pass-through of {pass_through:.0%}, then "
+                f"uplift from module 5.1 through a stated pass through of {pass_through:.0%}, then "
                 f"sized with a newsvendor critical ratio from the cost assumptions. Every assumption "
                 f"is in outputs/tables/retail_assumptions.csv with its config key."
             ),
@@ -677,15 +647,16 @@ def main() -> None:
                 "and four measured franchise events."
             ),
             uncertainty=(
-                f"The single largest uncertainty is not statistical. It is the pass-through "
+                f"The single largest uncertainty is not statistical. It is the pass through "
                 f"assumption, which module 5.2 could not measure because a national category "
                 f"containing every bookshop in Canada is too coarse to detect one franchise in. "
-                f"At a pass-through of "
+                f"At a pass through of "
                 f"{sensitivity['attention_pass_through'].min():.0%} the central season is "
                 f"${sensitivity['season_sales_central_cad'].iloc[0]:,.0f} and at "
                 f"{sensitivity['attention_pass_through'].max():.0%} it is "
-                f"${sensitivity['season_sales_central_cad'].iloc[-1]:,.0f}, a spread wider than the "
-                f"gap between the low and high demand scenarios. The category baseline is likewise "
+                f"${sensitivity['season_sales_central_cad'].iloc[-1]:,.0f}, a spread of "
+                f"${sensitivity_spread:,.0f} against a gap of ${scenario_gap:,.0f} between the low and "
+                f"high demand scenarios. The category baseline is likewise "
                 f"stated rather than observed, because no retailer's internal sales were available. "
                 f"Everything here is therefore a structured way to reason about the size of the "
                 f"decision, not a prediction of it."

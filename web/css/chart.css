@@ -1,7 +1,6 @@
-/* Chart: the inline SVG figures and the data tables.
- *
- * Separate from layout.css because charts have their own vocabulary, axes,
- * series and gridlines, that nothing else on the page uses.
+/* Styling the inline SVG figures and the data tables.
+ * I keep this apart from layout.css because charts have their own words (axes,
+ * series and gridlines) that nothing else on the page uses.
  */
 
 .figure {
@@ -99,7 +98,7 @@
   fill: var(--warn);
 }
 
-/* Legend, built by js/chart.js so it cannot drift from the series it labels. */
+/* Styling the legend. js/chart.js builds it, so it cannot drift from the series it labels. */
 .legend {
   display: flex;
   flex-wrap: wrap;
@@ -121,7 +120,7 @@
   border-radius: 2px;
 }
 
-/* Tables. */
+/* Styling the tables. */
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -168,13 +167,14 @@
   font-weight: 600;
 }
 
-/* A wide table scrolls inside its own box rather than pushing the page sideways. */
+/* Letting a wide table scroll inside its own box, so it does not push the page sideways. */
 .table-scroll {
   overflow-x: auto;
 }
 
-/* Legend swatch colours. Declared as classes so no element ever needs an
-   inline style attribute, which section 4 forbids. */
+/* Setting the legend swatch colours. I declare them as classes so no element
+   ever needs an inline style attribute. I allow no inline styles on this page,
+   so the palette lives only in base.css. */
 .legend__swatch--category {
   background: var(--support);
 }

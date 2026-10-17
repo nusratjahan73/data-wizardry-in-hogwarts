@@ -1,24 +1,24 @@
-"""Clean the construction toy catalogue and attach retail price where available.
+"""Cleaning the construction toy catalogue and adding the retail price where I have it.
 
-Reads  : data/raw/toys/rebrickable_*.csv, data/raw/toys/brickset_sets.json
-Writes : data/cleaned/toys/sets.csv
+Reading: data/raw/toys/rebrickable_*.csv, data/raw/toys/brickset_sets.json
+Writing: data/cleaned/toys/sets.csv
          data/cleaned/toys/price_coverage.csv
-Runtime: about ten seconds.
+Running time: about ten seconds.
 
-The product table for module 5.3 is assembled here: one row per branded set with
-its release year, piece count, minifigure count, theme and, when Brickset has
-been collected, its retail price.
+I build the product table for module 5.3 here. It has one row per branded set with
+its release year, piece count, minifigure count, theme and, when I have collected
+Brickset, its retail price.
 
-Minifigure count is derived rather than read. Rebrickable keeps it in a separate
-inventory table, so sets are joined to inventories and then to inventory
-minifigs, summing quantities. Only version 1 inventories are used; later versions
-are corrections and re-releases, and counting them all would double some sets.
+I work out the minifigure count myself. Rebrickable keeps it in a separate
+inventory table, so I join sets to inventories and then to inventory minifigs, and
+add up the quantities. I only use version 1 inventories. Later versions are
+corrections and repeat releases, and counting them all would double some sets.
 
-Price is optional and its absence is loud. Rebrickable has no price field at all,
-so without Brickset this table has a piece count and no money in it, and the
-price model in module 5.3 cannot run. The coverage table written alongside says
-exactly how many sets have a price, so a reader can see the size of the gap
-rather than infer it from a missing chart.
+Price is optional, and I make it loud when it is missing. Rebrickable has no price
+field at all, so without Brickset this table has a piece count and no money in it,
+and the price model in module 5.3 cannot run. The coverage table I write next to
+it says exactly how many sets have a price, so a reader can see the size of the
+gap and does not have to guess it from a missing chart.
 """
 
 from __future__ import annotations
@@ -53,11 +53,11 @@ def read_bulk(name: str) -> pd.DataFrame | None:
 
 
 def select_branded_themes(themes: pd.DataFrame) -> tuple[set[int], pd.DataFrame]:
-    """Find every theme belonging to the franchise, including child themes.
+    """Finding every theme that belongs to the franchise, including child themes.
 
     Rebrickable nests themes, so a set can sit under 'Fantastic Beasts' whose
-    parent is 'Harry Potter'. Matching on the name alone would miss the child;
-    walking the parent links catches it.
+    parent is 'Harry Potter'. Matching on the name alone would miss the child, so
+    I follow the parent links to catch it.
     """
     keywords = ["harry potter", "fantastic beasts", "wizarding"]
     matched = themes[
@@ -65,7 +65,7 @@ def select_branded_themes(themes: pd.DataFrame) -> tuple[set[int], pd.DataFrame]
     ]
     theme_ids = set(matched["id"].tolist())
 
-    # Walk down the tree until no new children appear.
+    # Walking down the tree until no new children appear.
     while True:
         children = themes[themes["parent_id"].isin(theme_ids)]
         new_ids = set(children["id"].tolist()) - theme_ids
@@ -78,7 +78,7 @@ def select_branded_themes(themes: pd.DataFrame) -> tuple[set[int], pd.DataFrame]
 
 
 def minifig_counts(inventories: pd.DataFrame, inventory_minifigs: pd.DataFrame) -> pd.DataFrame:
-    """Sum minifigures per set from the first version inventory only."""
+    """Adding up the minifigures per set from the first version inventory only."""
     first_version = inventories[inventories["version"] == 1]
     joined = inventory_minifigs.merge(
         first_version[["id", "set_num"]], left_on="inventory_id", right_on="id", how="inner"
@@ -91,7 +91,7 @@ def minifig_counts(inventories: pd.DataFrame, inventory_minifigs: pd.DataFrame) 
 
 
 def attach_brickset_prices(sets: pd.DataFrame) -> tuple[pd.DataFrame, bool]:
-    """Join Canadian, US and UK retail prices from Brickset if it was collected."""
+    """Joining Canadian, US and UK retail prices from Brickset if I collected it."""
     brickset_file = path("data_raw", SOURCE, "brickset_sets.json")
     if not brickset_file.exists():
         log_data_issue(
@@ -175,8 +175,9 @@ def main() -> None:
         if before != len(sets):
             logger.info("dropped %d sets outside %d to %d", before - len(sets), year_from, year_to)
 
-        # A set with no pieces is a promotional item, a poster or a gift card. It
-        # is not a construction set and would drag any price per piece measure.
+        # Flagging the sets with no pieces. Such a set is a promotional item, a poster
+        # or a gift card. It is not a construction set and would spoil any price per
+        # piece measure.
         promotional = int((sets["num_parts"].fillna(0) == 0).sum())
         if promotional:
             logger.info("flagged %d sets with zero pieces as promotional items", promotional)
@@ -193,8 +194,8 @@ def main() -> None:
         )
         logger.info("sets: %d rows -> %s", len(sets), relative(target))
 
-        # Coverage table, so the size of the price gap is a number in a file
-        # rather than something a reader has to work out.
+        # Writing a coverage table, so the size of the price gap is a number in a file
+        # and not something a reader has to work out.
         buildable = sets[~sets["is_promotional"]]
         coverage = pd.DataFrame([{
             "sets_total": len(sets),
@@ -217,13 +218,13 @@ def main() -> None:
             sets["year"].min(), sets["year"].max(),
         )
 
-        # The brief expects about 213 sets. A different number is not an error,
-        # but it is worth recording so nobody quietly reports the wrong count.
+        # Expecting about 213 sets. A different number is not an error, but I record
+        # it so nobody quietly reports the wrong count.
         expected = 213
         if abs(len(sets) - expected) > 20:
             log_data_issue(
                 SCRIPT, f"{SOURCE}.rebrickable",
-                f"the catalogue holds {len(sets)} branded sets, where the brief expected about {expected}",
+                f"the catalogue holds {len(sets)} branded sets, where I expected about {expected}",
                 "the difference is the collectible minifigure series and promotional items, "
                 "which are flagged with is_promotional rather than deleted; report the "
                 "buildable count in the write up",

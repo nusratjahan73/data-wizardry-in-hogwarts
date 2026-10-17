@@ -1,21 +1,21 @@
-"""Collect daily Wikipedia pageviews per article, the project's backbone series.
+"""Collecting daily Wikipedia pageviews per article, the main series of my project.
 
-Reads  : config.yaml (sources.pageviews, dates).
-Writes : data/raw/pageviews/<group>__<article>.json, one file per article.
+Reading: config.yaml (sources.pageviews, dates).
+Writing: data/raw/pageviews/<group>__<article>.json, one file per article.
 Runtime: about two minutes for forty odd articles.
 
-This is the attention series everything downstream rests on. Section 6 of the
-brief promotes it from a backup to a co-primary source precisely because it is an
-official endpoint with no key, no meaningful rate limit and daily granularity
-from 1 July 2015, where the search interest source is fragile.
+This is the attention series that everything later in my project rests on. I
+treat it as a main source next to search interest, not as a backup. It is an
+official endpoint with no key, no real rate limit and daily data from
+1 July 2015, while the search interest source is fragile.
 
-One file per article, named group__article, so a single bad article can be
-deleted and pulled again without touching the rest. The group prefix is what
-lets the cleaning script keep franchise, film, character and control series
-apart without a second lookup table.
+I save one file per article, named group__article, so I can delete one bad
+article and pull it again without touching the rest. The group prefix lets my
+cleaning script keep franchise, film, character and control series apart
+without a second lookup table.
 
-The API caps a single request at a wide date range comfortably, so each article
-is one call covering the whole window.
+One request can cover a wide date range, so each article is one call for the
+whole window.
 """
 
 from __future__ import annotations
@@ -38,11 +38,11 @@ logger = get_logger(SCRIPT)
 
 
 def safe_filename(group: str, article: str) -> str:
-    """Turn an article title into a lower case, underscore only filename.
+    """Turning an article title into a lower case filename that uses only underscores.
 
-    Article titles contain apostrophes, colons, brackets and en dashes, none of
-    which belong in a filename on Windows. The original title is preserved in
-    the metadata sidecar, so nothing is lost by flattening it here.
+    Article titles contain apostrophes, colons, brackets and en dashes, and none
+    of these belong in a filename on Windows. I keep the original title in the
+    .meta.json file, so nothing is lost here.
     """
     cleaned = []
     for char in article:
@@ -50,7 +50,7 @@ def safe_filename(group: str, article: str) -> str:
             cleaned.append(char.lower())
         elif char in {"_", "-"}:
             cleaned.append("_")
-        # every other character, including : ' ( ) and the en dash, is dropped
+        # Dropping every other character, including : ' ( ) and the en dash.
     slug = "".join(cleaned)
     while "__" in slug:
         slug = slug.replace("__", "_")
@@ -69,7 +69,7 @@ def collect_article(
     start: date,
     end: date,
 ) -> int:
-    """Pull one article's daily view series. Returns the number of days returned."""
+    """Pulling the daily view series for one article and returning the number of days I got."""
     encoded = urllib.parse.quote(article, safe="")
     url = (
         f"{base_url}/{project}/{access}/{agent}/{encoded}/{granularity}/"
@@ -79,8 +79,8 @@ def collect_article(
     try:
         payload = get_json(url, limiter=limiter, logger=logger)
     except ApiError as exc:
-        # A 404 here almost always means the title is a redirect rather than a
-        # real article. That is a data problem worth naming, not a crash.
+        # Treating a 404 as a data problem and not a crash. It almost always means
+        # the title is a redirect and not a real article, so I log it by name.
         log_data_issue(
             SCRIPT,
             f"{SOURCE}.{article}",
@@ -152,12 +152,12 @@ def main() -> None:
                 SCRIPT,
                 SOURCE,
                 "no article returned any view data",
-                "stage 1 gate fails; see the stop conditions in section 16",
+                "stage 1 gate fails; this is one of my stop conditions",
                 severity="critical",
             )
 
     logger.info(
-        "pageviews complete: %d of %d articles, %d article-days in total",
+        "pageviews complete: %d of %d articles, %d article days in total",
         collected, attempted, total_days,
     )
 

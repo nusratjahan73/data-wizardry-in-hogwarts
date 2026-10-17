@@ -1,25 +1,23 @@
-"""Collect the branded construction toy catalogue: sets, themes and minifigure counts.
+"""Collecting the branded construction toy catalogue: sets, themes and minifigure counts.
 
-Reads  : config.yaml (sources.toys), REBRICKABLE_API_KEY from .env if present.
-Writes : data/raw/toys/rebrickable_<name>.csv  (the four bulk tables)
+Reading: config.yaml (sources.toys), REBRICKABLE_API_KEY from .env if present.
+Writing: data/raw/toys/rebrickable_<name>.csv  (the bulk tables)
          data/raw/toys/rebrickable_api_sets.json  (only when a key is present)
 Runtime: under a minute.
 
 Rebrickable publishes its whole catalogue as gzipped CSV dumps that need no key,
-which is the route this script takes. That matters for reproducibility: a marker
-who clones the repository can rebuild this source without registering for
-anything. The keyed REST API is used only as an optional cross check, and its
-absence is logged rather than treated as a failure.
+and that is the route I take. It means anyone who clones my repository can
+rebuild this source without registering for anything. I use the keyed REST API
+only as an optional cross check. If the key is missing I log it and carry on.
 
-What this source gives is piece count, release year and theme. What it does not
-give is retail price. The brief's appendix is explicit about that, which is why
-Brickset is collected separately as the price source in 07. Without Brickset the
-price model in module 5.3 cannot run, and that is recorded rather than papered
-over.
+This source gives me piece count, release year and theme. It does not give me
+retail price, so I collect Brickset separately as the price source in 07.
+Without Brickset the price model in my module 5.3 cannot run, and I record that
+openly.
 
-Minifigure count is not a column on the sets table. It is derived by joining
-inventories to inventory_minifigs, so both are collected here. The join itself
-belongs to the cleaning step.
+Minifigure count is not a column in the sets table. I get it by joining
+inventories to inventory_minifigs, so I collect both here. The join itself
+happens in my cleaning step.
 """
 
 from __future__ import annotations
@@ -43,19 +41,17 @@ logger = get_logger(SCRIPT)
 
 BULK_BASE = "https://cdn.rebrickable.com/media/downloads"
 
-# themes and sets carry the catalogue itself. inventories and inventory_minifigs
-# exist only so the minifigure count per set can be derived during cleaning.
-#
-# inventory_parts was added later, for two reasons. It describes a set far more
-# richly than a piece count does, which module 4 clusters on, and at 1.56 million
-# rows it is by a wide margin the largest table this project can obtain without a
-# credential, which is what module 7 needs to compare a single-machine tool
-# against an out-of-core one.
-#
-# minifigs, parts, part_categories and colors were collected alongside it and
-# then never read by anything. They are not here any more. Collecting data on
-# the chance it might be useful costs 7.5MB and, worse, invites a reader to
-# assume an analysis used it. Section 6 wants each source pulled for a reason.
+# Listing the bulk tables I download. themes and sets hold the catalogue itself.
+# inventories and inventory_minifigs are only here so I can work out the minifigure
+# count per set during cleaning.
+# I added inventory_parts later, for two reasons. It describes a set in much more
+# detail than a piece count does, and my module 4 clusters on it. It also has 1.56
+# million rows, so it is by far the largest table I can get without a key. My module 7
+# needs that size to compare a tool that works on one machine in memory against one
+# that works out of core.
+# I used to collect minifigs, parts, part_categories and colors too, but nothing ever
+# read them, so I removed them. Collecting data that might be useful costs 7.5MB and,
+# worse, lets a reader think an analysis used it. I want a reason for every table.
 BULK_TABLES = [
     "themes",
     "sets",
@@ -66,7 +62,7 @@ BULK_TABLES = [
 
 
 def download_bulk_table(name: str, limiter: RateLimiter) -> int:
-    """Fetch one gzipped CSV dump and save it decompressed. Returns row count."""
+    """Fetching one gzipped CSV dump, saving it decompressed and returning the row count."""
     url = f"{BULK_BASE}/{name}.csv.gz"
     limiter.wait()
     try:
@@ -101,11 +97,11 @@ def download_bulk_table(name: str, limiter: RateLimiter) -> int:
 
 
 def cross_check_with_api(limiter: RateLimiter) -> None:
-    """Optional. Pull the themed sets through the keyed API as a sanity check.
+    """Pulling the themed sets through the keyed API as an optional sanity check.
 
-    This is not the primary route and nothing downstream depends on it. It exists
-    so that, when a key is available, the bulk dump can be compared against the
-    live API and any divergence noticed rather than assumed away.
+    This is not my main route and nothing later depends on it. When I have a key,
+    it lets me compare the bulk dump against the live API and notice any
+    difference between them.
     """
     api_key = secret("REBRICKABLE_API_KEY")
     if not api_key:
@@ -175,7 +171,7 @@ def main() -> None:
         run.rows_out = total
         run.note = "keyless bulk catalogue dump; retail price is not in this source"
 
-        # Say it once, in the register, so the gap is visible without reading code.
+        # Logging this once in my data issues log, so the gap is clear without reading the code.
         log_data_issue(
             SCRIPT,
             f"{SOURCE}.rebrickable",

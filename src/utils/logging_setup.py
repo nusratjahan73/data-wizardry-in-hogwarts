@@ -1,12 +1,12 @@
-"""Shared logging, run timing and the data issues register.
+"""Sharing my logging, run timing and the data issues register across all scripts.
 
-Reads  : config.yaml for the logs path.
-Writes : logs/<script_name>.log, logs/run_history.csv, logs/data_issues.md.
+Reading: config.yaml for the logs path.
+Writing: logs/<script_name>.log, logs/run_history.csv, logs/data_issues.md.
 Runtime: instant.
 
-Section 17 of the brief asks every script to log with a timestamp, the script
-name and the row counts in and out. Doing that in one place keeps the log format
-identical across forty odd scripts, which is what makes the logs readable.
+I want every script to log a timestamp, the script name and the row counts in
+and out. Doing that in one place keeps the log format the same across forty odd
+scripts, and that makes my logs easy to read.
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ new one saying what changed.
 
 
 def get_logger(name: str) -> logging.Logger:
-    """Return a logger writing to both the console and logs/<name>.log."""
+    """Returning a logger that writes to both the console and logs/<name>.log."""
     logger = logging.getLogger(name)
     if logger.handlers:
         return logger
@@ -59,7 +59,7 @@ def get_logger(name: str) -> logging.Logger:
 
 
 class RunTimer:
-    """Context manager that logs start, end, duration and row counts.
+    """Logging the start, end, duration and row counts of a run, as a context manager.
 
     Usage:
         with RunTimer("01_potterdb", logger) as run:
@@ -94,7 +94,7 @@ class RunTimer:
         if exc_type:
             self.logger.error("%s raised %s: %s", self.script_name, exc_type.__name__, exc)
         _append_run_history(self, status, elapsed)
-        return False  # never swallow an exception
+        return False  # Letting every exception pass through, never hiding one.
 
 
 def _append_run_history(run: RunTimer, status: str, elapsed: float) -> None:
@@ -126,10 +126,10 @@ def log_data_issue(
     what_was_done: str,
     severity: str = "warning",
 ) -> None:
-    """Append a row to logs/data_issues.md.
+    """Adding a row to logs/data_issues.md.
 
-    Called whenever a source fails, returns less than expected or changes shape.
-    A documented gap is a limitation; an undocumented one looks like a mistake.
+    I call this whenever a source fails, returns less than expected or changes shape.
+    A gap I wrote down is a limitation. A gap I did not write down looks like a mistake.
     """
     issues = path("logs", "data_issues.md", create=True)
     if not issues.exists():
@@ -148,11 +148,10 @@ def log_data_issue(
 
 
 def log_build_note(module: str, produced: str, skipped: str = "none") -> None:
-    """Append a note to docs/build_log.md.
+    """Adding a note to docs/build_log.md.
 
-    Section 1 of the brief makes this part of the definition of done: a module is
-    finished only when a note exists saying what was produced and what was
-    skipped.
+    This is part of how I define done. I count a module as finished only when a
+    note exists saying what was produced and what was skipped.
     """
     build_log = path("docs", "build_log.md", create=True)
     if not build_log.exists():
@@ -175,16 +174,12 @@ def write_finding(
     figure: str = "",
     table: str = "",
 ) -> None:
-    """Append one finding to docs/findings.md, replacing any earlier version.
+    """Adding one finding to docs/findings.md, replacing any earlier version.
 
-    Section 9 of the brief sets the rules this enforces: a finding is at most
-    three sentences, and every statistical claim states its sample size and its
-    uncertainty. Splitting those into separate fields rather than trusting prose
-    means a finding cannot be written without them.
-
-    Rewriting the whole file on each call, keyed on the analysis name, keeps the
-    file idempotent: rerunning an analysis updates its finding rather than
-    appending a second, slightly different copy of it.
+    My rule is that a finding is at most three sentences and always states its sample
+    size and its uncertainty. I made those separate fields, so a finding cannot be
+    written without them. I rewrite the whole file on each call, keyed on the analysis
+    name, so rerunning an analysis updates its finding and does not add a second copy.
     """
     findings_path = path("docs", "findings.md", create=True)
 
@@ -197,12 +192,12 @@ def write_finding(
     )
 
     def section_key(title: str) -> str:
-        """The stable part of a finding's title: its leading section number.
+        """Returning the stable part of a finding's title, the number at its start.
 
-        Keying on the whole title means renaming an analysis leaves the previous
-        version behind as an orphan, which happened once and briefly put two
-        contradictory versions of the same finding in the file together. The
-        section number does not change when the wording does.
+        When I keyed on the whole title, renaming an analysis left the old version
+        behind. That happened once and put two versions of one finding that
+        disagreed in the file together. The number does not change when the
+        wording does.
         """
         match = re.match(r"^\s*(\d+(?:\.\d+)*[a-z]?)", title)
         return match.group(1) if match else title.strip()

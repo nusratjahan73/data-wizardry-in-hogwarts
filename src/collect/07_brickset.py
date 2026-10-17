@@ -1,18 +1,18 @@
-"""Collect retail prices for the branded construction toy line from Brickset.
+"""Collecting retail prices for the branded construction toy line from Brickset.
 
-Reads  : config.yaml (sources.toys), BRICKSET_API_KEY from .env.
-Writes : data/raw/toys/brickset_sets.json
+Reading: config.yaml (sources.toys), BRICKSET_API_KEY from .env.
+Writing: data/raw/toys/brickset_sets.json
 Runtime: about a minute once a key is present.
 
-This is the price source, and it is the only one. Rebrickable, collected in 06,
-carries piece counts but no retail price, so the price model in module 5.3 and
-the licensing premium test in module 3.4 both depend on this script succeeding.
+This is my only price source. Rebrickable, which I collect in 06, has piece
+counts but no retail price. So the price model in my module 5.3 and the
+licensing premium test in my module 3.4 both need this script to work.
 
-Brickset requires a free API key. Without one the script logs the missing key by
-name, writes an entry to logs/data_issues.md, and exits cleanly. It does not
-crash, and it does not fall back to scraping the website: Brickset publishes an
-API precisely so that people do not scrape it, and module 8 has to be able to say
-truthfully that every source was collected the way its owner asked.
+Brickset needs a free API key. Without one I log the missing key by name, write
+an entry to logs/data_issues.md and exit cleanly. I do not crash and I do not
+scrape the website. Brickset publishes an API so that people do not scrape it,
+and in my module 8 I want to say truthfully that I collected every source the
+way its owner asked.
 
 Getting a key: register a free Brickset account, then request an API key from
 the profile page. Put it in .env as BRICKSET_API_KEY. Nothing else changes.
@@ -35,25 +35,25 @@ SCRIPT = "07_brickset"
 SOURCE = "toys"
 logger = get_logger(SCRIPT)
 
-PAGE_SIZE = 500  # Brickset's documented maximum per request
+PAGE_SIZE = 500  # Using the documented Brickset maximum per request
 
 
 def fetch_page(base_url: str, api_key: str, theme: str, page: int, limiter: RateLimiter) -> dict:
-    """Request one page of sets for a theme.
+    """Requesting one page of sets for a theme.
 
-    Brickset takes its query as a JSON string in a `params` field, which is why
-    the parameters are serialised rather than passed as ordinary query keys.
+    Brickset takes its query as a JSON string in a `params` field. That is why I
+    turn the parameters into JSON and do not pass them as normal query keys.
     """
     params = {
         "apiKey": api_key,
-        "userHash": "",  # only needed for a user's own collection, not for catalogue data
+        "userHash": "",  # Leaving this empty, since only a user's own collection needs it
         "params": json.dumps({"theme": theme, "pageSize": PAGE_SIZE, "pageNumber": page}),
     }
     return get_json(f"{base_url}/getSets", params=params, limiter=limiter, logger=logger)
 
 
 def collect_theme(base_url: str, api_key: str, theme: str, limiter: RateLimiter) -> list[dict]:
-    """Walk every page for one theme and return the set records."""
+    """Walking through every page for one theme and returning the set records."""
     collected: list[dict] = []
     page = 1
 
@@ -115,8 +115,8 @@ def main() -> None:
             return
 
         base_url = get("sources.toys.brickset_base_url")
-        # Brickset names the two themes separately rather than nesting one under
-        # the other, so both are requested and combined.
+        # Requesting both themes and combining them, because Brickset lists the two
+        # separately and does not put one under the other.
         themes = ["Harry Potter", "Fantastic Beasts"]
         limiter = RateLimiter(2.0)
 

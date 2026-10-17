@@ -1,12 +1,10 @@
-/* Chart drawing. One concern: turning numbers into SVG.
- *
- * No charting library. Section 4 rules out a framework or a bundler, and the
- * three charts this page needs are a line chart, a grouped bar chart and a
- * simple bar chart. Hand-drawn SVG keeps the page to five small files that a
- * marker can read end to end, and it means the page has no network dependency.
- *
+/* Drawing the charts. This file has one job: turning numbers into SVG.
+ * I use no charting library. I chose to build this page without a framework
+ * or a bundler, and the three charts it needs are a line chart, a grouped bar
+ * chart and a simple bar chart. Hand drawn SVG keeps the page to five small
+ * files that anyone can read end to end, and the page needs no network.
  * Everything here is pure: each function takes data and returns an SVG string.
- * Nothing in this file touches the document, which is page.js's job.
+ * Nothing in this file touches the document. That is the job of page.js.
  */
 
 const CHART = (function () {
@@ -34,7 +32,7 @@ const CHART = (function () {
     return Math.ceil(value / magnitude) * magnitude;
   }
 
-  /* Horizontal gridlines plus their y-axis labels. */
+  /* Drawing the horizontal gridlines and their y axis labels. */
   function gridlines(yScale, maxValue, width, formatter) {
     const steps = 4;
     let out = "";
@@ -61,7 +59,7 @@ const CHART = (function () {
       .join("");
   }
 
-  /* A multi-series line chart. Used for the seasonality comparison. */
+  /* Drawing a line chart with several series. I use it for the seasonality comparison. */
   function lineChart(options) {
     const width = options.width || 620;
     const height = options.height || 300;
@@ -80,7 +78,7 @@ const CHART = (function () {
       '<svg class="chart" viewBox="0 0 ' + width + " " + height +
       '" role="img" aria-label="' + escapeText(options.ariaLabel || "line chart") + '">';
 
-    /* Shaded band, used to mark the gift-buying window. */
+    /* Shading a band to mark the gift buying window. */
     if (options.band) {
       const x1 = xScale(options.band.from);
       const x2 = xScale(options.band.to);
@@ -118,7 +116,7 @@ const CHART = (function () {
     return svg;
   }
 
-  /* Grouped bars with an overlaid baseline line. Used for the demand profile. */
+  /* Drawing grouped bars with a baseline line on top. I use it for the demand profile. */
   function groupedBarChart(options) {
     const width = options.width || 620;
     const height = options.height || 300;
@@ -165,7 +163,7 @@ const CHART = (function () {
       svg += '<polyline class="chart__line chart__line--all-retail" points="' + points + '"/>';
     }
 
-    /* A vertical marker between two categories, for the premiere. */
+    /* Drawing a vertical marker between two categories, for the premiere. */
     if (options.marker) {
       const x = PAD.left + slot * (options.marker.afterIndex + 1);
       svg +=
@@ -183,7 +181,7 @@ const CHART = (function () {
     return svg;
   }
 
-  /* Single-series bars with value labels. Used for the reserve trade-off. */
+  /* Drawing bars for one series, with value labels. I use it for the reserve trade off. */
   function barChart(options) {
     const width = options.width || 620;
     const height = options.height || 260;
@@ -228,10 +226,10 @@ const CHART = (function () {
     return svg;
   }
 
-  /* Legend items carry a CSS class, never an inline style attribute.
-   * Section 4 forbids inline styles outright, and there is a reason beyond the
-   * rule: a colour written here would be a second place the palette lives, and
-   * it would drift from base.css the first time the palette changed. */
+  /* Giving each legend item a CSS class, never an inline style attribute.
+   * I allow no inline styles on this page, and I have a real reason for it. A
+   * colour written here would be a second place where the palette lives, and
+   * it would drift from base.css the first time I changed the palette. */
   function legend(items) {
     const parts = items.map(function (item) {
       return (

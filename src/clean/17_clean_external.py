@@ -1,26 +1,23 @@
-"""Clean the hand entered film and park tables, adding inflation adjusted money.
+"""Cleaning my hand entered film and park tables, and adding inflation adjusted money.
 
-Reads  : data/external/films.csv, data/external/parks.csv,
+Reading: data/external/films.csv, data/external/parks.csv,
          data/cleaned/statcan/cpi_monthly.csv
-Writes : data/cleaned/parks/parks.csv
-         data/cleaned/statcan/films.csv is NOT written; films go to data/cleaned/films/
+Writing: data/cleaned/parks/parks.csv
+         films go to data/cleaned/films/, and I do NOT write data/cleaned/statcan/films.csv
 Runtime: instant.
 
-Section 7 of the brief asks that historic money be adjusted to current dollars
-using the consumer price index, keeping both the nominal and the real column.
-That happens here, and it needs one caveat stated plainly rather than buried.
+I adjust old money to current dollars with the consumer price index. I keep both
+the nominal column and the real column, so nobody has to trust only one of them.
 
-The box office figures are in US dollars, and the price index available to this
-project is Canadian. Deflating US dollars by Canadian CPI measures what those
-takings would be worth to a Canadian buyer today, which is the relevant question
-for a Canadian retailer deciding what to stock, but it is not the same as the
-US real box office. Both columns are kept and named so the difference cannot be
-missed: `_usd` is nominal, `_cad_real_2026` is the adjusted figure, and the
-exchange rate used is a single stated assumption rather than a historic series.
+There is one caveat. The box office figures are in US dollars, but my price index
+is Canadian. So my adjusted figure shows what those takings are worth to a Canadian
+buyer today. That is the right question for a Canadian retailer deciding what to
+stock, but it is not the US real box office. I name the columns so the difference
+is clear: `_usd` is nominal and `_cad_real_2026` is the adjusted figure. My
+exchange rate is one stated assumption, not a historic series.
 
-The parks table gains a per park index relative to the year before the wizarding
-land opened, which is what makes four parks of very different sizes comparable
-on one chart.
+I also give each park an index against the year before its wizarding land opened.
+This lets me compare four parks of very different sizes on one chart.
 """
 
 from __future__ import annotations
@@ -39,14 +36,14 @@ from src.utils.logging_setup import RunTimer, get_logger, log_data_issue
 SCRIPT = "17_clean_external"
 logger = get_logger(SCRIPT)
 
-# A single stated rate, not a historic series. Using one rate keeps the
-# conversion transparent; using a historic series would mix two effects,
-# inflation and currency movement, in one column.
+# Using one stated rate, not a historic series. One rate keeps my conversion easy
+# to follow. A historic series would mix two effects, inflation and currency
+# movement, in one column.
 USD_TO_CAD = 1.37
 
 
 def annual_cpi() -> pd.DataFrame | None:
-    """Average the monthly CPI to a yearly figure for deflating annual money."""
+    """Averaging the monthly CPI into one figure per year, so I can adjust yearly money."""
     cpi_file = path("data_cleaned", "statcan", "cpi_monthly.csv")
     if not cpi_file.exists():
         log_data_issue(
@@ -78,9 +75,9 @@ def clean_films(cpi: pd.DataFrame | None) -> int:
 
     films["release_year"] = pd.to_datetime(films["release_date"]).dt.year
 
-    # Descriptive measures the dashboard needs. Profit here is gross minus
-    # budget, which ignores marketing spend and the exhibitor's share, so it
-    # overstates true profit and is labelled as a gross measure everywhere.
+    # Adding the descriptive measures my dashboard needs. My profit is gross minus
+    # budget. It leaves out marketing spend and the exhibitor's share, so it is
+    # higher than true profit. I label it as a gross measure everywhere.
     films["gross_profit_usd"] = films["worldwide_gross_usd"] - films["budget_usd"]
     films["gross_profit_margin"] = films["gross_profit_usd"] / films["worldwide_gross_usd"]
     films["return_on_budget"] = films["worldwide_gross_usd"] / films["budget_usd"]
@@ -127,12 +124,12 @@ def clean_parks() -> int:
     ).dt.date
     parks["opening_year"] = pd.to_datetime(parks["wizarding_land_opened"]).dt.year
 
-    # Years relative to the opening, so four parks on different timelines can be
-    # laid over one another. Year 0 is the opening year.
+    # Counting years from the opening, so I can lay four parks with different
+    # timelines over one another. Year 0 is the opening year.
     parks["years_since_opening"] = parks["year"] - parks["opening_year"]
 
-    # Index each park to the year before its land opened, which is the only
-    # honest baseline for a step change: the last full year without it.
+    # Indexing each park to the year before its land opened. That is the last full
+    # year without the land, so it is the only honest baseline for a step change.
     baselines = (
         parks[parks["years_since_opening"] == -1]
         .loc[:, ["park", "attendance"]]
@@ -151,9 +148,9 @@ def clean_parks() -> int:
             "those parks are excluded from the indexed comparison but kept in the raw series",
         )
 
-    # 2020 and 2021 are pandemic years. Leaving them in an average would make any
-    # step change look like a collapse, so they are flagged for exclusion rather
-    # than deleted, and each analysis decides for itself.
+    # Flagging 2020 and 2021 as pandemic years. Leaving them in an average would make
+    # any step change look like a collapse. I flag them and do not delete them, so
+    # each of my analyses can decide for itself.
     parks["is_pandemic_year"] = parks["year"].isin([2020, 2021])
 
     target = save_cleaned(
